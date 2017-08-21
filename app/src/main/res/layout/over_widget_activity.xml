@@ -1,0 +1,43 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/widget_margin"
+    android:background="#CC000000">
+
+    <TextView
+        android:id="@+id/appwidget_battletag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="BattleTag"
+        android:text="@string/appwidget_text"
+        android:fontFamily="sans-serif-light"
+        android:textColor="#ffffff"
+        android:textSize="10sp" />
+
+    <TextView
+        android:id="@+id/appwidget_comprank"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="Skill Rank"
+        android:fontFamily="sans-serif-light"
+        android:text="@string/appwidget_text"
+        android:textColor="#ffffff"
+        android:textSize="12sp"
+        android:layout_below="@+id/appwidget_battletag"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <!--<TextView
+        android:id="@+id/appwidget_tier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/appwidget_text"
+        android:contentDescription="Tier"
+        android:fontFamily="sans-serif-light"
+        android:textColor="#ffffff"
+        android:textSize="12sp"
+        android:layout_below="@+id/appwidget_comprank"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />-->
+
+</RelativeLayout>
