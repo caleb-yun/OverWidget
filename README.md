@@ -1,5 +1,5 @@
 # OverWidget
-Widget for
+Android widget for Overwatch stats.
 
 ![launcher](/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png)
 
