@@ -89,8 +89,8 @@ public class OverWidgetActivity extends AppWidgetProvider {
         Log.d("OverWidgetActivity", "OnReceive");
 
         if (SYNC_CLICKED.equals(intent.getAction())) {
-            Log.d("OverWidgetActivity", "Refreshed");
-
+            Log.d("OverWidgetActivity", "Refreshing");
+            Toast.makeText(context, "Refreshing...", Toast.LENGTH_SHORT).show();
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             Bundle extras = intent.getExtras();
 
@@ -98,13 +98,14 @@ public class OverWidgetActivity extends AppWidgetProvider {
                 int appWidgetId = (int) extras.get("WIDGET_ID");
                 this.updateAppWidget(context, appWidgetManager, appWidgetId);
                 Toast.makeText(context, "Refreshed", Toast.LENGTH_SHORT).show();
+                Log.d("OverWidgetActivity", "Refreshed");
             }
         }
     }
 
-    public static Bitmap buildUpdate(String time, Context context)
+    public static Bitmap buildUpdate(String text, Context context)
     {
-        Bitmap myBitmap = Bitmap.createBitmap(160, 84, Bitmap.Config.ARGB_4444);
+        Bitmap myBitmap = Bitmap.createBitmap(160, 80, Bitmap.Config.ARGB_4444);
         Canvas myCanvas = new Canvas(myBitmap);
         Paint paint = new Paint();
         Typeface clock = Typeface.createFromAsset(context.getAssets(),"futurano2d-demibold.ttf");
@@ -113,9 +114,9 @@ public class OverWidgetActivity extends AppWidgetProvider {
         paint.setTypeface(clock);
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.WHITE);
-        paint.setTextSize(65);
+        paint.setTextSize(55);
         paint.setTextAlign(Paint.Align.CENTER);
-        myCanvas.drawText(time, 80, 60, paint);
+        myCanvas.drawText(text, 80, 60, paint);
         return myBitmap;
     }
 }

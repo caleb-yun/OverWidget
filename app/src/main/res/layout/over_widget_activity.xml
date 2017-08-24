@@ -1,12 +1,12 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/appwidget_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#CC000000"
     android:gravity="top"
     android:orientation="vertical"
-    android:padding="@dimen/widget_margin" >
-
+    android:padding="@dimen/widget_margin"
+    android:clickable="true">
     <TextView
         android:id="@+id/appwidget_battletag"
         android:layout_width="wrap_content"
@@ -20,31 +20,18 @@
         android:paddingLeft="2dp"
         android:ellipsize="end"
         android:maxLines="1"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <ImageView
+        android:id="@+id/appwidget_tier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/grandmaster"
         android:gravity="center"
-        android:orientation="vertical">
-
-        <ImageView
-            android:id="@+id/appwidget_tier"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:src="@drawable/grandmaster"
-            />
-        <ImageView
-            android:id="@+id/appwidget_comprank"
-            android:layout_width="56dp"
-            android:layout_height="24dp"/>
-        <!--<TextView
-            android:id="@+id/appwidget_comprank"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="Skill Rank"
-            android:fontFamily="sans-serif"
-            android:text="@string/appwidget_text"
-            android:textColor="#ffffff"
-            android:textSize="12sp" />-->
-    </LinearLayout>
-</LinearLayout>
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+    <ImageView
+        android:id="@+id/appwidget_comprank"
+        android:layout_width="50dp"
+        android:layout_height="25dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+</RelativeLayout>
