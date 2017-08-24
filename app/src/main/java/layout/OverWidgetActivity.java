@@ -6,6 +6,12 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -23,22 +29,20 @@ import static android.appwidget.AppWidgetManager.ACTION_APPWIDGET_UPDATE;
  */
 public class OverWidgetActivity extends AppWidgetProvider {
 
-    private static final String SYNC_CLICKED    = "automaticWidgetSyncButtonClick";
+    private static final String SYNC_CLICKED = "automaticWidgetSyncButtonClick";
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
         Profile profile = OverWidgetActivityConfigureActivity.loadUserPref(context, appWidgetId);
         if (profile != null) {
-            String battleTag = profile.BattleTag;
-            String compRank = profile.CompRank;
-            String tier = profile.Tier;
-
             // Construct the RemoteViews object
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.over_widget_activity);
-            views.setTextViewText(R.id.appwidget_battletag, battleTag);
-            views.setTextViewText(R.id.appwidget_comprank, compRank);
-            views.setTextViewText(R.id.appwidget_tier, tier);
+            views.setTextViewText(R.id.appwidget_battletag, profile.BattleTag);
+            //views.setTextViewText(R.id.appwidget_comprank, compRank);
+            views.setImageViewBitmap(R.id.appwidget_comprank, buildUpdate(profile.CompRank, context));
+            views.setImageViewResource(R.id.appwidget_tier, context.getResources().getIdentifier(profile.Tier, "drawable", context.getPackageName()));
 
             views.setOnClickPendingIntent(R.id.appwidget_layout, getPendingSelfIntent(context, SYNC_CLICKED, appWidgetId));
+
             // Instruct the widget manager to update the widget
             appWidgetManager.updateAppWidget(appWidgetId, views);
         }
@@ -86,14 +90,8 @@ public class OverWidgetActivity extends AppWidgetProvider {
 
         if (SYNC_CLICKED.equals(intent.getAction())) {
             Log.d("OverWidgetActivity", "Refreshed");
+
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-
-            RemoteViews remoteViews;
-            ComponentName overWidget;
-
-            remoteViews = new RemoteViews(context.getPackageName(), R.layout.over_widget_activity);
-            overWidget = new ComponentName(context, OverWidgetActivity.class);
-
             Bundle extras = intent.getExtras();
 
             if (extras != null) {
@@ -102,6 +100,23 @@ public class OverWidgetActivity extends AppWidgetProvider {
                 Toast.makeText(context, "Refreshed", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    public static Bitmap buildUpdate(String time, Context context)
+    {
+        Bitmap myBitmap = Bitmap.createBitmap(160, 84, Bitmap.Config.ARGB_4444);
+        Canvas myCanvas = new Canvas(myBitmap);
+        Paint paint = new Paint();
+        Typeface clock = Typeface.createFromAsset(context.getAssets(),"futurano2d-demibold.ttf");
+        paint.setAntiAlias(true);
+        paint.setSubpixelText(true);
+        paint.setTypeface(clock);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(Color.WHITE);
+        paint.setTextSize(65);
+        paint.setTextAlign(Paint.Align.CENTER);
+        myCanvas.drawText(time, 80, 60, paint);
+        return myBitmap;
     }
 }
 
