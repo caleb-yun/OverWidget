@@ -3,4 +3,14 @@
     <string name="appwidget_text">Loading</string>
     <string name="configure">Configure</string>
     <string name="add_widget">Add widget</string>
+    <string-array name="platform_array">
+        <item>PC</item>
+        <item>XBL</item>
+        <item>PSN</item>
+    </string-array>
+    <string-array name="region_array">
+        <item>US</item>
+        <item>EU</item>
+        <item>KR</item>
+    </string-array>
 </resources>
