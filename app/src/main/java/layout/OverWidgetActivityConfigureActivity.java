@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.cogentworks.overwidget.CheckProfileExists;
 import com.cogentworks.overwidget.Profile;
 import com.cogentworks.overwidget.R;
 import com.cogentworks.overwidget.RestOperation;
@@ -47,36 +48,8 @@ public class OverWidgetActivityConfigureActivity extends AppCompatActivity {
             savePrefs(context, mAppWidgetId, battleTag, platform, region);
 
             // Check if user exists
-            Profile result = new Profile();
-            try {
-                RestOperation restOperation = new RestOperation();
-                result = restOperation.execute(battleTag, platform, region).get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                result = null;
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-                result = null;
-            }
-
-            // Profile Exists
-            if (result != null) {
-                // It is the responsibility of the configuration activity to update the app widget
-                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-                OverWidgetActivity.updateAppWidget(context, appWidgetManager, mAppWidgetId);
-
-                // Make sure we pass back the original appWidgetId
-                Intent resultValue = new Intent();
-                resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
-                setResult(RESULT_OK, resultValue);
-                finish();
-            } else if (result == null) {
-                Toast.makeText(context, "Player not found", Toast.LENGTH_SHORT).show();
-                progressBar.setVisibility(View.GONE);
-            } else {
-                Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
-                progressBar.setVisibility(View.GONE);
-            }
+            CheckProfileExists checkProfileExists = new CheckProfileExists(context, mAppWidgetId);
+            checkProfileExists.execute(battleTag, platform, region);
         }
     };
 
@@ -95,20 +68,15 @@ public class OverWidgetActivityConfigureActivity extends AppCompatActivity {
 
     // Read the prefix from the SharedPreferences object for this widget.
     // If there is no preference saved, get the default from a resource
-    static Profile loadUserPref(Context context, int appWidgetId) {
+    static Profile loadUserPref(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
         String battleTag = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "_battletag", null);
         String platform = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "_platform", null);
         String region = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "_region", null);
+
         Profile result = new Profile();
-        try {
-            RestOperation restOperation = new RestOperation();
-            result = restOperation.execute(battleTag, platform, region).get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
+        RestOperation restOperation = new RestOperation(context, appWidgetManager, appWidgetId);
+        restOperation.execute(battleTag, platform, region);
         return result;
     }
 

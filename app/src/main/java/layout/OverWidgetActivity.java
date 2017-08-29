@@ -32,20 +32,21 @@ public class OverWidgetActivity extends AppWidgetProvider {
     private static final String SYNC_CLICKED = "automaticWidgetSyncButtonClick";
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
-        Profile profile = OverWidgetActivityConfigureActivity.loadUserPref(context, appWidgetId);
-        if (profile != null) {
-            // Construct the RemoteViews object
-            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.over_widget_activity);
-            views.setTextViewText(R.id.appwidget_battletag, profile.BattleTag);
-            //views.setTextViewText(R.id.appwidget_comprank, compRank);
-            views.setImageViewBitmap(R.id.appwidget_comprank, buildUpdate(profile.CompRank, context));
-            views.setImageViewResource(R.id.appwidget_tier, context.getResources().getIdentifier(profile.Tier, "drawable", context.getPackageName()));
+        Profile profile = OverWidgetActivityConfigureActivity.loadUserPref(context, appWidgetManager, appWidgetId);
+    }
 
-            views.setOnClickPendingIntent(R.id.appwidget_layout, getPendingSelfIntent(context, SYNC_CLICKED, appWidgetId));
+    public static void setWidgetViews(Context context, Profile profile, int appWidgetId, AppWidgetManager appWidgetManager) {
+        // Construct the RemoteViews object
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.over_widget_activity);
+        views.setTextViewText(R.id.appwidget_battletag, profile.BattleTag);
+        //views.setTextViewText(R.id.appwidget_comprank, compRank);
+        views.setImageViewBitmap(R.id.appwidget_comprank, buildUpdate(profile.CompRank, context));
+        views.setImageViewResource(R.id.appwidget_tier, context.getResources().getIdentifier(profile.Tier, "drawable", context.getPackageName()));
 
-            // Instruct the widget manager to update the widget
-            appWidgetManager.updateAppWidget(appWidgetId, views);
-        }
+        views.setOnClickPendingIntent(R.id.appwidget_layout, getPendingSelfIntent(context, SYNC_CLICKED, appWidgetId));
+
+        // Instruct the widget manager to update the widget
+        appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
     @Override
@@ -54,7 +55,7 @@ public class OverWidgetActivity extends AppWidgetProvider {
         // There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {
             // Tell the AppWidgetManager to perform an update on the current App Widget
-            updateAppWidget(context, appWidgetManager, appWidgetId);
+            OverWidgetActivityConfigureActivity.loadUserPref(context, appWidgetManager, appWidgetId);
         }
     }
 
