@@ -5,5 +5,7 @@ Android widget for Overwatch stats.
 
 ## TODO
 - ~Tier Image~
-- Input sanitizer
-- Other stats (level, avatar, etc.)
+- ~Input sanitizer~
+- Dynamicly update based on size
+- Level stats (level, image, prestige)
+- Avatar image

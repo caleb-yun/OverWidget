@@ -20,17 +20,5 @@
         android:paddingLeft="2dp"
         android:ellipsize="end"
         android:maxLines="1"/>
-    <ImageView
-        android:id="@+id/appwidget_tier"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
-    <ImageView
-        android:id="@+id/appwidget_comprank"
-        android:layout_width="50dp"
-        android:layout_height="25dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+    <include layout="@layout/skill_rank_layout"/>
 </RelativeLayout>
