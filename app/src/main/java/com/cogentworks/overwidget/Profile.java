@@ -10,13 +10,13 @@ import java.net.URL;
 public class Profile {
     public void SetUser(String battleTag, String avatarURL) throws MalformedURLException {
         this.BattleTag = battleTag;
-        this.AvatarURL = new URL(avatarURL);
+        this.AvatarURL = avatarURL;
     }
 
     public void SetLevel(String level, String prestige, String rankImageURL) throws MalformedURLException {
         this.Level = level;
         this.Prestige = prestige;
-        this.RankImageURL = new URL(rankImageURL);
+        this.RankImageURL = rankImageURL;
     }
 
     public void SetRank(String compRank, String tier) {
@@ -25,11 +25,11 @@ public class Profile {
     }
 
     public String BattleTag = "Error";
-    public URL AvatarURL;
+    public String AvatarURL;
 
     public String Prestige = "Error";
     public String Level = "Error";
-    public URL RankImageURL;
+    public String RankImageURL;
 
     public String CompRank = "Error";
     public String Tier = "Error";

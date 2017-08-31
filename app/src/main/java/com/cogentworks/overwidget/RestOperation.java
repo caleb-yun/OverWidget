@@ -114,6 +114,8 @@ public class RestOperation extends AsyncTask<String, Void, Profile> {
 
         if (result != null) {
             OverWidgetActivity.setWidgetViews(context, result, this.appWidgetId, this.appWidgetManager);
+        } else {
+            OverWidgetActivity.setSyncClicked(context, this.appWidgetId, this.appWidgetManager);
         }
     }
 }

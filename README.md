@@ -1,5 +1,5 @@
 # OverWidget
-Android widget for Overwatch stats.
+View basic Overwatch stats from your home screen.
 
 ![launcher](/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png)
 
@@ -8,4 +8,4 @@ Android widget for Overwatch stats.
 - ~Input sanitizer~
 - Dynamicly update based on size
 - Level stats (level, image, prestige)
-- Avatar image
+- Avatar image (open career profile web page when clicked)
