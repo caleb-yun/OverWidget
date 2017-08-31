@@ -3,12 +3,14 @@ package com.cogentworks.overwidget;
 import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.JsonReader;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -23,6 +25,7 @@ import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 
 import layout.OverWidgetActivity;
+import layout.OverWidgetActivityConfigureActivity;
 
 /**
  * Created by cyun on 8/6/17.
@@ -113,6 +116,12 @@ public class RestOperation extends AsyncTask<String, Void, Profile> {
         super.onPostExecute(result);
 
         if (result != null) {
+            // Convert Profile to Gson and save to SharedPrefs
+            SharedPreferences.Editor newPrefs = context.getSharedPreferences(OverWidgetActivityConfigureActivity.PREFS_NAME, 0).edit();
+            Gson gson = new Gson();
+            String profileJson = gson.toJson(result);
+            newPrefs.putString(OverWidgetActivityConfigureActivity.PREF_PREFIX_KEY + appWidgetId + "_profile", profileJson);
+            newPrefs.apply();
             OverWidgetActivity.setWidgetViews(context, result, this.appWidgetId, this.appWidgetManager);
         } else {
             OverWidgetActivity.setSyncClicked(context, this.appWidgetId, this.appWidgetManager);

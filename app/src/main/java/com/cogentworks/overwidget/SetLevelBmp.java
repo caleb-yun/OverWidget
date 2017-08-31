@@ -76,7 +76,7 @@ public class SetLevelBmp extends AsyncTask<String, Void, Bitmap> {
             Bitmap rankBmp = BitmapFactory.decodeStream(rank.openConnection().getInputStream());
             canvas.drawBitmap(rankBmp, 0, bmOverlay.getHeight() - 128, null);
         }
-        
+
         return bmOverlay;
     }
 

@@ -20,5 +20,16 @@
         android:paddingLeft="2dp"
         android:ellipsize="end"
         android:maxLines="1"/>
-    <include layout="@layout/skill_rank_layout"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <include layout="@layout/level_layout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+        <include layout="@layout/skill_rank_layout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+    </LinearLayout>
 </RelativeLayout>
