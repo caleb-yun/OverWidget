@@ -37,7 +37,6 @@ public class SetLevelBmp extends AsyncTask<String, Void, Bitmap> {
     public SetLevelBmp(Context context) {
         this.context = context;
     }
-
     @Override
     protected Bitmap doInBackground(String... params) {
         Bitmap result = null;

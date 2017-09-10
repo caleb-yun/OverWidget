@@ -61,7 +61,7 @@ public class RestOperation extends AsyncTask<String, Void, Profile> {
                 result = new Profile();
                 try {
                     // Create URL
-                    URL endpoint = new URL("https://owapi.net/api/v3/u/" + battleTag.replace('#', '-') + "/stats?platform=" + platform.toLowerCase());
+                    URL endpoint = new URL("https://owapi.net/api/v3/u/" + battleTag.replace('#', '-') + "/blob?platform=" + platform.toLowerCase());
 
                     // Create connection
                     HttpsURLConnection urlConnection = (HttpsURLConnection) endpoint.openConnection();
@@ -77,6 +77,7 @@ public class RestOperation extends AsyncTask<String, Void, Profile> {
                     if (urlConnection.getResponseCode() == 200) {
                         // Success
                         InputStream responseBody = new BufferedInputStream(urlConnection.getInputStream());
+
                         // Parser
                         JsonParser jsonParser = new JsonParser();
                         JsonObject stats = jsonParser.parse(new InputStreamReader(responseBody, "UTF-8"))
@@ -84,12 +85,21 @@ public class RestOperation extends AsyncTask<String, Void, Profile> {
                                 .getAsJsonObject().get("stats")
                                 .getAsJsonObject().get("competitive")
                                 .getAsJsonObject().getAsJsonObject("overall_stats");
+
                         result.SetUser(battleTag, stats.get("avatar").getAsString());
                         Log.d("RestOperation", "SetUser");
                         result.SetLevel(stats.get("level").getAsString(), stats.get("prestige").getAsString(), stats.get("rank_image").getAsString());
                         Log.d("RestOperation", "SetLevel");
                         result.SetRank(stats.get("comprank").getAsString(), stats.get("tier").getAsString());
                         Log.d("RestOperation", "SetRank");
+
+                        /*JsonObject heroStats = jsonParser.parse(new InputStreamReader(responseBody, "UTF-8"))
+                                .getAsJsonObject().get(region.toLowerCase()) // Select Region
+                                .getAsJsonObject().get("heroes")
+                                .getAsJsonObject().get("playtime")
+                                .getAsJsonObject().getAsJsonObject("quickplay");*/
+
+                        //result.SetHero(heroStats.entrySet()[0].getKey());
 
                         responseBody.close();
                         Log.d("RestOperation", "responseBody.close");

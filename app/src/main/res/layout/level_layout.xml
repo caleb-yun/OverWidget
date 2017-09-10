@@ -10,5 +10,6 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_alignParentTop="true"
+        android:layout_marginTop="-14dp"
         android:layout_centerHorizontal="true" />
 </RelativeLayout>

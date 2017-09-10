@@ -79,7 +79,7 @@ public class OverWidgetActivityConfigureActivity extends AppCompatActivity {
         restOperation.execute(battleTag, platform, region);
     }
 
-    static Profile loadUserPrefOffline(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
+    static Profile loadUserPrefOffline(Context context, int appWidgetId) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
         String profileJson = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "_profile", null);
         Gson gson = new Gson();

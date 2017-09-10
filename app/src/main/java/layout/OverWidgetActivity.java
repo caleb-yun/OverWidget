@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.cogentworks.overwidget.Profile;
 import com.cogentworks.overwidget.R;
+import com.cogentworks.overwidget.SetAvatarBmp;
 import com.cogentworks.overwidget.SetLevelBmp;
 
 import java.io.IOException;
@@ -46,33 +47,45 @@ public class OverWidgetActivity extends AppWidgetProvider {
         int columns = getCellsForSize(options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH));
         int rows = getCellsForSize(options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT));
 
-        // Construct the RemoteViews object
+        // Set up layout
         RemoteViews views = null;
         if (columns == 1) {
-
             views = new RemoteViews(context.getPackageName(), R.layout.over_widget_activity);
-        } else {
+        } else if (columns == 2) {
             views = new RemoteViews(context.getPackageName(), R.layout.over_widget_activity_2);
-
-            // Level
-            SetLevelBmp setLevelBmp = new SetLevelBmp(context);
-            try {
-                views.setImageViewBitmap(R.id.appwidget_level, setLevelBmp.execute(profile.RankImageURL, profile.Prestige, profile.Level).get());
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
+        } else {
+            views = new RemoteViews(context.getPackageName(), R.layout.over_widget_activity_3);
         }
 
-        // Populate general views
+        // Populate the RemoteViews object
+
+        // General views
         views.setTextViewText(R.id.appwidget_battletag, profile.BattleTag);
         // Comp Rank
         views.setImageViewBitmap(R.id.appwidget_comprank, BuildTextBmp(profile.CompRank, context));
         views.setImageViewResource(R.id.appwidget_tier, context.getResources().getIdentifier(profile.Tier, "drawable", context.getPackageName()));
-
         // Tap to refresh
         views.setOnClickPendingIntent(R.id.appwidget_layout, getPendingSelfIntent(context, SYNC_CLICKED, appWidgetId));
+
+        // Specific views
+        if (columns >= 2){
+            // Level
+            SetLevelBmp setLevelBmp = new SetLevelBmp(context);
+            try {
+                views.setImageViewBitmap(R.id.appwidget_level, setLevelBmp.execute(profile.RankImageURL, profile.Prestige, profile.Level).get());
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+        if (columns >= 3){
+            // Avatar
+            SetAvatarBmp setAvatarBmp = new SetAvatarBmp(context);
+            try {
+                views.setImageViewBitmap(R.id.appwidget_avatar, setAvatarBmp.execute(profile.AvatarURL).get());
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
@@ -167,32 +180,16 @@ public class OverWidgetActivity extends AppWidgetProvider {
         Log.d(TAG, "Changed dimensions");
 
         // Update widget
-        Profile profile = OverWidgetActivityConfigureActivity.loadUserPrefOffline(context, appWidgetManager, appWidgetId);
-        OverWidgetActivity.setWidgetViews(context, profile, appWidgetId, appWidgetManager);
+        Profile profile = OverWidgetActivityConfigureActivity.loadUserPrefOffline(context, appWidgetId);
+        if (profile != null) {
+            OverWidgetActivity.setWidgetViews(context, profile, appWidgetId, appWidgetManager);
+        }
+
 
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
     }
 
-    // Determine appropriate view based on width provided.
-    private RemoteViews getRemoteViews(Context context, int minWidth, int minHeight) {
-        // First find out rows and columns based on width provided.
-        int rows = getCellsForSize(minHeight);
-        int columns = getCellsForSize(minWidth);
-
-        RemoteViews views = null;
-
-        if (columns == 2) {
-            // Get 4 column widget remote view and return
-            views = new RemoteViews(context.getPackageName(), R.layout.over_widget_activity);
-        } else {
-            // Get appropriate remote view.
-            views = new RemoteViews(context.getPackageName(), R.layout.over_widget_activity);
-        }
-
-        return views;
-    }
-
-    // Returns number of cells needed for given size of the widget.
+    // Returns number of cells needed for given size of the widget
     private static int getCellsForSize(int size) {
         int n = 2;
         while (70 * n - 30 < size) {

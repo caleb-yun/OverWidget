@@ -24,6 +24,11 @@ public class Profile {
         this.Tier = tier;
     }
 
+    public void SetHero(String hero, String heroTime) {
+        this.Hero = hero;
+        this.HeroTime = heroTime;
+    }
+
     public String BattleTag = "Error";
     public String AvatarURL;
 
@@ -32,5 +37,9 @@ public class Profile {
     public String RankImageURL;
 
     public String CompRank = "Error";
-    public String Tier = "Error";
+    public String Tier;
+
+    public String Hero;
+    public String HeroTime;
+
 }

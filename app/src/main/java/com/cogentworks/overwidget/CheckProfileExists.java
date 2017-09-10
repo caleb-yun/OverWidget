@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -23,6 +25,7 @@ import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 
 import layout.OverWidgetActivity;
+import layout.OverWidgetActivityConfigureActivity;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -120,7 +123,15 @@ public class CheckProfileExists extends AsyncTask<String, Void, Profile> {
         if (result != null) {
             // It is the responsibility of the configuration activity to update the app widget
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-            //OverWidgetActivity.updateAppWidget(context, appWidgetManager, mAppWidgetId);
+
+            OverWidgetActivity.setWidgetViews(context, result, this.appWidgetId, appWidgetManager);
+
+            // Convert Profile to Gson and save to SharedPrefs
+            SharedPreferences.Editor newPrefs = context.getSharedPreferences(OverWidgetActivityConfigureActivity.PREFS_NAME, 0).edit();
+            Gson gson = new Gson();
+            String profileJson = gson.toJson(result);
+            newPrefs.putString(OverWidgetActivityConfigureActivity.PREF_PREFIX_KEY + appWidgetId + "_profile", profileJson);
+            newPrefs.apply();
             OverWidgetActivity.setWidgetViews(context, result, this.appWidgetId, appWidgetManager);
 
             // Make sure we pass back the original appWidgetId

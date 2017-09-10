@@ -8,9 +8,9 @@
         android:id="@+id/appwidget_tier"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_marginTop="-14dp" />
     <ImageView
         android:id="@+id/appwidget_comprank"
         android:layout_width="50dp"
