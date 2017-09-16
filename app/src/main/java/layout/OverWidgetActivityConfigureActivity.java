@@ -11,16 +11,11 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.Toast;
 
-import com.cogentworks.overwidget.CheckProfileExists;
 import com.cogentworks.overwidget.Profile;
 import com.cogentworks.overwidget.R;
 import com.cogentworks.overwidget.RestOperation;
 import com.google.gson.Gson;
-
-
-import java.util.concurrent.ExecutionException;
 
 /**
  * The configuration screen for the {@link OverWidgetActivity OverWidgetActivity} AppWidget.
@@ -49,8 +44,8 @@ public class OverWidgetActivityConfigureActivity extends AppCompatActivity {
             savePrefs(context, mAppWidgetId, battleTag, platform, region);
 
             // Check if user exists
-            CheckProfileExists checkProfileExists = new CheckProfileExists(context, mAppWidgetId);
-            checkProfileExists.execute(battleTag, platform, region);
+            RestOperation restOperation = new RestOperation(context, mAppWidgetId);
+            restOperation.execute(battleTag, platform, region);
         }
     };
 

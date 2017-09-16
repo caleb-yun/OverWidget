@@ -70,21 +70,13 @@ public class OverWidgetActivity extends AppWidgetProvider {
         // Specific views
         if (columns >= 2){
             // Level
-            SetLevelBmp setLevelBmp = new SetLevelBmp(context);
-            try {
-                views.setImageViewBitmap(R.id.appwidget_level, setLevelBmp.execute(profile.RankImageURL, profile.Prestige, profile.Level).get());
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
+            SetLevelBmp setLevelBmp = new SetLevelBmp(context, appWidgetManager, appWidgetId, views);
+            setLevelBmp.execute(profile.RankImageURL, profile.Prestige, profile.Level);
         }
         if (columns >= 3){
             // Avatar
-            SetAvatarBmp setAvatarBmp = new SetAvatarBmp(context);
-            try {
-                views.setImageViewBitmap(R.id.appwidget_avatar, setAvatarBmp.execute(profile.AvatarURL).get());
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
+            SetAvatarBmp setAvatarBmp = new SetAvatarBmp(context, appWidgetManager, appWidgetId, views);
+            setAvatarBmp.execute(profile.AvatarURL);
         }
 
         // Instruct the widget manager to update the widget

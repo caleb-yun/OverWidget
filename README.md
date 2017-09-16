@@ -6,6 +6,7 @@ View basic Overwatch stats from your home screen.
 ## TODO
 - ~Tier Image~
 - ~Input sanitizer~
-- Dynamicly update based on size
-- Level stats (level, image, prestige)
+- ~Dynamicly update based on size~
+- ~Level stats (level, image, prestige)~
 - Avatar image (open career profile web page when clicked)
+- Most played hero

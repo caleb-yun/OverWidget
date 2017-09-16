@@ -1,5 +1,6 @@
 package com.cogentworks.overwidget;
 
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,8 +10,11 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
+import android.text.Layout;
+import android.widget.RemoteViews;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 /**
@@ -20,9 +24,15 @@ import java.net.URL;
 public class SetAvatarBmp extends AsyncTask<String, Void, Bitmap> {
 
     Context context;
+    RemoteViews views;
+    AppWidgetManager appWidgetManager;
+    int appWidgetId;
 
-    public SetAvatarBmp(Context context) {
+    public SetAvatarBmp(Context context, AppWidgetManager appWidgetManager, int appWidgetId, RemoteViews views) {
         this.context = context;
+        this.appWidgetManager = appWidgetManager;
+        this.appWidgetId = appWidgetId;
+        this.views = views;
     }
 
     @Override
@@ -42,18 +52,19 @@ public class SetAvatarBmp extends AsyncTask<String, Void, Bitmap> {
     }
 
     @Override
-    protected void onPostExecute(Bitmap result){
+    protected void onPostExecute(Bitmap result) {
         super.onPostExecute(result);
+
+        views.setImageViewBitmap(R.id.appwidget_avatar, result);
+        appWidgetManager.partiallyUpdateAppWidget(appWidgetId, views);
     }
 
     private static Bitmap BuildAvatarBmp(Context context, String url) throws IOException {
         URL avatarUrl = new URL(url);
-        Bitmap avatarBmp = BitmapFactory.decodeStream(avatarUrl.openConnection().getInputStream());
+        InputStream inputStream = avatarUrl.openConnection().getInputStream();
+        Bitmap avatarBmp = BitmapFactory.decodeStream(inputStream);
 
-        //Bitmap bmOverlay = Bitmap.createBitmap(128, 128, Bitmap.Config.ARGB_8888);
-        //Canvas canvas = new Canvas(bmOverlay);
-        //canvas.drawBitmap(avatarBmp, 0, 0, null);
-
+        inputStream.close();
         return avatarBmp;
     }
 }
