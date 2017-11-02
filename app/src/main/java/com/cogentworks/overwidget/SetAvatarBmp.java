@@ -42,7 +42,7 @@ public class SetAvatarBmp extends AsyncTask<String, Void, Bitmap> {
 
         if (url != null) {
             try {
-                result = BuildAvatarBmp(this.context, url);
+                result = BuildAvatarBmp(url);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -59,7 +59,7 @@ public class SetAvatarBmp extends AsyncTask<String, Void, Bitmap> {
         appWidgetManager.partiallyUpdateAppWidget(appWidgetId, views);
     }
 
-    private static Bitmap BuildAvatarBmp(Context context, String url) throws IOException {
+    private static Bitmap BuildAvatarBmp(String url) throws IOException {
         URL avatarUrl = new URL(url);
         InputStream inputStream = avatarUrl.openConnection().getInputStream();
         Bitmap avatarBmp = BitmapFactory.decodeStream(inputStream);

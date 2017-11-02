@@ -40,12 +40,13 @@ import static android.app.Activity.RESULT_OK;
 public class RestOperation extends AsyncTask<String, Void, Profile> {
     private static final String TAG = "RestOperation";
 
-    Context context;
-    AppWidgetManager appWidgetManager;
-    int appWidgetId;
+    private Context context;
+    private AppWidgetManager appWidgetManager;
+    private int appWidgetId;
+    private HttpsURLConnection urlConnection;
 
-    Activity mActivity;
-    boolean checkProfileExists;
+    private Activity mActivity;
+    private boolean checkProfileExists;
 
     private String battleTag;
     private String platform;
@@ -85,7 +86,7 @@ public class RestOperation extends AsyncTask<String, Void, Profile> {
                     URL endpoint = new URL("https://owapi.net/api/v3/u/" + battleTag.replace('#', '-') + "/blob?platform=" + platform.toLowerCase());
 
                     // Create connection
-                    HttpsURLConnection urlConnection = (HttpsURLConnection) endpoint.openConnection();
+                    urlConnection = (HttpsURLConnection) endpoint.openConnection();
 
                     // Set methods and timeouts
                     urlConnection.setRequestMethod("GET");
@@ -134,9 +135,6 @@ public class RestOperation extends AsyncTask<String, Void, Profile> {
                         result = null;
                     }
                     urlConnection.disconnect();
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                    result = null;
                 } catch (IOException e) {
                     e.printStackTrace();
                     result = null;
@@ -156,6 +154,7 @@ public class RestOperation extends AsyncTask<String, Void, Profile> {
                 toGson(result);
 
                 OverWidgetActivity.setWidgetViews(context, result, this.appWidgetId, this.appWidgetManager);
+                Log.d(TAG, "RestOperation completed");
             } else {
                 OverWidgetActivity.setSyncClicked(context, this.appWidgetId, this.appWidgetManager);
             }
@@ -176,8 +175,13 @@ public class RestOperation extends AsyncTask<String, Void, Profile> {
                 resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
                 mActivity.setResult(RESULT_OK, resultValue);
                 mActivity.finish();
+                Log.d(TAG, "Check profile completed");
             } else if (result == null) {
-                Toast.makeText(context, "Player not found", Toast.LENGTH_SHORT).show();
+                try {
+                    Toast.makeText(context, urlConnection.getResponseMessage(), Toast.LENGTH_SHORT).show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 progressBar.setVisibility(View.GONE);
             } else {
                 Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();

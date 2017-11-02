@@ -4,30 +4,26 @@ import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
+import com.cogentworks.overwidget.AlarmUtil;
 import com.cogentworks.overwidget.Profile;
 import com.cogentworks.overwidget.R;
 import com.cogentworks.overwidget.SetAvatarBmp;
 import com.cogentworks.overwidget.SetLevelBmp;
-
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Implementation of App Widget functionality.
@@ -35,9 +31,12 @@ import java.util.concurrent.ExecutionException;
  */
 public class OverWidgetActivity extends AppWidgetProvider {
 
+    public static final String ACTION_UPDATE = "com.cogentworks.overwidget.action.UPDATE";
+
     private static final String SYNC_CLICKED = "automaticWidgetSyncButtonClick";
 
     private static final String TAG = "OverWidgetActivity";
+    private static final String URI_SCHEME = "OVRWG";
 
     public static void setWidgetViews(Context context, Profile profile, int appWidgetId, AppWidgetManager appWidgetManager) {
         // See the dimensions and
@@ -94,6 +93,14 @@ public class OverWidgetActivity extends AppWidgetProvider {
         }
     }
 
+    private void onUpdate(Context context) {
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+
+        ComponentName thisAppWidgetComponentName = new ComponentName(context.getPackageName(),getClass().getName());
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidgetComponentName);
+        onUpdate(context, appWidgetManager, appWidgetIds);
+    }
+
     public static void setSyncClicked(Context context, int appWidgetId, AppWidgetManager appWidgetManager) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.over_widget_activity);
         views.setOnClickPendingIntent(R.id.appwidget_layout, getPendingSelfIntent(context, SYNC_CLICKED, appWidgetId));
@@ -104,6 +111,7 @@ public class OverWidgetActivity extends AppWidgetProvider {
         Intent intent = new Intent(context, OverWidgetActivity.class);
         intent.setAction(action);
         intent.putExtra("WIDGET_ID", appWidgetId);
+
         return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
@@ -111,23 +119,24 @@ public class OverWidgetActivity extends AppWidgetProvider {
     public void onDeleted(Context context, int[] appWidgetIds) {
         // When the user deletes the widget, delete the preference associated with it.
         for (int appWidgetId : appWidgetIds) {
-            OverWidgetActivityConfigureActivity.deleteTitlePref(context, appWidgetId);
+            OverWidgetActivityConfigureActivity.deletePrefs(context, appWidgetId);
         }
     }
 
     @Override
     public void onEnabled(Context context) {
         // Enter relevant functionality for when the first widget is created
+        AlarmUtil.scheduleUpdate(context);
     }
 
     @Override
     public void onDisabled(Context context) {
         // Enter relevant functionality for when the last widget is disabled
+        AlarmUtil.clearUpdate(context);
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        super.onReceive(context, intent);
         Log.d(TAG, "OnReceive");
 
         if (SYNC_CLICKED.equals(intent.getAction())) {
@@ -139,10 +148,10 @@ public class OverWidgetActivity extends AppWidgetProvider {
             if (extras != null) {
                 int appWidgetId = (int) extras.get("WIDGET_ID");
                 OverWidgetActivityConfigureActivity.loadUserPref(context, appWidgetManager, appWidgetId);
-                Toast.makeText(context, "Refreshed", Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "Refreshed");
             }
-        }
+        } else if (ACTION_UPDATE.equals(intent.getAction())) {
+            onUpdate(context);
+        } else super.onReceive(context, intent);
     }
 
     public static Bitmap BuildTextBmp(String text, Context context)
@@ -176,7 +185,6 @@ public class OverWidgetActivity extends AppWidgetProvider {
         if (profile != null) {
             OverWidgetActivity.setWidgetViews(context, profile, appWidgetId, appWidgetManager);
         }
-
 
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
     }

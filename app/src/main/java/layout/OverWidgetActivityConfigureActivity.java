@@ -81,7 +81,7 @@ public class OverWidgetActivityConfigureActivity extends AppCompatActivity {
         return gson.fromJson(profileJson, Profile.class);
     }
 
-    static void deleteTitlePref(Context context, int appWidgetId) {
+    static void deletePrefs(Context context, int appWidgetId) {
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
         prefs.remove(PREF_PREFIX_KEY + appWidgetId + "_battletag");
         prefs.remove(PREF_PREFIX_KEY + appWidgetId + "_platform");
