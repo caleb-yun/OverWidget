@@ -102,7 +102,21 @@ public class OverWidgetActivity extends AppWidgetProvider {
     }
 
     public static void setSyncClicked(Context context, int appWidgetId, AppWidgetManager appWidgetManager) {
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.over_widget_activity);
+        // See the dimensions and
+        Bundle options = appWidgetManager.getAppWidgetOptions(appWidgetId);
+        // Get min width and height.
+        int columns = getCellsForSize(options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH));
+        int rows = getCellsForSize(options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT));
+        // Set up layout
+        RemoteViews views = null;
+        if (columns == 1) {
+            views = new RemoteViews(context.getPackageName(), R.layout.over_widget_activity);
+        } else if (columns == 2) {
+            views = new RemoteViews(context.getPackageName(), R.layout.over_widget_activity_2);
+        } else {
+            views = new RemoteViews(context.getPackageName(), R.layout.over_widget_activity_3);
+        }
+
         views.setOnClickPendingIntent(R.id.appwidget_layout, getPendingSelfIntent(context, SYNC_CLICKED, appWidgetId));
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
@@ -112,7 +126,7 @@ public class OverWidgetActivity extends AppWidgetProvider {
         intent.setAction(action);
         intent.putExtra("WIDGET_ID", appWidgetId);
 
-        return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getBroadcast(context, appWidgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     @Override
@@ -141,13 +155,15 @@ public class OverWidgetActivity extends AppWidgetProvider {
 
         if (SYNC_CLICKED.equals(intent.getAction())) {
             Log.d(TAG, "Refreshing");
-            Toast.makeText(context, "Refreshing...", Toast.LENGTH_SHORT).show();
+
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             Bundle extras = intent.getExtras();
 
             if (extras != null) {
                 int appWidgetId = (int) extras.get("WIDGET_ID");
+                Log.d(TAG, Integer.toString(appWidgetId));
                 OverWidgetActivityConfigureActivity.loadUserPref(context, appWidgetManager, appWidgetId);
+                Toast.makeText(context, "Refreshing...", Toast.LENGTH_SHORT).show();
             }
         } else if (ACTION_UPDATE.equals(intent.getAction())) {
             onUpdate(context);
