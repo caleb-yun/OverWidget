@@ -52,6 +52,8 @@ public class RestOperation extends AsyncTask<String, Void, Profile> {
     private String platform;
     private String region;
 
+    private String errorMsg = "Error";
+
     public RestOperation(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
         this.context = context;
         this.appWidgetManager = appWidgetManager;
@@ -131,7 +133,8 @@ public class RestOperation extends AsyncTask<String, Void, Profile> {
                         Log.d(TAG, "responseBody.close");
                     } else {
                         // Other response code
-                        Log.e(TAG, urlConnection.getResponseMessage());
+                        errorMsg = urlConnection.getResponseMessage();
+                        Log.e(TAG, errorMsg);
                         result = null;
                     }
                     urlConnection.disconnect();
@@ -148,17 +151,18 @@ public class RestOperation extends AsyncTask<String, Void, Profile> {
     protected void onPostExecute(Profile result) {
         super.onPostExecute(result);
 
-        if (!checkProfileExists) {
+        if (!checkProfileExists) { // Normal (from home screen)
             if (result != null) {
                 // Convert Profile to Gson and save to SharedPrefs
                 toGson(result);
 
                 OverWidgetActivity.setWidgetViews(context, result, this.appWidgetId, this.appWidgetManager);
                 Log.d(TAG, "RestOperation completed");
-            } else {
+            } else { // Error
+                Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
                 OverWidgetActivity.setSyncClicked(context, this.appWidgetId, this.appWidgetManager);
             }
-        } else {
+        } else { // From ConfigureActivity
             ProgressBar progressBar = mActivity.findViewById(R.id.progress_bar);
 
             if (result != null) {

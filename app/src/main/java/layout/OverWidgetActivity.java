@@ -36,7 +36,7 @@ public class OverWidgetActivity extends AppWidgetProvider {
     private static final String SYNC_CLICKED = "automaticWidgetSyncButtonClick";
 
     private static final String TAG = "OverWidgetActivity";
-    private static final String URI_SCHEME = "OVRWG";
+    //private static final String URI_SCHEME = "OVRWG";
 
     public static void setWidgetViews(Context context, Profile profile, int appWidgetId, AppWidgetManager appWidgetManager) {
         // See the dimensions and
