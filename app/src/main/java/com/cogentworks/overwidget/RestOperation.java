@@ -47,6 +47,7 @@ public class RestOperation extends AsyncTask<String, Void, Profile> {
 
     private Activity mActivity;
     private boolean checkProfileExists;
+    public boolean ShowToast = true;
 
     private String battleTag;
     private String platform;
@@ -159,7 +160,9 @@ public class RestOperation extends AsyncTask<String, Void, Profile> {
                 OverWidgetActivity.setWidgetViews(context, result, this.appWidgetId, this.appWidgetManager);
                 Log.d(TAG, "RestOperation completed");
             } else { // Error
-                Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
+                if (ShowToast) {
+                    Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
+                }
                 OverWidgetActivity.setSyncClicked(context, this.appWidgetId, this.appWidgetManager);
             }
         } else { // From ConfigureActivity
@@ -188,7 +191,6 @@ public class RestOperation extends AsyncTask<String, Void, Profile> {
                 }
                 progressBar.setVisibility(View.GONE);
             } else {
-                Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
                 progressBar.setVisibility(View.GONE);
             }
         }

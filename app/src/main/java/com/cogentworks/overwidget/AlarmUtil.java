@@ -18,7 +18,7 @@ public class AlarmUtil {
     public static void scheduleUpdate(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         //String interval = prefs.getString(SettingsActivity.INTERVAL_PREF, null);
-        String interval = "5";
+        String interval = "60";
 
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         long intervalMillis = Integer.parseInt(interval)*60*1000;

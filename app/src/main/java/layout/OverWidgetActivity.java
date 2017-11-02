@@ -117,6 +117,7 @@ public class OverWidgetActivity extends AppWidgetProvider {
             views = new RemoteViews(context.getPackageName(), R.layout.over_widget_activity_3);
         }
 
+        views.setTextViewText(R.id.appwidget_battletag, "Tap to refresh");
         views.setOnClickPendingIntent(R.id.appwidget_layout, getPendingSelfIntent(context, SYNC_CLICKED, appWidgetId));
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
@@ -162,7 +163,7 @@ public class OverWidgetActivity extends AppWidgetProvider {
             if (extras != null) {
                 int appWidgetId = (int) extras.get("WIDGET_ID");
                 Log.d(TAG, Integer.toString(appWidgetId));
-                OverWidgetActivityConfigureActivity.loadUserPref(context, appWidgetManager, appWidgetId);
+                OverWidgetActivityConfigureActivity.loadUserPref(context, appWidgetManager, appWidgetId, true);
                 Toast.makeText(context, "Refreshing...", Toast.LENGTH_SHORT).show();
             }
         } else if (ACTION_UPDATE.equals(intent.getAction())) {
