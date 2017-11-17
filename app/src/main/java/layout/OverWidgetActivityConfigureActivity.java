@@ -12,9 +12,11 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 
+import com.cogentworks.overwidget.AlarmUtil;
 import com.cogentworks.overwidget.Profile;
 import com.cogentworks.overwidget.R;
 import com.cogentworks.overwidget.RestOperation;
+import com.cogentworks.overwidget.WidgetUtils;
 import com.google.gson.Gson;
 
 /**
@@ -41,7 +43,7 @@ public class OverWidgetActivityConfigureActivity extends AppCompatActivity {
             String battleTag = mAppWidgetText.getText().toString();
             String platform = platformSpinner.getSelectedItem().toString();
             String region = regionSpinner.getSelectedItem().toString();
-            savePrefs(context, mAppWidgetId, battleTag, platform, region);
+            WidgetUtils.savePrefs(context, mAppWidgetId, battleTag, platform, region);
 
             // Check if user exists
             RestOperation restOperation = new RestOperation(context, mAppWidgetId);
@@ -53,48 +55,7 @@ public class OverWidgetActivityConfigureActivity extends AppCompatActivity {
         super();
     }
 
-    // Write the prefix to the SharedPreferences object for this widget
-    static void savePrefs(Context context, int appWidgetId, String battleTag, String platform, String region) {
-        SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
-        prefs.putString(PREF_PREFIX_KEY + appWidgetId + "_battletag", battleTag);
-        prefs.putString(PREF_PREFIX_KEY + appWidgetId + "_platform", platform);
-        prefs.putString(PREF_PREFIX_KEY + appWidgetId + "_region", region);
-        prefs.apply();
-    }
 
-    // Read the prefix from the SharedPreferences object for this widget.
-    // If there is no preference saved, get the default from a resource
-    public static void loadUserPref(Context context, AppWidgetManager appWidgetManager, int appWidgetId, boolean showToast) {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
-        String battleTag = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "_battletag", null);
-        String platform = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "_platform", null);
-        String region = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "_region", null);
-
-        RestOperation restOperation = new RestOperation(context, appWidgetManager, appWidgetId);
-        restOperation.ShowToast = showToast;
-        restOperation.execute(battleTag, platform, region);
-    }
-
-    // Overload - for when not to show toast
-    public static void loadUserPref(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
-        loadUserPref(context, appWidgetManager, appWidgetId, false);
-    }
-
-    static Profile loadUserPrefOffline(Context context, int appWidgetId) {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
-        String profileJson = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "_profile", null);
-        Gson gson = new Gson();
-        return gson.fromJson(profileJson, Profile.class);
-    }
-
-    static void deletePrefs(Context context, int appWidgetId) {
-        SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
-        prefs.remove(PREF_PREFIX_KEY + appWidgetId + "_battletag");
-        prefs.remove(PREF_PREFIX_KEY + appWidgetId + "_platform");
-        prefs.remove(PREF_PREFIX_KEY + appWidgetId + "_region");
-        prefs.remove(PREF_PREFIX_KEY + appWidgetId + "_profile");
-        prefs.apply();
-    }
 
     @Override
     public void onCreate(Bundle icicle) {

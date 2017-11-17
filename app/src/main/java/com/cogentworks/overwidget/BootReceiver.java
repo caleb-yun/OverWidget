@@ -27,7 +27,7 @@ public class BootReceiver extends BroadcastReceiver {
             AlarmUtil.scheduleUpdate(context);
             for (int appWidgetId : ids) {
                 // Tell the AppWidgetManager to perform an update on the current App Widget
-                OverWidgetActivityConfigureActivity.loadUserPref(context, appWidgetManager, appWidgetId);
+                WidgetUtils.loadUserPref(context, appWidgetManager, appWidgetId);
             }
         }
     }

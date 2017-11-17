@@ -157,13 +157,13 @@ public class RestOperation extends AsyncTask<String, Void, Profile> {
                 // Convert Profile to Gson and save to SharedPrefs
                 toGson(result);
 
-                OverWidgetActivity.setWidgetViews(context, result, this.appWidgetId, this.appWidgetManager);
+                WidgetUtils.SetWidgetViews(context, result, this.appWidgetId, this.appWidgetManager);
                 Log.d(TAG, "RestOperation completed");
             } else { // Error
                 if (ShowToast) {
                     Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
                 }
-                OverWidgetActivity.setSyncClicked(context, this.appWidgetId, this.appWidgetManager);
+                WidgetUtils.SetSyncClicked(context, this.appWidgetId, this.appWidgetManager);
             }
         } else { // From ConfigureActivity
             ProgressBar progressBar = mActivity.findViewById(R.id.progress_bar);
@@ -172,7 +172,7 @@ public class RestOperation extends AsyncTask<String, Void, Profile> {
                 // It is the responsibility of the configuration activity to update the app widget
                 AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
 
-                OverWidgetActivity.setWidgetViews(context, result, this.appWidgetId, appWidgetManager);
+                WidgetUtils.SetWidgetViews(context, result, this.appWidgetId, appWidgetManager);
 
                 // Convert Profile to Gson and save to SharedPrefs
                 toGson(result);
