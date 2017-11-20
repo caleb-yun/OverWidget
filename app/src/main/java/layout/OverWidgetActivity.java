@@ -21,7 +21,6 @@ import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
-import com.cogentworks.overwidget.AlarmUtil;
 import com.cogentworks.overwidget.Profile;
 import com.cogentworks.overwidget.R;
 import com.cogentworks.overwidget.SetAvatarBmp;
@@ -34,27 +33,22 @@ import com.cogentworks.overwidget.WidgetUtils;
  * App Widget Configuration implemented in {@link OverWidgetActivityConfigureActivity OverWidgetActivityConfigureActivity}
  */
 public class OverWidgetActivity extends AppWidgetProvider {
-
-    public static final String ACTION_UPDATE = "com.cogentworks.overwidget.action.UPDATE";
-
     private static final String SYNC_CLICKED = "automaticWidgetSyncButtonClick";
 
     private static final String TAG = "OverWidgetActivity";
+    public static final String REFRESH_INTENT = "com.cogentworks.overwidget.action.UPDATE";
     //private static final String URI_SCHEME = "OVRWG";
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        // Get all ids
-        ComponentName thisWidget = new ComponentName(context, OverWidgetActivity.class);
-        int[] allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
-
-        // Build the intent to call the service
-        Intent intent = new Intent(context.getApplicationContext(), UpdateService.class);
-
-        for (int widgetId : allWidgetIds) {
-            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
-            // Update the widgets via the service
-            context.startService(intent);
+        for (int appWidgetId : appWidgetIds) {
+            //int interval = prefs.getInterval();
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            Intent intent = new Intent(context, OverWidgetActivity.class);
+            intent.setAction(OverWidgetActivity.REFRESH_INTENT);
+            intent.putExtra("appWidgetId", appWidgetId);
+            PendingIntent pi = PendingIntent.getBroadcast(context, appWidgetId, intent, 0);
+            alarmManager.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis(), 1000*60*60*2, pi);
         }
     }
 
@@ -78,13 +72,13 @@ public class OverWidgetActivity extends AppWidgetProvider {
     @Override
     public void onEnabled(Context context) {
         // Enter relevant functionality for when the first widget is created
-        AlarmUtil.scheduleUpdate(context);
+        //AlarmUtil.scheduleUpdate(context);
     }
 
     @Override
     public void onDisabled(Context context) {
         // Enter relevant functionality for when the last widget is disabled
-        AlarmUtil.clearUpdate(context);
+        //AlarmUtil.clearUpdate(context);
     }
 
     @Override
@@ -107,8 +101,13 @@ public class OverWidgetActivity extends AppWidgetProvider {
 
                 Toast.makeText(context, "Refreshing...", Toast.LENGTH_SHORT).show();
             }
-        } else if (ACTION_UPDATE.equals(intent.getAction())) {
-            onUpdate(context);
+        } else if (REFRESH_INTENT.equals(intent.getAction())) {
+            int appWidgetId = intent.getIntExtra("appWidgetId", 0);
+            Intent serviceIntent = new Intent(intent);
+            serviceIntent.setAction("com.cogentworks.overwidget.UPDATE_SERVICE");
+            serviceIntent.putExtra("appWidgetId", appWidgetId);
+            UpdateService.enqueueWork(context, serviceIntent);
+            context.startService(serviceIntent);
         } else super.onReceive(context, intent);
     }
 

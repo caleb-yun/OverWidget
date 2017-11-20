@@ -3,6 +3,7 @@
     package="com.cogentworks.overwidget">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -19,13 +20,13 @@
                 android:resource="@xml/over_widget_activity_info" />
         </receiver>
 
-        <receiver android:name=".BootReceiver">
+        <!--<receiver android:name=".BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
-        </receiver>
+        </receiver>-->
 
-        <service android:name=".UpdateService"></service>
+        <service android:name=".UpdateService" android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <activity android:name="layout.OverWidgetActivityConfigureActivity">
             <intent-filter>

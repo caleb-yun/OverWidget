@@ -30,7 +30,7 @@ public class AlarmUtil {
 
     private static PendingIntent getAlarmIntent(Context context) {
         Intent intent = new Intent(context, OverWidgetActivity.class);
-        intent.setAction(OverWidgetActivity.ACTION_UPDATE);
+        intent.setAction(OverWidgetActivity.REFRESH_INTENT);
         PendingIntent pi = PendingIntent.getBroadcast(context, 0, intent, 0);
         return pi;
     }

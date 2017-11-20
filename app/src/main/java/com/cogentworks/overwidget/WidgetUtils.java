@@ -130,37 +130,40 @@ public class WidgetUtils {
         String battleTag = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "_battletag", null);
         String platform = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "_platform", null);
         String region = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "_region", null);
+        if (battleTag != null && platform != null && region != null) {
+            Profile result = new Profile();
 
-        Profile result = null;
-
-        URL endpoint = new URL("https://owapi.net/api/v3/u/" + battleTag.replace('#', '-') + "/blob?platform=" + platform.toLowerCase());
-        HttpsURLConnection urlConnection = (HttpsURLConnection) endpoint.openConnection();
-        urlConnection.setRequestMethod("GET");
-        urlConnection.connect();
-        if (urlConnection.getResponseCode() == 200) {
-            // Success
-            InputStream responseBody = new BufferedInputStream(urlConnection.getInputStream());
-            // Parser
-            JsonParser jsonParser = new JsonParser();
-            JsonObject stats = jsonParser.parse(new InputStreamReader(responseBody, "UTF-8"))
-                    .getAsJsonObject().get(region.toLowerCase()) // Select Region
-                    .getAsJsonObject().get("stats")
-                    .getAsJsonObject().get("competitive")
-                    .getAsJsonObject().getAsJsonObject("overall_stats");
-            result.SetUser(battleTag, stats.get("avatar").getAsString());
-            result.SetLevel(stats.get("level").getAsString(), stats.get("prestige").getAsString(), stats.get("rank_image").getAsString());
-            try {
-                result.SetRank(stats.get("comprank").getAsString(), stats.get("tier").getAsString());
-            } catch (UnsupportedOperationException e) {
-                result.SetRank("- - -", "nullrank");
+            URL endpoint = new URL("https://owapi.net/api/v3/u/" + battleTag.replace('#', '-') + "/blob?platform=" + platform.toLowerCase());
+            HttpsURLConnection urlConnection = (HttpsURLConnection) endpoint.openConnection();
+            urlConnection.setRequestMethod("GET");
+            urlConnection.connect();
+            if (urlConnection.getResponseCode() == 200) {
+                // Success
+                InputStream responseBody = new BufferedInputStream(urlConnection.getInputStream());
+                // Parser
+                JsonParser jsonParser = new JsonParser();
+                JsonObject stats = jsonParser.parse(new InputStreamReader(responseBody, "UTF-8"))
+                        .getAsJsonObject().get(region.toLowerCase()) // Select Region
+                        .getAsJsonObject().get("stats")
+                        .getAsJsonObject().get("competitive")
+                        .getAsJsonObject().getAsJsonObject("overall_stats");
+                result.SetUser(battleTag, stats.get("avatar").getAsString());
+                result.SetLevel(stats.get("level").getAsString(), stats.get("prestige").getAsString(), stats.get("rank_image").getAsString());
+                try {
+                    result.SetRank(stats.get("comprank").getAsString(), stats.get("tier").getAsString());
+                } catch (UnsupportedOperationException e) {
+                    result.SetRank("- - -", "nullrank");
+                }
+                responseBody.close();
+            } else {
+                // Other response code
+                Log.e(TAG, urlConnection.getResponseMessage());
             }
-            responseBody.close();
+            urlConnection.disconnect();
+            return result;
         } else {
-            // Other response code
-            Log.e(TAG, urlConnection.getResponseMessage());
+            return null;
         }
-        urlConnection.disconnect();
-        return result;
     }
 
     // Write the prefix to the SharedPreferences object for this widget

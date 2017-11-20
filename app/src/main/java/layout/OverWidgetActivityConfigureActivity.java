@@ -12,7 +12,6 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 
-import com.cogentworks.overwidget.AlarmUtil;
 import com.cogentworks.overwidget.Profile;
 import com.cogentworks.overwidget.R;
 import com.cogentworks.overwidget.RestOperation;
