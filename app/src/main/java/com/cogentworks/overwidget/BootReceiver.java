@@ -7,8 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import layout.OverWidgetActivity;
-import layout.OverWidgetActivityConfigureActivity;
+import layout.OverWidgetProvider;
 
 /**
  * Created by cyun on 10/31/17.
@@ -22,7 +21,7 @@ public class BootReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Log.d(TAG, "onReceive");
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        int[] ids = appWidgetManager.getAppWidgetIds(new ComponentName(context, OverWidgetActivity.class));
+        int[] ids = appWidgetManager.getAppWidgetIds(new ComponentName(context, OverWidgetProvider.class));
         if (ids.length > 0) {
             AlarmUtil.scheduleUpdate(context);
             for (int appWidgetId : ids) {

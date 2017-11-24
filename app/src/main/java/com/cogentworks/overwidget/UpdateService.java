@@ -1,26 +1,11 @@
 package com.cogentworks.overwidget;
 
-import android.app.Service;
-import android.app.job.JobParameters;
-import android.app.job.JobService;
 import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.IBinder;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.JobIntentService;
-import android.widget.RemoteViews;
-import android.widget.Toast;
 
 import java.io.IOException;
-import java.net.URL;
-
-import layout.OverWidgetActivity;
-import layout.OverWidgetActivityConfigureActivity;
 
 /**
  * Created by cyun on 11/16/17.

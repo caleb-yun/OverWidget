@@ -10,22 +10,11 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.RemoteViews;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
-
-import javax.net.ssl.HttpsURLConnection;
-
-import layout.OverWidgetActivity;
 
 /**
  * Created by cyun on 8/6/17.

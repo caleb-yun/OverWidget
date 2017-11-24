@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Profile">
+        <EditTextPreference
+            android:key="username"
+            android:summary="Battletag, PSN, or Xbox Gamertag"
+            android:title="Username" />
+        <ListPreference
+            android:defaultValue="PC"
+            android:entries="@array/platform_array"
+            android:entryValues="@array/platform_array"
+            android:key="platform"
+            android:summary="Select your platform"
+            android:title="Platform" />
+        <ListPreference
+            android:defaultValue="US"
+            android:entries="@array/region_array"
+            android:entryValues="@array/region_array"
+            android:key="region"
+            android:summary="Only required for PC"
+            android:title="Region" />
+    </PreferenceCategory>
+</PreferenceScreen>

@@ -8,34 +8,24 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.util.Log;
-import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.cogentworks.overwidget.Profile;
-import com.cogentworks.overwidget.R;
-import com.cogentworks.overwidget.SetAvatarBmp;
-import com.cogentworks.overwidget.SetLevelBmp;
 import com.cogentworks.overwidget.UpdateService;
 import com.cogentworks.overwidget.WidgetUtils;
 
 /**
  * Implementation of App Widget functionality.
- * App Widget Configuration implemented in {@link OverWidgetActivityConfigureActivity OverWidgetActivityConfigureActivity}
+ * App Widget Configuration implemented in {@link OverWidgetConfigure OverWidgetConfigure}
  */
-public class OverWidgetActivity extends AppWidgetProvider {
+
+public class OverWidgetProvider extends AppWidgetProvider {
     private static final String SYNC_CLICKED = "automaticWidgetSyncButtonClick";
 
-    private static final String TAG = "OverWidgetActivity";
+    private static final String TAG = "OverWidgetProvider";
     public static final String REFRESH_INTENT = "com.cogentworks.overwidget.action.UPDATE";
     //private static final String URI_SCHEME = "OVRWG";
 
@@ -44,11 +34,11 @@ public class OverWidgetActivity extends AppWidgetProvider {
         for (int appWidgetId : appWidgetIds) {
             //int interval = prefs.getInterval();
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-            Intent intent = new Intent(context, OverWidgetActivity.class);
-            intent.setAction(OverWidgetActivity.REFRESH_INTENT);
+            Intent intent = new Intent(context, OverWidgetProvider.class);
+            intent.setAction(OverWidgetProvider.REFRESH_INTENT);
             intent.putExtra("appWidgetId", appWidgetId);
             PendingIntent pi = PendingIntent.getBroadcast(context, appWidgetId, intent, 0);
-            alarmManager.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis(), 1000*60*60*2, pi);
+            alarmManager.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis(), 1000*60*60, pi);
         }
     }
 

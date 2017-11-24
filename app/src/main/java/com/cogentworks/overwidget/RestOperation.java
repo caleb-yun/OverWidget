@@ -5,12 +5,12 @@ import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.util.JsonReader;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -22,14 +22,11 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import layout.OverWidgetActivity;
-import layout.OverWidgetActivityConfigureActivity;
+import layout.OverWidgetConfigure;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -83,10 +80,10 @@ public class RestOperation extends AsyncTask<String, Void, Profile> {
             }
 
             if (battleTag != null) {
-                result = new Profile();
                 try {
                     // Create URL
                     URL endpoint = new URL("https://owapi.net/api/v3/u/" + battleTag.replace('#', '-') + "/blob?platform=" + platform.toLowerCase());
+                    Log.d(TAG, endpoint.toString());
 
                     // Create connection
                     urlConnection = (HttpsURLConnection) endpoint.openConnection();
@@ -100,6 +97,7 @@ public class RestOperation extends AsyncTask<String, Void, Profile> {
                     urlConnection.connect();
 
                     if (urlConnection.getResponseCode() == 200) {
+                        result = new Profile();
                         // Success
                         InputStream responseBody = new BufferedInputStream(urlConnection.getInputStream());
 
@@ -167,6 +165,8 @@ public class RestOperation extends AsyncTask<String, Void, Profile> {
             }
         } else { // From ConfigureActivity
             ProgressBar progressBar = mActivity.findViewById(R.id.progress_bar);
+            LinearLayout content = mActivity.findViewById(R.id.fragment_preference);
+            FloatingActionButton fab = mActivity.findViewById(R.id.fab);
 
             if (result != null) {
                 // It is the responsibility of the configuration activity to update the app widget
@@ -184,23 +184,24 @@ public class RestOperation extends AsyncTask<String, Void, Profile> {
                 mActivity.finish();
                 Log.d(TAG, "Check profile completed");
             } else if (result == null) {
-                try {
-                    Toast.makeText(context, urlConnection.getResponseMessage(), Toast.LENGTH_SHORT).show();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                Snackbar.make(content, errorMsg, Snackbar.LENGTH_SHORT).show();
                 progressBar.setVisibility(View.GONE);
+                content.setVisibility(View.VISIBLE);
+                fab.setVisibility(View.VISIBLE);
             } else {
                 progressBar.setVisibility(View.GONE);
+                content.setVisibility(View.VISIBLE);
+                fab.setVisibility(View.VISIBLE);
+                Snackbar.make(content, "Error", Snackbar.LENGTH_SHORT).show();
             }
         }
     }
 
     private void toGson(Profile result) {
-        SharedPreferences.Editor newPrefs = context.getSharedPreferences(OverWidgetActivityConfigureActivity.PREFS_NAME, 0).edit();
+        SharedPreferences.Editor newPrefs = context.getSharedPreferences(OverWidgetConfigure.PREFS_NAME, 0).edit();
         Gson gson = new Gson();
         String profileJson = gson.toJson(result);
-        newPrefs.putString(OverWidgetActivityConfigureActivity.PREF_PREFIX_KEY + appWidgetId + "_profile", profileJson);
+        newPrefs.putString(OverWidgetConfigure.PREF_PREFIX_KEY + appWidgetId + "_profile", profileJson);
         newPrefs.apply();
     }
 }

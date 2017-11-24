@@ -23,13 +23,11 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import layout.OverWidgetActivity;
+import layout.OverWidgetProvider;
 
 /**
  * Created by cyun on 11/16/17.
@@ -39,7 +37,7 @@ public class WidgetUtils {
     private static final String SYNC_CLICKED = "automaticWidgetSyncButtonClick";
     public static final String TAG = "WidgetUtils";
 
-    public static final String PREFS_NAME = "layout.OverWidgetActivity";
+    public static final String PREFS_NAME = "layout.OverWidgetProvider";
     public static final String PREF_PREFIX_KEY = "overwidget_";
 
     public static void SetWidgetViews(Context context, Profile profile, int appWidgetId, AppWidgetManager appWidgetManager) {
@@ -51,7 +49,7 @@ public class WidgetUtils {
         int rows = getCellsForSize(options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT));
 
         // Set up layout
-        RemoteViews views = null;
+        RemoteViews views;
         if (columns == 1) {
             views = new RemoteViews(context.getPackageName(), R.layout.over_widget_activity);
         } else if (columns == 2) {
@@ -118,7 +116,7 @@ public class WidgetUtils {
     }
 
     protected static PendingIntent getPendingSelfIntent(Context context, String action, int appWidgetId) {
-        Intent intent = new Intent(context, OverWidgetActivity.class);
+        Intent intent = new Intent(context, OverWidgetProvider.class);
         intent.setAction(action);
         intent.putExtra("WIDGET_ID", appWidgetId);
 
