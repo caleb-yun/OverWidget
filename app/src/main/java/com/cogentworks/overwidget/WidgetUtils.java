@@ -47,7 +47,8 @@ public class WidgetUtils {
 
         // Get min width and height.
         int columns = getCellsForSize(options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH));
-        int rows = getCellsForSize(options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT));
+        Log.d(TAG, "Columns: " + columns);
+        //int rows = getCellsForSize(options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT));
 
         // Set up layout
         RemoteViews views;

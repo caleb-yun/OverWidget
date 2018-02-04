@@ -44,7 +44,12 @@ public class SetAvatarBmp extends AsyncTask<String, Void, Bitmap> {
             try {
                 result = BuildAvatarBmp(url);
             } catch (IOException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
+                try {
+                    result = BuildAvatarBmp("https://us.battle.net/forums/static/images/avatars/overwatch/avatar-overwatch-default.png");
+                } catch(IOException e2) {
+                    e2.printStackTrace();
+                }
             }
         }
 

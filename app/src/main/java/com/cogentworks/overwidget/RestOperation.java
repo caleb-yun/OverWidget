@@ -165,7 +165,7 @@ public class RestOperation extends AsyncTask<String, Void, Profile> {
             }
         } else { // From ConfigureActivity
             ProgressBar progressBar = mActivity.findViewById(R.id.progress_bar);
-            LinearLayout content = mActivity.findViewById(R.id.fragment_preference);
+            LinearLayout content = mActivity.findViewById(R.id.layout_main);
             FloatingActionButton fab = mActivity.findViewById(R.id.fab);
 
             if (result != null) {
@@ -183,16 +183,11 @@ public class RestOperation extends AsyncTask<String, Void, Profile> {
                 mActivity.setResult(RESULT_OK, resultValue);
                 mActivity.finish();
                 Log.d(TAG, "Check profile completed");
-            } else if (result == null) {
-                Snackbar.make(content, errorMsg, Snackbar.LENGTH_SHORT).show();
-                progressBar.setVisibility(View.GONE);
-                content.setVisibility(View.VISIBLE);
-                fab.setVisibility(View.VISIBLE);
             } else {
                 progressBar.setVisibility(View.GONE);
                 content.setVisibility(View.VISIBLE);
                 fab.setVisibility(View.VISIBLE);
-                Snackbar.make(content, "Error", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(content, errorMsg, Snackbar.LENGTH_SHORT).show();
             }
         }
     }

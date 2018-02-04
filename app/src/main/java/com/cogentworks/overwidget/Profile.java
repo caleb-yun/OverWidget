@@ -8,12 +8,12 @@ import java.net.URL;
  */
 
 public class Profile {
-    public void SetUser(String battleTag, String avatarURL) throws MalformedURLException {
+    public void SetUser(String battleTag, String avatarURL) {
         this.BattleTag = battleTag;
         this.AvatarURL = avatarURL;
     }
 
-    public void SetLevel(String level, String prestige, String rankImageURL) throws MalformedURLException {
+    public void SetLevel(String level, String prestige, String rankImageURL) {
         this.Level = level;
         this.Prestige = prestige;
         this.RankImageURL = rankImageURL;

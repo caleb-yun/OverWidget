@@ -4,13 +4,14 @@
         <EditTextPreference
             android:key="username"
             android:summary="Battletag, PSN, or Xbox Gamertag"
-            android:title="Username" />
+            android:title="Username"
+            android:hint="BattleTag#1234"/>
         <ListPreference
             android:defaultValue="PC"
             android:entries="@array/platform_array"
             android:entryValues="@array/platform_array"
             android:key="platform"
-            android:summary="Select your platform"
+            android:summary="PC, Xbox, or Playstation"
             android:title="Platform" />
         <ListPreference
             android:defaultValue="US"
@@ -19,5 +20,21 @@
             android:key="region"
             android:summary="Only required for PC"
             android:title="Region" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Other">
+        <ListPreference
+            android:defaultValue="Dark Transparent"
+            android:entries="@array/theme_array"
+            android:entryValues="@array/theme_array"
+            android:key="theme"
+            android:summary="Select widget theme"
+            android:title="Theme" />
+        <ListPreference
+            android:defaultValue="12 hours"
+            android:entries="@array/time_array"
+            android:entryValues="@array/time_array"
+            android:key="time"
+            android:summary="Time to refresh the widget"
+            android:title="Update Interval" />
     </PreferenceCategory>
 </PreferenceScreen>

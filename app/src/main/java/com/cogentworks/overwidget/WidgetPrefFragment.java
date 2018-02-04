@@ -30,8 +30,16 @@ public class WidgetPrefFragment extends PreferenceFragment {
         };
 
         // Getting the ListPreference from the Preference Resource
-        EditTextPreference p = (EditTextPreference) getPreferenceManager().findPreference("username");
+        EditTextPreference username = (EditTextPreference) getPreferenceManager().findPreference("username");
         // Setting Preference change listener for the ListPreference
-        p.setOnPreferenceChangeListener(onPreferenceChangeListener);
+        username.setOnPreferenceChangeListener(onPreferenceChangeListener);
+
+        // Platform
+        ListPreference platform = (ListPreference) getPreferenceManager().findPreference("platform");
+        platform.setOnPreferenceChangeListener(onPreferenceChangeListener);
+
+        // Region
+        ListPreference region = (ListPreference) getPreferenceManager().findPreference("region");
+        region.setOnPreferenceChangeListener(onPreferenceChangeListener);
     }
 }

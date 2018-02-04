@@ -73,7 +73,7 @@ public class OverWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(TAG, "OnReceive");
+        Log.d(TAG, "OnReceive: " + intent.getAction());
 
         if (SYNC_CLICKED.equals(intent.getAction())) {
             Log.d(TAG, "Refreshing");
