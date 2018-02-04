@@ -34,7 +34,8 @@ import layout.OverWidgetProvider;
  */
 
 public class WidgetUtils {
-    private static final String SYNC_CLICKED = "automaticWidgetSyncButtonClick";
+    //private static final String SYNC_CLICKED = "automaticWidgetSyncButtonClick";
+    private static final String SYNC_CLICKED = "com.cogentworks.overwidget.action.UPDATE";
     public static final String TAG = "WidgetUtils";
 
     public static final String PREFS_NAME = "layout.OverWidgetProvider";
@@ -156,6 +157,7 @@ public class WidgetUtils {
             } else {
                 // Other response code
                 Log.e(TAG, urlConnection.getResponseMessage());
+                return null;
             }
             urlConnection.disconnect();
             return result;
