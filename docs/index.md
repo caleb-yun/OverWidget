@@ -1,7 +1,7 @@
 # OverWidget
 View your Overwatch stats from your home screen.
 
-![](/assets/img/homescreen_screenshots.png)
+![](/assets/img/screenshots.png)
 
 ## Features
 - Avatar
