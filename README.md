@@ -1,7 +1,10 @@
 # OverWidget
 View basic Overwatch stats from your home screen.
+[GitHub Page](https://kala30.github.io/OverWidget)
 
 ![launcher](/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png)
+
+![](/assets/img/homescreen_screenshot.png) ![](/assets/img/configure_screenshot.png)
 
 ## TODO
 - ~Tier Image~
