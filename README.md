@@ -4,7 +4,7 @@ View basic Overwatch stats from your home screen.
 
 ![launcher](/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png)
 
-![](/assets/img/homescreen_screenshot.png) ![](/assets/img/configure_screenshot.png)
+![](/assets/img/homescreen_screenshots.png)
 
 ## TODO
 - ~Tier Image~
