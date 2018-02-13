@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -23,10 +24,10 @@ import com.cogentworks.overwidget.WidgetUtils;
  */
 
 public class OverWidgetProvider extends AppWidgetProvider {
-    private static final String SYNC_CLICKED = "automaticWidgetSyncButtonClick";
-
     private static final String TAG = "OverWidgetProvider";
     public static final String REFRESH_INTENT = "com.cogentworks.overwidget.action.UPDATE";
+    public static final String SYNC_CLICKED = "com.cogentworks.overwidget.action.SYNC_CLICKED";
+    //public static final String SYNC_CLICKED = REFRESH_INTENT;
     //private static final String URI_SCHEME = "OVRWG";
 
     @Override
@@ -38,7 +39,7 @@ public class OverWidgetProvider extends AppWidgetProvider {
             intent.setAction(OverWidgetProvider.REFRESH_INTENT);
             intent.putExtra("appWidgetId", appWidgetId);
             PendingIntent pi = PendingIntent.getBroadcast(context, appWidgetId, intent, 0);
-            alarmManager.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis(), 1000*60*60, pi);
+            alarmManager.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), 1000*60*60, pi);
         }
     }
 
@@ -49,7 +50,6 @@ public class OverWidgetProvider extends AppWidgetProvider {
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidgetComponentName);
         onUpdate(context, appWidgetManager, appWidgetIds);
     }
-
 
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
@@ -75,15 +75,15 @@ public class OverWidgetProvider extends AppWidgetProvider {
     public void onReceive(Context context, Intent intent) {
         Log.d(TAG, "OnReceive: " + intent.getAction());
 
-        if (SYNC_CLICKED.equals(intent.getAction())) {
+        /*if (SYNC_CLICKED.equals(intent.getAction())) {
             Log.d(TAG, "Refreshing");
 
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             Bundle extras = intent.getExtras();
 
             if (extras != null) {
-                int appWidgetId = (int) extras.get("WIDGET_ID");
-                Log.d(TAG, Integer.toString(appWidgetId));
+                int appWidgetId = (int) extras.get("appWidgetId");
+                Log.d(TAG, "appWidgetId: " + Integer.toString(appWidgetId));
                 //WidgetUtils.loadUserPref(context, appWidgetManager, appWidgetId, true);
                 Intent updateIntent = new Intent(context.getApplicationContext(), UpdateService.class);
                 updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
@@ -91,13 +91,15 @@ public class OverWidgetProvider extends AppWidgetProvider {
 
                 Toast.makeText(context, "Refreshing...", Toast.LENGTH_SHORT).show();
             }
-        } else if (REFRESH_INTENT.equals(intent.getAction())) {
+        } else*/ if (REFRESH_INTENT.equals(intent.getAction()) || SYNC_CLICKED.equals(intent.getAction())) {
             int appWidgetId = intent.getIntExtra("appWidgetId", 0);
             Intent serviceIntent = new Intent(intent);
             serviceIntent.setAction("com.cogentworks.overwidget.UPDATE_SERVICE");
             serviceIntent.putExtra("appWidgetId", appWidgetId);
             UpdateService.enqueueWork(context, serviceIntent);
             context.startService(serviceIntent);
+            if (SYNC_CLICKED.equals(intent.getAction()))
+                Toast.makeText(context, "Refreshing...", Toast.LENGTH_SHORT).show();
         } else super.onReceive(context, intent);
     }
 
