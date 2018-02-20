@@ -1,5 +1,7 @@
 package layout;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Fragment;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
@@ -74,14 +76,13 @@ public class OverWidgetConfigure extends AppCompatActivity implements OnPreferen
     }
 
     public void onFabClick(View view) {
-
-
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         //Snackbar.make(view, sp.getString("username", "None Selected"), Snackbar.LENGTH_SHORT).show();
 
-        mainContent.setVisibility(View.INVISIBLE);
-        fab.setVisibility(View.INVISIBLE);
-        progressBar.setVisibility(View.VISIBLE);
+        //mainContent.setVisibility(View.INVISIBLE);
+        //progressBar.setVisibility(View.VISIBLE);
+        fab.hide();
+        crossfade(this, progressBar, mainContent);
 
         final Context context = OverWidgetConfigure.this;
 
@@ -102,6 +103,37 @@ public class OverWidgetConfigure extends AppCompatActivity implements OnPreferen
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         sp.edit().clear().apply();
+    }
+
+    public static void crossfade(Context context, View viewIn, View viewOut) {
+        int mShortAnimationDuration = context.getResources().getInteger(
+                android.R.integer.config_shortAnimTime);
+
+        // Set the content view to 0% opacity but visible, so that it is visible
+        // (but fully transparent) during the animation.
+        viewIn.setAlpha(0f);
+        viewIn.setVisibility(View.VISIBLE);
+
+        // Animate the content view to 100% opacity, and clear any animation
+        // listener set on the view.
+        viewIn.animate()
+                .alpha(1f)
+                .setDuration(mShortAnimationDuration)
+                .setListener(null);
+
+        // Animate the loading view to 0% opacity. After the animation ends,
+        // set its visibility to GONE as an optimization step (it won't
+        // participate in layout passes, etc.)
+        final View mViewOut = viewOut;
+        viewOut.animate()
+                .alpha(0f)
+                .setDuration(mShortAnimationDuration)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mViewOut.setVisibility(View.GONE);
+                    }
+                });
     }
 
     /*public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {

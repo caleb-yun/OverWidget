@@ -41,7 +41,7 @@ public class WidgetUtils {
     public static final String PREFS_NAME = "layout.OverWidgetProvider";
     public static final String PREF_PREFIX_KEY = "overwidget_";
 
-    public static void SetWidgetViews(Context context, Profile profile, int appWidgetId, AppWidgetManager appWidgetManager) {
+    public static void setWidgetViews(Context context, Profile profile, int appWidgetId, AppWidgetManager appWidgetManager) {
         // See the dimensions and
         Bundle options = appWidgetManager.getAppWidgetOptions(appWidgetId);
 
@@ -84,17 +84,17 @@ public class WidgetUtils {
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
-        Log.d(TAG, "SetWidgetViews");
+        Log.d(TAG, "setWidgetViews");
     }
 
-    public static void SetSyncClicked(Context context, int appWidgetId, AppWidgetManager appWidgetManager) {
+    public static void setSyncClicked(Context context, int appWidgetId, AppWidgetManager appWidgetManager) {
         // See the dimensions and
         Bundle options = appWidgetManager.getAppWidgetOptions(appWidgetId);
         // Get min width and height.
         int columns = getCellsForSize(options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH));
-        int rows = getCellsForSize(options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT));
+        //int rows = getCellsForSize(options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT));
         // Set up layout
-        RemoteViews views = null;
+        RemoteViews views;
         if (columns == 1) {
             views = new RemoteViews(context.getPackageName(), R.layout.over_widget_activity);
         } else if (columns == 2) {
@@ -104,6 +104,19 @@ public class WidgetUtils {
         }
 
         views.setTextViewText(R.id.appwidget_battletag, "Tap to refresh");
+        views.setOnClickPendingIntent(R.id.appwidget_layout, getPendingSelfIntent(context, SYNC_CLICKED, appWidgetId));
+        appWidgetManager.updateAppWidget(appWidgetId, views);
+    }
+
+    public static void setLoadingLayout(Context context, int appWidgetId, AppWidgetManager appWidgetManager) {
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.loading_widget_layout);
+        appWidgetManager.updateAppWidget(appWidgetId, views);
+    }
+
+    public static void setErrorLayout(Context context, int appWidgetId, AppWidgetManager appWidgetManager, String text) {
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.error_widget_layout);
+        views.setTextViewText(R.id.error_text, text);
+        // Tap to refresh
         views.setOnClickPendingIntent(R.id.appwidget_layout, getPendingSelfIntent(context, SYNC_CLICKED, appWidgetId));
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
@@ -159,7 +172,9 @@ public class WidgetUtils {
             } else {
                 // Other response code
                 Log.e(TAG, urlConnection.getResponseMessage());
-                return null;
+                Profile profile = new Profile();
+                profile.setErrorMsg(urlConnection.getResponseMessage());
+                return profile;
             }
             urlConnection.disconnect();
             return result;

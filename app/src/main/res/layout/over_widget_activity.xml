@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         android:contentDescription="BattleTag"
         android:fontFamily="sans-serif-condensed"
-        android:text="@string/appwidget_text"
         android:textAllCaps="true"
         android:textColor="#ffffff"
         android:textSize="10sp"

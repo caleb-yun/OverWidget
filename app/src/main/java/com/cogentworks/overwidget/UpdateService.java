@@ -1,6 +1,7 @@
 package com.cogentworks.overwidget;
 
 import android.appwidget.AppWidgetManager;
+import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.JobIntentService;
@@ -22,13 +23,22 @@ public class UpdateService extends JobIntentService {
     @Override
     public void onHandleWork(Intent intent) {
         if (intent != null) {
-            int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
+            int appWidgetId = intent.getIntExtra("appWidgetId", 0);
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this.getApplicationContext());
+            //WidgetUtils.setLoadingLayout(context, appWidgetId, appWidgetManager);
+
             Profile profile;
             try {
                 profile = WidgetUtils.getProfile(context, appWidgetId);
-                if (profile != null)
-                    WidgetUtils.SetWidgetViews(context, profile, appWidgetId, AppWidgetManager.getInstance(this.getApplicationContext()));
+                if (!profile.BattleTag.equals("")) {
+                    //WidgetUtils.setLoadingLayout(context, appWidgetId, AppWidgetManager.getInstance(context));
+                    WidgetUtils.setWidgetViews(context, profile, appWidgetId, appWidgetManager);
+                } else {
+                    WidgetUtils.setErrorLayout(context, appWidgetId, appWidgetManager, profile.getErrorMsg());
+                }
             } catch (IOException e) {
+                e.printStackTrace();
+            } catch (NullPointerException e) {
                 e.printStackTrace();
             }
         }
@@ -52,7 +62,7 @@ public class UpdateService extends JobIntentService {
             e.printStackTrace();
         }
 
-        WidgetUtils.SetWidgetViews(getApplicationContext(), profile, appWidgetId, appWidgetManager);
+        WidgetUtils.setWidgetViews(getApplicationContext(), profile, appWidgetId, appWidgetManager);
 
         return super.onStartCommand(intent, flags, startId);
     }*/

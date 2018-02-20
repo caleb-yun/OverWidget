@@ -10,13 +10,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.cogentworks.overwidget.Profile;
 import com.cogentworks.overwidget.UpdateService;
 import com.cogentworks.overwidget.WidgetUtils;
+
+import java.io.IOException;
 
 /**
  * Implementation of App Widget functionality.
@@ -35,11 +36,22 @@ public class OverWidgetProvider extends AppWidgetProvider {
         for (int appWidgetId : appWidgetIds) {
             //int interval = prefs.getInterval();
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
             Intent intent = new Intent(context, OverWidgetProvider.class);
             intent.setAction(OverWidgetProvider.REFRESH_INTENT);
             intent.putExtra("appWidgetId", appWidgetId);
+
+            int updateInterval = 1000*60*60;
+            /*try {
+                updateInterval = WidgetUtils.getProfile(context, appWidgetId).updateInterval;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }*/
+
             PendingIntent pi = PendingIntent.getBroadcast(context, appWidgetId, intent, 0);
-            alarmManager.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), 1000*60*60, pi);
+            alarmManager.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), updateInterval, pi);
+
+            context.sendBroadcast(intent);
         }
     }
 
@@ -93,6 +105,8 @@ public class OverWidgetProvider extends AppWidgetProvider {
             }
         } else*/ if (REFRESH_INTENT.equals(intent.getAction()) || SYNC_CLICKED.equals(intent.getAction())) {
             int appWidgetId = intent.getIntExtra("appWidgetId", 0);
+            WidgetUtils.setLoadingLayout(context, appWidgetId, AppWidgetManager.getInstance(context));
+
             Intent serviceIntent = new Intent(intent);
             serviceIntent.setAction("com.cogentworks.overwidget.UPDATE_SERVICE");
             serviceIntent.putExtra("appWidgetId", appWidgetId);
@@ -100,12 +114,14 @@ public class OverWidgetProvider extends AppWidgetProvider {
             context.startService(serviceIntent);
             if (SYNC_CLICKED.equals(intent.getAction()))
                 Toast.makeText(context, "Refreshing...", Toast.LENGTH_SHORT).show();
-        } else super.onReceive(context, intent);
+
+        }
+        super.onReceive(context, intent);
     }
 
 
 
-    //region onAppWidget OptionsChanged
+    //region onAppWidgetOptionsChanged
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
@@ -116,7 +132,7 @@ public class OverWidgetProvider extends AppWidgetProvider {
         // Update widget
         Profile profile = WidgetUtils.loadUserPrefOffline(context, appWidgetId);
         if (profile != null) {
-            WidgetUtils.SetWidgetViews(context, profile, appWidgetId, appWidgetManager);
+            WidgetUtils.setWidgetViews(context, profile, appWidgetId, appWidgetManager);
         }
 
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);

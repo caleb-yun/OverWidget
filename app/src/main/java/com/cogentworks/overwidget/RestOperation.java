@@ -155,13 +155,13 @@ public class RestOperation extends AsyncTask<String, Void, Profile> {
                 // Convert Profile to Gson and save to SharedPrefs
                 toGson(result);
 
-                WidgetUtils.SetWidgetViews(context, result, this.appWidgetId, this.appWidgetManager);
+                WidgetUtils.setWidgetViews(context, result, this.appWidgetId, this.appWidgetManager);
                 Log.d(TAG, "RestOperation completed");
             } else { // Error
                 if (ShowToast) {
                     Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
                 }
-                WidgetUtils.SetSyncClicked(context, this.appWidgetId, this.appWidgetManager);
+                WidgetUtils.setSyncClicked(context, this.appWidgetId, this.appWidgetManager);
             }
         } else { // From ConfigureActivity
             ProgressBar progressBar = mActivity.findViewById(R.id.progress_bar);
@@ -172,7 +172,7 @@ public class RestOperation extends AsyncTask<String, Void, Profile> {
                 // It is the responsibility of the configuration activity to update the app widget
                 AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
 
-                WidgetUtils.SetWidgetViews(context, result, this.appWidgetId, appWidgetManager);
+                WidgetUtils.setWidgetViews(context, result, this.appWidgetId, appWidgetManager);
 
                 // Convert Profile to Gson and save to SharedPrefs
                 toGson(result);
@@ -184,9 +184,10 @@ public class RestOperation extends AsyncTask<String, Void, Profile> {
                 mActivity.finish();
                 Log.d(TAG, "Check profile completed");
             } else {
-                progressBar.setVisibility(View.GONE);
-                content.setVisibility(View.VISIBLE);
-                fab.setVisibility(View.VISIBLE);
+                //progressBar.setVisibility(View.GONE);
+                //content.setVisibility(View.VISIBLE);
+                OverWidgetConfigure.crossfade(context, content, progressBar);
+                fab.show();
                 Snackbar.make(content, errorMsg, Snackbar.LENGTH_SHORT).show();
             }
         }

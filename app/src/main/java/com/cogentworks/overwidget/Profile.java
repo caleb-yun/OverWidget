@@ -8,6 +8,31 @@ import java.net.URL;
  */
 
 public class Profile {
+    public String BattleTag = "";
+    public String AvatarURL;
+
+    public String Prestige = "Error";
+    public String Level = "Error";
+    public String RankImageURL;
+
+    public String CompRank = "Error";
+    public String Tier;
+
+    public String Hero;
+    public String HeroTime;
+
+    public int updateInterval = 1000*60*60;
+
+    private String errorMsg;
+
+    public Profile() {
+        BattleTag = "";
+    }
+
+    public String getErrorMsg() {
+        return errorMsg;
+    }
+
     public void SetUser(String battleTag, String avatarURL) {
         this.BattleTag = battleTag;
         this.AvatarURL = avatarURL;
@@ -29,17 +54,7 @@ public class Profile {
         this.HeroTime = heroTime;
     }
 
-    public String BattleTag = "Error";
-    public String AvatarURL;
-
-    public String Prestige = "Error";
-    public String Level = "Error";
-    public String RankImageURL;
-
-    public String CompRank = "Error";
-    public String Tier;
-
-    public String Hero;
-    public String HeroTime;
-
+    public void setErrorMsg(String errorMsg) {
+        this.errorMsg = errorMsg;
+    }
 }
