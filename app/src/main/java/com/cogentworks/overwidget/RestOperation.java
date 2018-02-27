@@ -106,7 +106,7 @@ public class RestOperation extends AsyncTask<String, Void, Profile> {
                         JsonObject stats = jsonParser.parse(new InputStreamReader(responseBody, "UTF-8"))
                                 .getAsJsonObject().get(region.toLowerCase()) // Select Region
                                 .getAsJsonObject().get("stats")
-                                .getAsJsonObject().get("competitive")
+                                .getAsJsonObject().get("quickplay")
                                 .getAsJsonObject().getAsJsonObject("overall_stats");
 
                         result.SetUser(battleTag, stats.get("avatar").getAsString());
