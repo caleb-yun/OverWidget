@@ -174,7 +174,7 @@ public class RestOperation extends AsyncTask<String, Void, Profile> {
             LinearLayout content = mActivity.findViewById(R.id.layout_main);
             FloatingActionButton fab = mActivity.findViewById(R.id.fab);
 
-            if (result != null) {
+            if (result != null && !result.BattleTag.equals("")) {
                 // It is the responsibility of the configuration activity to update the app widget
                 AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
 
@@ -194,7 +194,7 @@ public class RestOperation extends AsyncTask<String, Void, Profile> {
                 //content.setVisibility(View.VISIBLE);
                 OverWidgetConfigure.crossfade(context, content, progressBar);
                 fab.show();
-                Snackbar.make(content, errorMsg, Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(content, result.getErrorMsg(), Snackbar.LENGTH_SHORT).show(); // Add "Retry" action
             }
         }
     }

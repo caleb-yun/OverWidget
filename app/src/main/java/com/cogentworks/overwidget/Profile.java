@@ -8,7 +8,7 @@ import java.net.URL;
  */
 
 public class Profile {
-    public String BattleTag = "";
+    public String BattleTag;
     public String AvatarURL;
 
     public String Prestige = "Error";
