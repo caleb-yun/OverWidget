@@ -133,7 +133,7 @@ public class WidgetUtils {
     protected static PendingIntent getPendingSelfIntent(Context context, String action, int appWidgetId) {
         Intent intent = new Intent(context, OverWidgetProvider.class);
         intent.setAction(action);
-        intent.putExtra("WIDGET_ID", appWidgetId);
+        intent.putExtra("appWidgetId", appWidgetId);
 
         return PendingIntent.getBroadcast(context, appWidgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
@@ -165,7 +165,7 @@ public class WidgetUtils {
                 try {
                     result.SetRank(stats.get("comprank").getAsString(), stats.get("tier").getAsString());
                 } catch (UnsupportedOperationException e) {
-                    result.SetRank("- - -", "nullrank");
+                    result.SetRank("", "nullrank");
                 }
                 responseBody.close();
                 Log.d(TAG, "responseBody.close");

@@ -81,6 +81,12 @@ public class RestOperation extends AsyncTask<String, Void, Profile> {
 
             if (battleTag != null) {
                 try {
+                    result = WidgetUtils.getProfile(context, appWidgetId);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                    result = null;
+                }
+                /*try {
                     // Create URL
                     URL endpoint = new URL("https://owapi.net/api/v3/u/" + battleTag.replace('#', '-') + "/blob?platform=" + platform.toLowerCase());
                     Log.d(TAG, endpoint.toString());
@@ -116,15 +122,15 @@ public class RestOperation extends AsyncTask<String, Void, Profile> {
                         try {
                             result.SetRank(stats.get("comprank").getAsString(), stats.get("tier").getAsString());
                         } catch (UnsupportedOperationException e) {
-                            result.SetRank("- - -", "nullrank");
+                            result.SetRank("", "nullrank");
                         }
                         Log.d(TAG, "SetRank");
 
-                        /*JsonObject heroStats = jsonParser.parse(new InputStreamReader(responseBody, "UTF-8"))
-                                .getAsJsonObject().get(region.toLowerCase()) // Select Region
-                                .getAsJsonObject().get("heroes")
-                                .getAsJsonObject().get("playtime")
-                                .getAsJsonObject().getAsJsonObject("quickplay");*/
+                        //JsonObject heroStats = jsonParser.parse(new InputStreamReader(responseBody, "UTF-8"))
+                        //        .getAsJsonObject().get(region.toLowerCase()) // Select Region
+                        //        .getAsJsonObject().get("heroes")
+                        //        .getAsJsonObject().get("playtime")
+                        //        .getAsJsonObject().getAsJsonObject("quickplay");
 
                         //result.SetHero(heroStats.entrySet()[0].getKey());
 
@@ -140,7 +146,7 @@ public class RestOperation extends AsyncTask<String, Void, Profile> {
                 } catch (IOException e) {
                     e.printStackTrace();
                     result = null;
-                }
+                }*/
             }
         }
         return result;

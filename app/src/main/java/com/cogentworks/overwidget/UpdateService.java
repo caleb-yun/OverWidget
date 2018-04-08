@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.JobIntentService;
+import android.util.Log;
 
 import java.io.IOException;
 
@@ -15,6 +16,7 @@ import java.io.IOException;
 public class UpdateService extends JobIntentService {
     private Context context = this;
     static final int JOB_ID = 1000;
+    static final String TAG = "UpdateService";
 
     public static void enqueueWork(Context context, Intent work) {
         enqueueWork(context, UpdateService.class, JOB_ID, work);
@@ -24,13 +26,14 @@ public class UpdateService extends JobIntentService {
     public void onHandleWork(Intent intent) {
         if (intent != null) {
             int appWidgetId = intent.getIntExtra("appWidgetId", 0);
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this.getApplicationContext());
-            //WidgetUtils.setLoadingLayout(context, appWidgetId, appWidgetManager);
+            Log.d(TAG, "Intent appWidgetId: " + appWidgetId);
 
-            Profile profile;
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this.getApplicationContext());
+            WidgetUtils.setLoadingLayout(context, appWidgetId, appWidgetManager);
+
             try {
-                profile = WidgetUtils.getProfile(context, appWidgetId);
-                if (!profile.BattleTag.equals("")) {
+                Profile profile = WidgetUtils.getProfile(context, appWidgetId);
+                if (profile != null && !profile.BattleTag.equals("")) {
                     //WidgetUtils.setLoadingLayout(context, appWidgetId, AppWidgetManager.getInstance(context));
                     WidgetUtils.setWidgetViews(context, profile, appWidgetId, appWidgetManager);
                 } else {
