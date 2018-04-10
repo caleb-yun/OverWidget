@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -52,6 +53,8 @@ public class OverWidgetProvider extends AppWidgetProvider {
             alarmManager.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), updateInterval, pi);
 
             context.sendBroadcast(intent);
+            
+            WidgetUtils.setLoadingLayout(context, appWidgetId, AppWidgetManager.getInstance(context));
         }
     }
 
@@ -84,6 +87,7 @@ public class OverWidgetProvider extends AppWidgetProvider {
     }
 
     @Override
+    @TargetApi(21)
     public void onReceive(Context context, Intent intent) {
         Log.d(TAG, "OnReceive: " + intent.getAction());
 
@@ -105,6 +109,22 @@ public class OverWidgetProvider extends AppWidgetProvider {
             }
         } else*/ if (REFRESH_INTENT.equals(intent.getAction()) || SYNC_CLICKED.equals(intent.getAction())) {
             int appWidgetId = intent.getIntExtra("appWidgetId", 0);
+
+            // If in power saving mode
+            if (Build.VERSION.SDK_INT >= 21) {
+                PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+                if (pm.isPowerSaveMode()) {
+                    Profile profile = WidgetUtils.loadUserPrefOffline(context, appWidgetId);
+                    if (profile != null) {
+                        WidgetUtils.setWidgetViews(context, profile, appWidgetId, AppWidgetManager.getInstance(context));
+                    }
+                    if (SYNC_CLICKED.equals(intent.getAction()))
+                        Toast.makeText(context, "Power save mode is on", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+
+            // Normal
             WidgetUtils.setLoadingLayout(context, appWidgetId, AppWidgetManager.getInstance(context));
 
             Intent serviceIntent = new Intent(intent);

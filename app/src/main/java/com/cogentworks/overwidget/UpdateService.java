@@ -29,6 +29,8 @@ public class UpdateService extends JobIntentService {
             Log.d(TAG, "Intent appWidgetId: " + appWidgetId);
 
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this.getApplicationContext());
+
+            //if (intent.getBooleanExtra("set_loading", false))
             WidgetUtils.setLoadingLayout(context, appWidgetId, appWidgetManager);
 
             try {
