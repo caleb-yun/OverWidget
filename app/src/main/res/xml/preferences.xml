@@ -33,7 +33,7 @@
             android:defaultValue="12 hours"
             android:entries="@array/time_array"
             android:entryValues="@array/time_array"
-            android:key="time"
+            android:key="interval"
             android:summary="Time to refresh the widget"
             android:title="Update Interval" />
     </PreferenceCategory>

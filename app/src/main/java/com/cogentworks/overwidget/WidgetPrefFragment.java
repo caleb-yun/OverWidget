@@ -41,5 +41,13 @@ public class WidgetPrefFragment extends PreferenceFragment {
         // Region
         ListPreference region = (ListPreference) getPreferenceManager().findPreference("region");
         region.setOnPreferenceChangeListener(onPreferenceChangeListener);
+
+        // Theme
+        ListPreference theme = (ListPreference) getPreferenceManager().findPreference("theme");
+        theme.setOnPreferenceChangeListener(onPreferenceChangeListener);
+
+        // Refresh Interval
+        ListPreference interval = (ListPreference) getPreferenceManager().findPreference("interval");
+        interval.setOnPreferenceChangeListener(onPreferenceChangeListener);
     }
 }

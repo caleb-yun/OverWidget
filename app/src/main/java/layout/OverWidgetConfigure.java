@@ -27,7 +27,7 @@ import com.cogentworks.overwidget.WidgetPrefFragment;
  * The configuration screen for the {@link OverWidgetProvider OverWidgetProvider} AppWidget.
  */
 
-public class OverWidgetConfigure extends AppCompatActivity implements OnPreferenceChangeListener {
+public class OverWidgetConfigure extends AppCompatActivity implements OnPreferenceChangeListener{
 
     private static final String TAG = "OverWidgetConfigure";
     public static final String PREFS_NAME = "layout.OverWidgetProvider";
@@ -50,10 +50,6 @@ public class OverWidgetConfigure extends AppCompatActivity implements OnPreferen
         mainContent = findViewById(R.id.layout_main);
         progressBar = findViewById(R.id.progress_bar);
         fab = findViewById(R.id.fab);
-
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        //sp.edit().clear().commit();
-        Log.d(TAG, "setDefaultValues");
 
         // Find the widget id from the intent.
         Intent intent = getIntent();
@@ -90,7 +86,8 @@ public class OverWidgetConfigure extends AppCompatActivity implements OnPreferen
         String battleTag = sp.getString("username", "None Selected");
         String platform = sp.getString("platform", "None Selected");
         String region = sp.getString("region", "None Selected");
-        WidgetUtils.savePrefs(context, mAppWidgetId, battleTag, platform, region);
+        String interval = sp.getString("interval", "1 hour");
+        WidgetUtils.savePrefs(context, mAppWidgetId, battleTag, platform, region, interval);
 
         // Check if user exists
         RestOperation restOperation = new RestOperation(context, mAppWidgetId);
@@ -101,6 +98,7 @@ public class OverWidgetConfigure extends AppCompatActivity implements OnPreferen
     protected void onStop() {
         super.onStop();
 
+        // Reset options on stop
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         sp.edit().clear().apply();
     }

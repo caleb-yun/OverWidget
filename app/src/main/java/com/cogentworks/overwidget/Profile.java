@@ -21,7 +21,7 @@ public class Profile {
     public String Hero;
     public String HeroTime;
 
-    public int updateInterval = 1000*60*60;
+    private int updateInterval = 1000*60*60;
 
     private String errorMsg;
 
@@ -31,6 +31,10 @@ public class Profile {
 
     public String getErrorMsg() {
         return errorMsg;
+    }
+
+    public int getUpdateInterval() {
+        return updateInterval;
     }
 
     public void SetUser(String battleTag, String avatarURL) {
@@ -56,5 +60,10 @@ public class Profile {
 
     public void setErrorMsg(String errorMsg) {
         this.errorMsg = errorMsg;
+    }
+
+    public void setUpdateInterval(String updateInterval) {
+        int hours = Integer.parseInt(updateInterval.replaceAll("[\\D]", ""));
+        this.updateInterval = hours * 60 * 60 * 1000;
     }
 }

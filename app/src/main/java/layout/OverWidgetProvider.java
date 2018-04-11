@@ -8,6 +8,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
@@ -42,18 +43,16 @@ public class OverWidgetProvider extends AppWidgetProvider {
             intent.setAction(OverWidgetProvider.REFRESH_INTENT);
             intent.putExtra("appWidgetId", appWidgetId);
 
-            int updateInterval = 1000*60*60;
-            /*try {
-                updateInterval = WidgetUtils.getProfile(context, appWidgetId).updateInterval;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
+            int updateInterval = 60*60*1000;
+            Profile profile = WidgetUtils.loadUserPrefOffline(context, appWidgetId);
+            if (profile != null)
+                updateInterval = profile.getUpdateInterval();
 
-            PendingIntent pi = PendingIntent.getBroadcast(context, appWidgetId, intent, 0);
+            PendingIntent pi = PendingIntent.getBroadcast(context, appWidgetId, intent, appWidgetId);
             alarmManager.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), updateInterval, pi);
 
             context.sendBroadcast(intent);
-            
+
             WidgetUtils.setLoadingLayout(context, appWidgetId, AppWidgetManager.getInstance(context));
         }
     }
@@ -87,7 +86,6 @@ public class OverWidgetProvider extends AppWidgetProvider {
     }
 
     @Override
-    @TargetApi(21)
     public void onReceive(Context context, Intent intent) {
         Log.d(TAG, "OnReceive: " + intent.getAction());
 
@@ -110,10 +108,11 @@ public class OverWidgetProvider extends AppWidgetProvider {
         } else*/ if (REFRESH_INTENT.equals(intent.getAction()) || SYNC_CLICKED.equals(intent.getAction())) {
             int appWidgetId = intent.getIntExtra("appWidgetId", 0);
 
-            // If in power saving mode
-            if (Build.VERSION.SDK_INT >= 21) {
+            // If in power saving mode or not charging
+            if (Build.VERSION.SDK_INT >= 23) {
                 PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-                if (pm.isPowerSaveMode()) {
+                BatteryManager bm = (BatteryManager) context.getSystemService(Context.BATTERY_SERVICE);
+                if (pm.isPowerSaveMode() && !bm.isCharging()) {
                     Profile profile = WidgetUtils.loadUserPrefOffline(context, appWidgetId);
                     if (profile != null) {
                         WidgetUtils.setWidgetViews(context, profile, appWidgetId, AppWidgetManager.getInstance(context));

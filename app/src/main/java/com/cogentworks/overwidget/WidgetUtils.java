@@ -23,6 +23,7 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -40,6 +41,9 @@ public class WidgetUtils {
 
     public static final String PREFS_NAME = "layout.OverWidgetProvider";
     public static final String PREF_PREFIX_KEY = "overwidget_";
+
+    //private static String server = "http://192.168.1.180:4444";
+    private static String server = "https://owapi.net";
 
     public static void setWidgetViews(Context context, Profile profile, int appWidgetId, AppWidgetManager appWidgetManager) {
         // See the dimensions and
@@ -143,11 +147,16 @@ public class WidgetUtils {
         String battleTag = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "_battletag", null);
         String platform = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "_platform", null);
         String region = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "_region", null);
+        String interval = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "_interval", "1");
+
         if (battleTag != null && platform != null && region != null) {
             Profile result = new Profile();
+            result.setUpdateInterval(interval);
 
-            URL endpoint = new URL("https://owapi.net/api/v3/u/" + battleTag.replace('#', '-') + "/blob?platform=" + platform.toLowerCase());
+            URL endpoint = new URL(server + "/api/v3/u/" + battleTag.replace('#', '-') + "/blob?platform=" + platform.toLowerCase());
+            Log.d(TAG, endpoint.toString());
             HttpsURLConnection urlConnection = (HttpsURLConnection) endpoint.openConnection();
+            //HttpURLConnection urlConnection = (HttpURLConnection) endpoint.openConnection();
             urlConnection.setRequestMethod("GET");
             urlConnection.connect();
             if (urlConnection.getResponseCode() == 200) {
@@ -184,11 +193,12 @@ public class WidgetUtils {
     }
 
     // Write the prefix to the SharedPreferences object for this widget
-    public static void savePrefs(Context context, int appWidgetId, String battleTag, String platform, String region) {
+    public static void savePrefs(Context context, int appWidgetId, String battleTag, String platform, String region, String updateInterval) {
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
         prefs.putString(PREF_PREFIX_KEY + appWidgetId + "_battletag", battleTag);
         prefs.putString(PREF_PREFIX_KEY + appWidgetId + "_platform", platform);
         prefs.putString(PREF_PREFIX_KEY + appWidgetId + "_region", region);
+        prefs.putString(PREF_PREFIX_KEY + appWidgetId + "_interval", updateInterval);
         prefs.apply();
     }
 
@@ -223,6 +233,7 @@ public class WidgetUtils {
         prefs.remove(PREF_PREFIX_KEY + appWidgetId + "_platform");
         prefs.remove(PREF_PREFIX_KEY + appWidgetId + "_region");
         prefs.remove(PREF_PREFIX_KEY + appWidgetId + "_profile");
+        prefs.remove(PREF_PREFIX_KEY + appWidgetId + "_interval");
         prefs.apply();
     }
 

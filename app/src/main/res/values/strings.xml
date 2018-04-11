@@ -16,6 +16,7 @@
     <string-array name="theme_array">
         <item>Dark</item>
         <item>Light</item>
+        <item>Transparent</item>
         <item>Dark Transparent</item>
         <item>Light Transparent</item>
     </string-array>
