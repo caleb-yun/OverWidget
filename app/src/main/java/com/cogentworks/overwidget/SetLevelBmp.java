@@ -26,12 +26,14 @@ public class SetLevelBmp extends AsyncTask<String, Void, Bitmap> {
     RemoteViews views;
     AppWidgetManager appWidgetManager;
     int appWidgetId;
+    String theme;
 
-    public SetLevelBmp(Context context, AppWidgetManager appWidgetManager, int appWidgetId, RemoteViews views) {
+    public SetLevelBmp(Context context, AppWidgetManager appWidgetManager, int appWidgetId, RemoteViews views, String theme) {
         this.context = context;
         this.appWidgetManager = appWidgetManager;
-        this. appWidgetId = appWidgetId;
+        this.appWidgetId = appWidgetId;
         this.views = views;
+        this.theme = theme;
     }
     @Override
     protected Bitmap doInBackground(String... params) {
@@ -42,7 +44,7 @@ public class SetLevelBmp extends AsyncTask<String, Void, Bitmap> {
 
         if (url != null) {
             try {
-                result = BuildLevelBmp(url, level, prestige, this.context);
+                result = BuildLevelBmp(url, level, prestige, theme, this.context);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -60,12 +62,12 @@ public class SetLevelBmp extends AsyncTask<String, Void, Bitmap> {
         appWidgetManager.partiallyUpdateAppWidget(appWidgetId, views);
     }
 
-    public static Bitmap BuildLevelBmp(String url, String level, int prestige, Context context) throws IOException {
+    public static Bitmap BuildLevelBmp(String url, String level, int prestige, String theme, Context context) throws IOException {
         URL borderUrl = new URL(url);
         URL rankUrl = new URL(url.replace("Border", "Rank"));
         InputStream borderInputStream = borderUrl.openConnection().getInputStream();
         Bitmap borderBmp = BitmapFactory.decodeStream(borderInputStream);
-        Bitmap levelBmp = BuildTextBmp(level, context);
+        Bitmap levelBmp = BuildTextBmp(level, theme, context);
 
         Bitmap bmOverlay = Bitmap.createBitmap(256, 256+8, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bmOverlay);
@@ -84,7 +86,7 @@ public class SetLevelBmp extends AsyncTask<String, Void, Bitmap> {
         return bmOverlay;
     }
 
-    public static Bitmap BuildTextBmp(String text, Context context)
+    public static Bitmap BuildTextBmp(String text, String theme, Context context)
     {
         Bitmap bitmap = Bitmap.createBitmap(256, 70, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
@@ -94,7 +96,10 @@ public class SetLevelBmp extends AsyncTask<String, Void, Bitmap> {
         paint.setSubpixelText(true);
         paint.setTypeface(futura);
         paint.setStyle(Paint.Style.FILL);
-        paint.setColor(Color.WHITE);
+        if (theme.equals("Light"))
+            paint.setColor(Color.BLACK);
+        else
+            paint.setColor(Color.WHITE);
         paint.setTextSize(50);
         paint.setTextAlign(Paint.Align.CENTER);
 

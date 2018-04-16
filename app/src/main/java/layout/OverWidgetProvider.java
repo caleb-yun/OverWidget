@@ -113,13 +113,14 @@ public class OverWidgetProvider extends AppWidgetProvider {
                 PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
                 BatteryManager bm = (BatteryManager) context.getSystemService(Context.BATTERY_SERVICE);
                 if (pm.isPowerSaveMode() && !bm.isCharging()) {
-                    Profile profile = WidgetUtils.loadUserPrefOffline(context, appWidgetId);
-                    if (profile != null) {
-                        WidgetUtils.setWidgetViews(context, profile, appWidgetId, AppWidgetManager.getInstance(context));
-                    }
-                    if (SYNC_CLICKED.equals(intent.getAction()))
+                    if (SYNC_CLICKED.equals(intent.getAction())) {
+                        Profile profile = WidgetUtils.loadUserPrefOffline(context, appWidgetId);
+                        if (profile != null)
+                            WidgetUtils.setWidgetViews(context, profile, appWidgetId, AppWidgetManager.getInstance(context));
+
                         Toast.makeText(context, "Power save mode is on", Toast.LENGTH_SHORT).show();
-                    return;
+                        return;
+                    }
                 }
             }
 

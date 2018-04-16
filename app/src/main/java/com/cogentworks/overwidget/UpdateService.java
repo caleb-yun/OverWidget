@@ -35,7 +35,7 @@ public class UpdateService extends JobIntentService {
 
             try {
                 Profile profile = WidgetUtils.getProfile(context, appWidgetId);
-                if (profile != null && !profile.BattleTag.equals("")) {
+                if (profile != null && profile.BattleTag != null && !profile.BattleTag.equals("")) {
                     //WidgetUtils.setLoadingLayout(context, appWidgetId, AppWidgetManager.getInstance(context));
                     WidgetUtils.setWidgetViews(context, profile, appWidgetId, appWidgetManager);
                 } else {

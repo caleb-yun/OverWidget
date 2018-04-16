@@ -87,7 +87,8 @@ public class OverWidgetConfigure extends AppCompatActivity implements OnPreferen
         String platform = sp.getString("platform", "None Selected");
         String region = sp.getString("region", "None Selected");
         String interval = sp.getString("interval", "1 hour");
-        WidgetUtils.savePrefs(context, mAppWidgetId, battleTag, platform, region, interval);
+        String theme = sp.getString("theme", "Dark");
+        WidgetUtils.savePrefs(context, mAppWidgetId, battleTag, platform, region, theme, interval);
 
         // Check if user exists
         RestOperation restOperation = new RestOperation(context, mAppWidgetId);

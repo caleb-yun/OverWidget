@@ -8,7 +8,7 @@ import java.net.URL;
  */
 
 public class Profile {
-    public String BattleTag;
+    public String BattleTag = "";
     public String AvatarURL;
 
     public String Prestige = "Error";
@@ -18,24 +18,12 @@ public class Profile {
     public String CompRank = "Error";
     public String Tier;
 
-    public String Hero;
-    public String HeroTime;
+    private String Hero;
+    private String HeroTime;
 
     private int updateInterval = 1000*60*60;
-
-    private String errorMsg;
-
-    public Profile() {
-        BattleTag = "";
-    }
-
-    public String getErrorMsg() {
-        return errorMsg;
-    }
-
-    public int getUpdateInterval() {
-        return updateInterval;
-    }
+    private String errorMsg = "Error";
+    private String theme;
 
     public void SetUser(String battleTag, String avatarURL) {
         this.BattleTag = battleTag;
@@ -58,12 +46,28 @@ public class Profile {
         this.HeroTime = heroTime;
     }
 
+    public String getErrorMsg() {
+        return errorMsg;
+    }
+
     public void setErrorMsg(String errorMsg) {
         this.errorMsg = errorMsg;
+    }
+
+    public int getUpdateInterval() {
+        return updateInterval;
     }
 
     public void setUpdateInterval(String updateInterval) {
         int hours = Integer.parseInt(updateInterval.replaceAll("[\\D]", ""));
         this.updateInterval = hours * 60 * 60 * 1000;
+    }
+
+    public String getTheme() {
+        return theme;
+    }
+
+    public void setTheme(String theme) {
+        this.theme = theme;
     }
 }

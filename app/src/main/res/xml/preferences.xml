@@ -23,7 +23,7 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="Other">
         <ListPreference
-            android:defaultValue="Dark Transparent"
+            android:defaultValue="Dark"
             android:entries="@array/theme_array"
             android:entryValues="@array/theme_array"
             android:key="theme"

@@ -3,7 +3,6 @@
     android:id="@+id/appwidget_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
     android:gravity="center"
     android:orientation="vertical"
     android:padding="@dimen/widget_margin" >
@@ -18,6 +17,7 @@
         android:textColor="#ffffff"
         android:fontFamily="monospace"/>
     <TextView
+        android:id="@+id/tap_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TAP TO REFRESH"

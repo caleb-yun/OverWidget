@@ -11,8 +11,11 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ShapeDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.LinearLayout;
 import android.widget.RemoteViews;
 
 import com.google.gson.Gson;
@@ -66,10 +69,14 @@ public class WidgetUtils {
 
         // Populate the RemoteViews object
 
+        // Theme
+        setBackground(views, profile.getTheme());
+
+
         // General views
         views.setTextViewText(R.id.appwidget_battletag, profile.BattleTag);
         // Comp Rank
-        views.setImageViewBitmap(R.id.appwidget_comprank, WidgetUtils.BuildTextBmp(profile.CompRank, context));
+        views.setImageViewBitmap(R.id.appwidget_comprank, WidgetUtils.BuildTextBmp(profile.CompRank, profile.getTheme(), context));
         views.setImageViewResource(R.id.appwidget_tier, context.getResources().getIdentifier(profile.Tier, "drawable", context.getPackageName()));
         // Tap to refresh
         views.setOnClickPendingIntent(R.id.appwidget_layout, getPendingSelfIntent(context, SYNC_CLICKED, appWidgetId));
@@ -77,7 +84,7 @@ public class WidgetUtils {
         // Specific views
         if (columns >= 2){
             // Level
-            SetLevelBmp setLevelBmp = new SetLevelBmp(context, appWidgetManager, appWidgetId, views);
+            SetLevelBmp setLevelBmp = new SetLevelBmp(context, appWidgetManager, appWidgetId, views, profile.getTheme());
             setLevelBmp.execute(profile.RankImageURL, profile.Prestige, profile.Level);
         }
         if (columns >= 3){
@@ -89,6 +96,19 @@ public class WidgetUtils {
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
         Log.d(TAG, "setWidgetViews");
+    }
+
+    public static void setBackground(RemoteViews views, String theme) {
+        if (theme.equals("Dark")) {
+            int backgroundId = R.drawable.background;
+            views.setInt(R.id.appwidget_layout, "setBackgroundResource", backgroundId);
+        } else if (theme.equals("Light")) {
+            int backgroundId = R.drawable.background_light;
+            views.setInt(R.id.appwidget_battletag, "setTextColor", Color.BLACK);
+            views.setInt(R.id.error_text, "setTextColor", Color.BLACK);
+            views.setInt(R.id.tap_text, "setTextColor", 0x88000000);
+            views.setInt(R.id.appwidget_layout, "setBackgroundResource", backgroundId);
+        }
     }
 
     public static void setSyncClicked(Context context, int appWidgetId, AppWidgetManager appWidgetManager) {
@@ -114,12 +134,22 @@ public class WidgetUtils {
 
     public static void setLoadingLayout(Context context, int appWidgetId, AppWidgetManager appWidgetManager) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.loading_widget_layout);
+
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+        String theme = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "_theme", "Dark");
+        setBackground(views, theme);
+
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
     public static void setErrorLayout(Context context, int appWidgetId, AppWidgetManager appWidgetManager, String text) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.error_widget_layout);
         views.setTextViewText(R.id.error_text, text);
+
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+        String theme = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "_theme", "Dark");
+        setBackground(views, theme);
+
         // Tap to refresh
         views.setOnClickPendingIntent(R.id.appwidget_layout, getPendingSelfIntent(context, SYNC_CLICKED, appWidgetId));
         appWidgetManager.updateAppWidget(appWidgetId, views);
@@ -150,10 +180,12 @@ public class WidgetUtils {
         if (!platform.equals("PC"))
             region = "any"; // Set region to any on console
         String interval = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "_interval", "1");
+        String theme = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "_theme", "Dark");
 
         if (battleTag != null && platform != null && region != null) {
             Profile result = new Profile();
             result.setUpdateInterval(interval);
+            result.setTheme(theme);
 
             URL endpoint = new URL(server + "/api/v3/u/" + battleTag.replace('#', '-') + "/blob?platform=" + platform.toLowerCase());
             Log.d(TAG, endpoint.toString());
@@ -195,12 +227,13 @@ public class WidgetUtils {
     }
 
     // Write the prefix to the SharedPreferences object for this widget
-    public static void savePrefs(Context context, int appWidgetId, String battleTag, String platform, String region, String updateInterval) {
+    public static void savePrefs(Context context, int appWidgetId, String battleTag, String platform, String region, String theme, String updateInterval) {
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
         prefs.putString(PREF_PREFIX_KEY + appWidgetId + "_battletag", battleTag);
         prefs.putString(PREF_PREFIX_KEY + appWidgetId + "_platform", platform);
         prefs.putString(PREF_PREFIX_KEY + appWidgetId + "_region", region);
         prefs.putString(PREF_PREFIX_KEY + appWidgetId + "_interval", updateInterval);
+        prefs.putString(PREF_PREFIX_KEY + appWidgetId + "_theme", theme);
         prefs.apply();
     }
 
@@ -239,7 +272,7 @@ public class WidgetUtils {
         prefs.apply();
     }
 
-    public static Bitmap BuildTextBmp(String text, Context context)
+    public static Bitmap BuildTextBmp(String text, String theme, Context context)
     {
         Bitmap bitmap = Bitmap.createBitmap(160, 80, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
@@ -249,7 +282,10 @@ public class WidgetUtils {
         paint.setSubpixelText(true);
         paint.setTypeface(futura);
         paint.setStyle(Paint.Style.FILL);
-        paint.setColor(Color.WHITE);
+        if (theme .equals("Light"))
+            paint.setColor(Color.BLACK);
+        else
+            paint.setColor(Color.WHITE);
         paint.setTextSize(60);
         paint.setTextAlign(Paint.Align.CENTER);
 
