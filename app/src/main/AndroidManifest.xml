@@ -19,20 +19,14 @@
                 android:resource="@xml/over_widget_activity_info" />
         </receiver>
 
-        <!--<receiver android:name=".BootReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
-            </intent-filter>
-        </receiver>-->
-
         <service android:name=".UpdateService" android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <activity android:name="layout.OverWidgetConfigure"
             android:theme="@style/Overwatch"
             android:screenOrientation="portrait">
-            <!--<intent-filter>
+            <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
-            </intent-filter>-->
+            </intent-filter>
         </activity>
     </application>
 
