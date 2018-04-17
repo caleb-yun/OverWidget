@@ -8,8 +8,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:supportsRtl="true">
         <receiver android:name="layout.OverWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -28,7 +27,9 @@
 
         <service android:name=".UpdateService" android:permission="android.permission.BIND_JOB_SERVICE" />
 
-        <activity android:name="layout.OverWidgetConfigure" android:screenOrientation="portrait">
+        <activity android:name="layout.OverWidgetConfigure"
+            android:theme="@style/Overwatch"
+            android:screenOrientation="portrait">
             <!--<intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>-->

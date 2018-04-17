@@ -108,8 +108,8 @@ public class OverWidgetProvider extends AppWidgetProvider {
         } else*/ if (REFRESH_INTENT.equals(intent.getAction()) || SYNC_CLICKED.equals(intent.getAction())) {
             int appWidgetId = intent.getIntExtra("appWidgetId", 0);
 
-            // If in power saving mode or not charging
-            if (Build.VERSION.SDK_INT >= 23) {
+            // If in power saving mode and not charging
+            /*if (Build.VERSION.SDK_INT >= 23) {
                 PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
                 BatteryManager bm = (BatteryManager) context.getSystemService(Context.BATTERY_SERVICE);
                 if (pm.isPowerSaveMode() && !bm.isCharging()) {
@@ -122,10 +122,12 @@ public class OverWidgetProvider extends AppWidgetProvider {
                         return;
                     }
                 }
-            }
+            }*/
 
             // Normal
-            WidgetUtils.setLoadingLayout(context, appWidgetId, AppWidgetManager.getInstance(context));
+
+            if (intent.getAction().equals(SYNC_CLICKED))
+                WidgetUtils.setLoadingLayout(context, appWidgetId, AppWidgetManager.getInstance(context));
 
             Intent serviceIntent = new Intent(intent);
             serviceIntent.setAction("com.cogentworks.overwidget.UPDATE_SERVICE");
