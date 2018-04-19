@@ -47,9 +47,10 @@ public class OverWidgetProvider extends AppWidgetProvider {
             Profile profile = WidgetUtils.loadUserPrefOffline(context, appWidgetId);
             if (profile != null)
                 updateInterval = profile.getUpdateInterval();
+            Log.d(TAG, "(" + appWidgetId + ") Update Interval: " + updateInterval);
 
-            PendingIntent pi = PendingIntent.getBroadcast(context, appWidgetId, intent, appWidgetId);
-            alarmManager.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), updateInterval, pi);
+            PendingIntent pi = PendingIntent.getBroadcast(context, appWidgetId, intent, 0);
+            alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME, System.currentTimeMillis(), updateInterval, pi);
 
             context.sendBroadcast(intent);
 

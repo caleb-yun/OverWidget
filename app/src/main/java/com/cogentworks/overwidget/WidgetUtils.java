@@ -177,7 +177,7 @@ public class WidgetUtils {
         String battleTag = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "_battletag", null);
         String platform = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "_platform", null);
         String region = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "_region", null);
-        if (!platform.equals("PC"))
+        if (platform != null && !platform.equals("PC"))
             region = "any"; // Set region to any on console
         String interval = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "_interval", "1");
         String theme = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "_theme", "Dark");

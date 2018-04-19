@@ -83,9 +83,9 @@ public class OverWidgetConfigure extends AppCompatActivity implements OnPreferen
         final Context context = OverWidgetConfigure.this;
 
         // When the button is clicked, store the string locally
-        String battleTag = sp.getString("username", "None Selected");
-        String platform = sp.getString("platform", "None Selected");
-        String region = sp.getString("region", "None Selected");
+        String battleTag = sp.getString("username", "None");
+        String platform = sp.getString("platform", "PC");
+        String region = sp.getString("region", "US");
         String interval = sp.getString("interval", "1 hour");
         String theme = sp.getString("theme", "Dark");
         WidgetUtils.savePrefs(context, mAppWidgetId, battleTag, platform, region, theme, interval);

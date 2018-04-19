@@ -38,7 +38,7 @@ public class UpdateService extends JobIntentService {
                 if (profile != null && profile.BattleTag != null && !profile.BattleTag.equals("")) {
                     //WidgetUtils.setLoadingLayout(context, appWidgetId, AppWidgetManager.getInstance(context));
                     WidgetUtils.setWidgetViews(context, profile, appWidgetId, appWidgetManager);
-                } else {
+                } else if (profile.getErrorMsg() != null) {
                     WidgetUtils.setErrorLayout(context, appWidgetId, appWidgetManager, profile.getErrorMsg());
                 }
             } catch (IOException e) {
