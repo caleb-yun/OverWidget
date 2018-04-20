@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
 
 import com.cogentworks.overwidget.R;
 import com.cogentworks.overwidget.RestOperation;
+import com.cogentworks.overwidget.SettingsActivity;
 import com.cogentworks.overwidget.WidgetUtils;
 import com.cogentworks.overwidget.WidgetPrefFragment;
 
@@ -44,6 +45,11 @@ public class OverWidgetConfigure extends AppCompatActivity implements OnPreferen
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        boolean useDarkTheme = PreferenceManager.getDefaultSharedPreferences(getBaseContext())
+                .getBoolean(SettingsActivity.PREF_DARK_THEME, false);
+        if (useDarkTheme)
+            setTheme(R.style.Blackwatch);
+
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_configure);
