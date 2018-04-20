@@ -2,7 +2,6 @@ package layout;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.app.Fragment;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
@@ -13,7 +12,6 @@ import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -22,7 +20,6 @@ import com.cogentworks.overwidget.R;
 import com.cogentworks.overwidget.RestOperation;
 import com.cogentworks.overwidget.SettingsActivity;
 import com.cogentworks.overwidget.WidgetUtils;
-import com.cogentworks.overwidget.WidgetPrefFragment;
 
 /**
  * The configuration screen for the {@link OverWidgetProvider OverWidgetProvider} AppWidget.
@@ -45,6 +42,13 @@ public class OverWidgetConfigure extends AppCompatActivity implements OnPreferen
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        sp.edit().remove("username").apply();
+        sp.edit().remove("platform").apply();
+        sp.edit().remove("region").apply();
+        sp.edit().remove("theme").apply();
+        sp.edit().remove("interval").apply();
+
         boolean useDarkTheme = PreferenceManager.getDefaultSharedPreferences(getBaseContext())
                 .getBoolean(SettingsActivity.PREF_DARK_THEME, false);
         if (useDarkTheme)
@@ -101,14 +105,14 @@ public class OverWidgetConfigure extends AppCompatActivity implements OnPreferen
         restOperation.execute(battleTag, platform, region);
     }
 
-    @Override
+    /*@Override
     protected void onStop() {
         super.onStop();
 
         // Reset options on stop
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         sp.edit().clear().apply();
-    }
+    }*/
 
     public static void crossfade(Context context, View viewIn, View viewOut) {
         int mShortAnimationDuration = context.getResources().getInteger(
