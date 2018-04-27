@@ -5,15 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.provider.BaseColumns;
 
 import java.util.ArrayList;
 
 public class SQLHelper extends SQLiteOpenHelper {
-    public static final String DB_NAME = "com.cogentworks.overwidget.db";
-    public static final String TABLE_NAME = "LIST";
-    public static final String COL_NAME = "item";
-    public static final int DB_VERSION = 1;
+    private static final String DB_NAME = "com.cogentworks.overwidget.db";
+    private static final String TABLE_NAME = "LIST";
+    private static final String COL_NAME = "item";
+    private static final int DB_VERSION = 1;
 
     public SQLHelper(Context context) {
         //1 is to-do list database version
@@ -34,8 +33,10 @@ public class SQLHelper extends SQLiteOpenHelper {
 
     public void insertNewItem(String item) {
         SQLiteDatabase db = this.getWritableDatabase();
+
         ContentValues values = new ContentValues();
         values.put(COL_NAME, item);
+
         db.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
         db.close();
     }
@@ -46,9 +47,16 @@ public class SQLHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    /*public ArrayList<String> getToDoList() {
+    public ArrayList<String> getList() {
         ArrayList<String> list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.query(TABLE_NAME, new String[]{COL_NAME})
-    }*/
+        Cursor c = db.query(TABLE_NAME, new String[]{COL_NAME}, null, null, null, null, null, null);
+        while (c.moveToNext()) {
+            int i = c.getColumnIndex(COL_NAME);
+            list.add(c.getString(i));
+        }
+        c.close();
+        db.close();
+        return list;
+    }
 }

@@ -5,17 +5,27 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.Spinner;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     static final String TAG = "MainActivity";
+
+    SQLHelper dbHelper;
+    ArrayAdapter<String> adapter;
+    ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,25 +39,79 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
+
+        dbHelper = new SQLHelper(this);
+        listView = findViewById(R.id.list_view);
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                final int mPosition = position;
+                AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Delete Profile")
+                        .setMessage("Are you sure you want to delete?")
+                        .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dbHelper.deleteItem(listView.getItemAtPosition(mPosition).toString());
+                                showItemList();
+                            }
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .create();
+                dialog.show();
+
+                return false;
+            }
+        });
+
+        showItemList();
+    }
+
+    private void showItemList() {
+        ArrayList<String> itemList = dbHelper.getList();
+        if (adapter == null) {
+            adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, itemList);
+            listView.setAdapter(adapter);
+        } else {
+            adapter.clear();
+            adapter.addAll(itemList);
+            adapter.notifyDataSetChanged();
+        }
     }
 
     public void onFabClick(View view) {
-        final EditText taskEditText = new EditText(this);
-        taskEditText.setSingleLine();
+        final View dialogView = this.getLayoutInflater().inflate(R.layout.configure_dialog, null);
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle("Add a new task")
                 .setMessage("What do you want to do next?")
-                .setView(taskEditText)
+                .setView(dialogView)
                 .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String task = String.valueOf(taskEditText.getText());
-                        Log.d(TAG, "Task to add: " + task);
+                        EditText editText = dialogView.findViewById(R.id.config_battletag);
+                        String text = String.valueOf(editText.getText());
+
+                        if (!dbHelper.getList().contains(text)) {
+                            dbHelper.insertNewItem(text);
+                            showItemList();
+                        } else {
+                            Snackbar.make(findViewById(R.id.layout_main), "Profile already exists", Snackbar.LENGTH_SHORT).show();
+                        }
                     }
                 })
                 .setNegativeButton("Cancel", null)
                 .create();
         dialog.show();
+
+        Spinner regionSpinner = dialogView.findViewById(R.id.region_spinner);
+        ArrayAdapter<CharSequence> regionAdapter = ArrayAdapter.createFromResource(this, R.array.region_array, android.R.layout.simple_spinner_item);
+        regionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        regionSpinner.setAdapter(regionAdapter);
+
+        Spinner platformSpinner = dialogView.findViewById(R.id.platform_spinner);
+        ArrayAdapter<CharSequence> platformAdapter = ArrayAdapter.createFromResource(this, R.array.platform_array, android.R.layout.simple_spinner_item);
+        platformAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        platformSpinner.setAdapter(platformAdapter);
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
