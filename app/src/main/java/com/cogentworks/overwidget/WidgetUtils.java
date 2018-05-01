@@ -11,11 +11,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.ShapeDrawable;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.LinearLayout;
 import android.widget.RemoteViews;
 
 import com.google.gson.Gson;
@@ -26,7 +23,6 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -40,7 +36,7 @@ import layout.OverWidgetProvider;
 public class WidgetUtils {
     //private static final String SYNC_CLICKED = "automaticWidgetSyncButtonClick";
     private static final String SYNC_CLICKED = OverWidgetProvider.SYNC_CLICKED;
-    public static final String TAG = "WidgetUtils";
+    static final String TAG = "WidgetUtils";
 
     public static final String PREFS_NAME = "layout.OverWidgetProvider";
     public static final String PREF_PREFIX_KEY = "overwidget_";
@@ -164,7 +160,7 @@ public class WidgetUtils {
         return n - 1;
     }
 
-    protected static PendingIntent getPendingSelfIntent(Context context, String action, int appWidgetId) {
+    private static PendingIntent getPendingSelfIntent(Context context, String action, int appWidgetId) {
         Intent intent = new Intent(context, OverWidgetProvider.class);
         intent.setAction(action);
         intent.putExtra("appWidgetId", appWidgetId);
@@ -269,6 +265,7 @@ public class WidgetUtils {
         prefs.remove(PREF_PREFIX_KEY + appWidgetId + "_region");
         prefs.remove(PREF_PREFIX_KEY + appWidgetId + "_profile");
         prefs.remove(PREF_PREFIX_KEY + appWidgetId + "_interval");
+        prefs.remove(PREF_PREFIX_KEY + appWidgetId + "_theme");
         prefs.apply();
     }
 

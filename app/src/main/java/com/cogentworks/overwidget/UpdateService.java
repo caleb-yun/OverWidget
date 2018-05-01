@@ -1,13 +1,17 @@
 package com.cogentworks.overwidget;
 
 import android.appwidget.AppWidgetManager;
-import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v4.app.JobIntentService;
 import android.util.Log;
 
+import com.google.gson.Gson;
+
 import java.io.IOException;
+
+import layout.OverWidgetConfigure;
 
 /**
  * Created by cyun on 11/16/17.
@@ -37,9 +41,12 @@ public class UpdateService extends JobIntentService {
                 Profile profile = WidgetUtils.getProfile(context, appWidgetId);
                 if (profile != null && profile.BattleTag != null && !profile.BattleTag.equals("")) {
                     //WidgetUtils.setLoadingLayout(context, appWidgetId, AppWidgetManager.getInstance(context));
+                    toGson(profile, appWidgetId);
                     WidgetUtils.setWidgetViews(context, profile, appWidgetId, appWidgetManager);
-                } else if (profile.getErrorMsg() != null) {
+                } else if (profile != null && profile.getErrorMsg() != null) {
                     WidgetUtils.setErrorLayout(context, appWidgetId, appWidgetManager, profile.getErrorMsg());
+                } else {
+                    WidgetUtils.setErrorLayout(context, appWidgetId, appWidgetManager, "Error");
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -47,6 +54,14 @@ public class UpdateService extends JobIntentService {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void toGson(Profile result, int appWidgetId) {
+        SharedPreferences.Editor newPrefs = context.getSharedPreferences(OverWidgetConfigure.PREFS_NAME, 0).edit();
+        Gson gson = new Gson();
+        String profileJson = gson.toJson(result);
+        newPrefs.putString(OverWidgetConfigure.PREF_PREFIX_KEY + appWidgetId + "_profile", profileJson);
+        newPrefs.apply();
     }
 }
     /*@Nullable
