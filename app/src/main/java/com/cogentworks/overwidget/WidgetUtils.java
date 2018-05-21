@@ -168,20 +168,28 @@ public class WidgetUtils {
         return PendingIntent.getBroadcast(context, appWidgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
-    public static Profile getProfile(Context context, int appWidgetId) throws IOException {
+    public static Profile getProfile(Context context, int appWidgetId) throws IOException{
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
         String battleTag = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "_battletag", null);
         String platform = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "_platform", null);
         String region = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "_region", null);
-        if (platform != null && !platform.equals("PC"))
-            region = "any"; // Set region to any on console
         String interval = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "_interval", "1");
         String theme = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "_theme", "Dark");
 
+        return getProfile(battleTag, platform, region, interval, theme);
+    }
+
+    public static Profile getProfile(String battleTag, String platform, String region, String interval, String theme) throws IOException {
+        if (platform != null && !platform.equals("PC"))
+            region = "any"; // Set region to any on console
+
         if (battleTag != null && platform != null && region != null) {
             Profile result = new Profile();
-            result.setUpdateInterval(interval);
-            result.setTheme(theme);
+
+            if (interval != null && theme != null) {
+                result.setUpdateInterval(interval);
+                result.setTheme(theme);
+            }
 
             URL endpoint = new URL(server + "/api/v3/u/" + battleTag.replace('#', '-') + "/blob?platform=" + platform.toLowerCase());
             Log.d(TAG, endpoint.toString());

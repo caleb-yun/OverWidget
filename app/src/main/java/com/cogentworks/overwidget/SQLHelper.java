@@ -11,8 +11,8 @@ import java.util.ArrayList;
 public class SQLHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "com.cogentworks.overwidget.db";
     private static final String TABLE_NAME = "LIST";
-    private static final String COL_NAME = "item";
-    private static final int DB_VERSION = 1;
+    private static final String COL_NAME = "BattleTag";
+    private static final int DB_VERSION = 2;
 
     public SQLHelper(Context context) {
         //1 is to-do list database version
@@ -21,7 +21,7 @@ public class SQLHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String query = String.format("CREATE TABLE %s (ID INTEGER PRIMARY KEY AUTOINCREMENT, %s TEXT NOT NULL);", TABLE_NAME, COL_NAME);
+        String query = "CREATE TABLE " + TABLE_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, " + COL_NAME + " TEXT NOT NULL, GsonData text);";
         db.execSQL(query);
     }
 
@@ -31,11 +31,12 @@ public class SQLHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void insertNewItem(String item) {
+    public void insertNewProfile(String battleTag, Profile profile) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(COL_NAME, item);
+        values.put(COL_NAME, battleTag);
+        values.put("GsonData", profile.toGson());
 
         db.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
         db.close();

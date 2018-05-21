@@ -1,28 +1,27 @@
 package com.cogentworks.overwidget;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import com.google.gson.Gson;
 
 /**
  * Created by cyun on 8/9/17.
  */
 
 public class Profile {
-    public String BattleTag = "";
+    public String BattleTag;
     public String AvatarURL;
 
-    public String Prestige = "Error";
-    public String Level = "Error";
+    public String Prestige;
+    public String Level;
     public String RankImageURL;
 
-    public String CompRank = "Error";
+    public String CompRank;
     public String Tier;
 
     private String Hero;
     private String HeroTime;
 
     private int updateInterval = 1000*60*60;
-    private String errorMsg = "Error";
+    private String errorMsg;
     private String theme;
 
     public void SetUser(String battleTag, String avatarURL) {
@@ -47,7 +46,10 @@ public class Profile {
     }
 
     public String getErrorMsg() {
-        return errorMsg;
+        if (errorMsg != null)
+            return errorMsg;
+        else
+            return "Error";
     }
 
     public void setErrorMsg(String errorMsg) {
@@ -69,5 +71,10 @@ public class Profile {
 
     public void setTheme(String theme) {
         this.theme = theme;
+    }
+
+    public String toGson() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
     }
 }

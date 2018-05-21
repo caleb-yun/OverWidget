@@ -1,6 +1,7 @@
 package com.cogentworks.overwidget;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -23,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
     static final String TAG = "MainActivity";
 
-    SQLHelper dbHelper;
+    public SQLHelper dbHelper;
     ArrayAdapter<String> adapter;
     ListView listView;
 
@@ -67,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         showItemList();
     }
 
-    private void showItemList() {
+    public void showItemList() {
         ArrayList<String> itemList = dbHelper.getList();
         if (adapter == null) {
             adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, itemList);
@@ -80,22 +82,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onFabClick(View view) {
+        final Context context = this;
         final View dialogView = this.getLayoutInflater().inflate(R.layout.configure_dialog, null);
         AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle("Add a new task")
-                .setMessage("What do you want to do next?")
+                .setTitle("Add a new player")
                 .setView(dialogView)
                 .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         EditText editText = dialogView.findViewById(R.id.config_battletag);
-                        String text = String.valueOf(editText.getText());
+                        String battleTag = String.valueOf(editText.getText());
+                        Spinner platformSpinner = dialogView.findViewById(R.id.platform_spinner);
+                        String platform = platformSpinner.getSelectedItem().toString();
+                        Spinner regionSpinner = dialogView.findViewById(R.id.region_spinner);
+                        String region = regionSpinner.getSelectedItem().toString();
 
-                        if (!dbHelper.getList().contains(text)) {
-                            dbHelper.insertNewItem(text);
-                            showItemList();
+                        if (!dbHelper.getList().contains(battleTag)) {
+                            Toast.makeText(getBaseContext(),"Loading player...",Toast.LENGTH_SHORT).show();
+                            AddProfileTask addTask = new AddProfileTask(context, battleTag, platform, region);
+                            addTask.execute();
                         } else {
-                            Snackbar.make(findViewById(R.id.layout_main), "Profile already exists", Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(findViewById(R.id.layout_main), "Player already added to list", Snackbar.LENGTH_SHORT).show();
                         }
                     }
                 })

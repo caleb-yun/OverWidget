@@ -9,20 +9,13 @@ import android.os.AsyncTask;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
-import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -174,7 +167,7 @@ public class RestOperation extends AsyncTask<String, Void, Profile> {
             LinearLayout content = mActivity.findViewById(R.id.layout_main);
             FloatingActionButton fab = mActivity.findViewById(R.id.fab);
 
-            if (result != null && !result.BattleTag.equals("")) {
+            if (result != null && result.BattleTag != null && !result.BattleTag.equals("")) {
                 // It is the responsibility of the configuration activity to update the app widget
                 AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
 

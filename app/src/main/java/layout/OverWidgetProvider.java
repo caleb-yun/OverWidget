@@ -8,18 +8,14 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.cogentworks.overwidget.Profile;
 import com.cogentworks.overwidget.UpdateService;
 import com.cogentworks.overwidget.WidgetUtils;
-
-import java.io.IOException;
 
 /**
  * Implementation of App Widget functionality.
@@ -50,7 +46,8 @@ public class OverWidgetProvider extends AppWidgetProvider {
             Log.d(TAG, "(" + appWidgetId + ") Update Interval: " + updateInterval);
 
             PendingIntent pi = PendingIntent.getBroadcast(context, appWidgetId, intent, 0);
-            alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME, System.currentTimeMillis(), updateInterval, pi);
+            assert alarmManager != null;
+            alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME, System.currentTimeMillis(), updateInterval, pi);
 
             context.sendBroadcast(intent);
 
