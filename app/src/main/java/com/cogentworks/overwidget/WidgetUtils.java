@@ -184,14 +184,14 @@ public class WidgetUtils {
             region = "any"; // Set region to any on console
 
         if (battleTag != null && platform != null && region != null) {
-            Profile result = new Profile();
+            Profile result = new Profile(battleTag, platform, region);
 
             if (interval != null && theme != null) {
                 result.setUpdateInterval(interval);
                 result.setTheme(theme);
             }
 
-            URL endpoint = new URL(server + "/api/v3/u/" + battleTag.replace('#', '-') + "/blob?platform=" + platform.toLowerCase());
+            URL endpoint = new URL(server + "/api/v3/u/" + battleTag.replace('#', '-') + "/stats?platform=" + platform.toLowerCase());
             Log.d(TAG, endpoint.toString());
             HttpsURLConnection urlConnection = (HttpsURLConnection) endpoint.openConnection();
             //HttpURLConnection urlConnection = (HttpURLConnection) endpoint.openConnection();
@@ -209,6 +209,7 @@ public class WidgetUtils {
                         .getAsJsonObject().getAsJsonObject("overall_stats");
                 result.SetUser(battleTag, stats.get("avatar").getAsString());
                 result.SetLevel(stats.get("level").getAsString(), stats.get("prestige").getAsString(), stats.get("rank_image").getAsString());
+                result.QpWins = stats.get("wins").getAsString();
                 try {
                     result.SetRank(stats.get("comprank").getAsString(), stats.get("tier").getAsString());
                 } catch (UnsupportedOperationException e) {

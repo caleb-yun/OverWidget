@@ -9,6 +9,8 @@ import com.google.gson.Gson;
 public class Profile {
     public String BattleTag;
     public String AvatarURL;
+    public String Platform;
+    public String Region;
 
     public String Prestige;
     public String Level;
@@ -17,12 +19,21 @@ public class Profile {
     public String CompRank;
     public String Tier;
 
+    public String QpWins;
     private String Hero;
     private String HeroTime;
 
     private int updateInterval = 1000*60*60;
     private String errorMsg;
     private String theme;
+
+    public Profile() {}
+
+    public Profile(String battleTag, String platform, String region) {
+        this.BattleTag = battleTag;
+        this.Platform = platform;
+        this.Region = region;
+    }
 
     public void SetUser(String battleTag, String avatarURL) {
         this.BattleTag = battleTag;

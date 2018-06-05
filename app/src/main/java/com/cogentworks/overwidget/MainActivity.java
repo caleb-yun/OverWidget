@@ -19,6 +19,8 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -26,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     static final String TAG = "MainActivity";
 
     public SQLHelper dbHelper;
-    ArrayAdapter<String> adapter;
+    ProfileAdapter adapter;
     ListView listView;
 
     @Override
@@ -54,7 +56,8 @@ public class MainActivity extends AppCompatActivity {
                         .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                dbHelper.deleteItem(listView.getItemAtPosition(mPosition).toString());
+                                Gson gson = new Gson();
+                                dbHelper.deleteItem(gson.toJson(listView.getItemAtPosition(mPosition)));
                                 showItemList();
                             }
                         })
@@ -70,10 +73,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showItemList() {
-        ArrayList<String> itemList = dbHelper.getList();
+        ArrayList<Profile> itemList = dbHelper.getList();
         if (adapter == null) {
-            adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, itemList);
+            adapter = new ProfileAdapter(this, itemList);
             listView.setAdapter(adapter);
+
+            UpdateListTask updateListTask = new UpdateListTask(this, dbHelper.getList());
+            updateListTask.execute();
         } else {
             adapter.clear();
             adapter.addAll(itemList);
@@ -97,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
                         Spinner regionSpinner = dialogView.findViewById(R.id.region_spinner);
                         String region = regionSpinner.getSelectedItem().toString();
 
-                        if (!dbHelper.getList().contains(battleTag)) {
+                        if (!dbHelper.getList("BattleTag").contains(battleTag)) {
                             Toast.makeText(getBaseContext(),"Loading player...",Toast.LENGTH_SHORT).show();
                             AddProfileTask addTask = new AddProfileTask(context, battleTag, platform, region);
                             addTask.execute();
@@ -150,5 +156,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+
 
 }
