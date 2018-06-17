@@ -57,6 +57,7 @@ public class UpdateListTask extends AsyncTask<String, Void, ArrayList<Profile>> 
                 } catch (IndexOutOfBoundsException ex) {
                     ex.printStackTrace();
                 }
+
             activity.showItemList();
         } else {
             if (error)

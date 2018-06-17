@@ -22,8 +22,6 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
-import java.util.ArrayList;
-
 public class MainActivity extends AppCompatActivity {
 
     static final String TAG = "MainActivity";
@@ -84,9 +82,8 @@ public class MainActivity extends AppCompatActivity {
     public void showItemList() {
         isBusy = true;
 
-        ArrayList<Profile> itemList = dbHelper.getList();
         if (adapter == null) {
-            adapter = new ProfileAdapter(this, itemList);
+            adapter = new ProfileAdapter(this, dbHelper.getList());
             listView.setAdapter(adapter);
 
             UpdateListTask updateListTask = new UpdateListTask(this, dbHelper.getList());
@@ -94,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
         } else {
             adapter.clear();
-            adapter.addAll(itemList);
+            adapter.addAll(dbHelper.getList());
             adapter.notifyDataSetChanged();
         }
 

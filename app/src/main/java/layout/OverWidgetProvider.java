@@ -47,7 +47,7 @@ public class OverWidgetProvider extends AppWidgetProvider {
 
             PendingIntent pi = PendingIntent.getBroadcast(context, appWidgetId, intent, 0);
             assert alarmManager != null;
-            alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME, System.currentTimeMillis(), updateInterval, pi);
+            alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME, System.currentTimeMillis(), updateInterval, pi);
 
             context.sendBroadcast(intent);
 

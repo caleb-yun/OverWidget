@@ -51,7 +51,7 @@ public class SQLHelper extends SQLiteOpenHelper {
         values.put("BattleTag", battleTag);
         values.put(COL_NAME, profile.toGson());
 
-        db.update(TABLE_NAME, values, COL_NAME + " = ?", new String[]{battleTag});
+        db.update(TABLE_NAME, values, "BattleTag = ?", new String[]{battleTag});
         db.close();
     }
 

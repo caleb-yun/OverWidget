@@ -18,7 +18,7 @@
             android:entries="@array/region_array"
             android:entryValues="@array/region_array"
             android:key="region"
-            android:summary="Only required for PC"
+            android:summary="US, EU, or Asia"
             android:title="Region" />
     </PreferenceCategory>
     <PreferenceCategory android:title="Other">
