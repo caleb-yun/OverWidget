@@ -215,7 +215,11 @@ public class WidgetUtils {
                 result.SetLevel(stats.get("level").getAsString(), stats.get("prestige").getAsString(), stats.get("levelIcon").getAsString());
                 result.gamesWon = stats.get("gamesWon").getAsString();
                 try {
-                    result.SetRank(stats.get("rating").getAsString(), stats.get("ratingName").getAsString().toLowerCase());
+                    String tier = stats.get("ratingName").getAsString().toLowerCase();
+                    if (!tier.equals(""))
+                        result.SetRank(stats.get("rating").getAsString(), stats.get("ratingName").getAsString().toLowerCase());
+                    else
+                        result.SetRank("", "nullrank");
                 } catch (UnsupportedOperationException e) {
                     result.SetRank("", "nullrank");
                 }
