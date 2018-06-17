@@ -35,17 +35,27 @@ public class ProfileAdapter extends ArrayAdapter<Profile> {
         Context context = convertView.getContext();
 
         // Lookup view for data population
-        TextView title = convertView.findViewById(R.id.text1);
-        TextView info = convertView.findViewById(R.id.text2);
-        TextView description = convertView.findViewById(R.id.text3);
+        TextView name = convertView.findViewById(R.id.name);
+        TextView tag = convertView.findViewById(R.id.tag);
+        TextView level = convertView.findViewById(R.id.level);
+        TextView gamesWon = convertView.findViewById(R.id.games_won);
+        TextView info = convertView.findViewById(R.id.info);
         ImageView comprank = convertView.findViewById(R.id.appwidget_comprank);
         ImageView tier = convertView.findViewById(R.id.appwidget_tier);
 
         boolean isDark = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(SettingsActivity.PREF_DARK_THEME, false);
 
         // Populate the data into the template view using the data object
-        title.setText(profile.BattleTag);
-        description.setText("Lvl " + (Integer.parseInt(profile.Prestige)*100 + Integer.parseInt(profile.Level)));
+        String[] parts = profile.BattleTag.split("#");
+        String username = parts[0];
+        name.setText(username);
+        if (parts.length > 1) {
+            tag.setText("#" + parts[1]);
+        }
+
+        gamesWon.setText(profile.gamesWon + " games won");
+
+        level.setText("Lvl " + (Integer.parseInt(profile.Prestige)*100 + Integer.parseInt(profile.Level)));
         if (!profile.Tier.equals("") && !profile.Tier.equals("nullrank")) {
             tier.setImageResource(context.getResources().getIdentifier(profile.Tier, "drawable", context.getPackageName()));
             if (isDark)

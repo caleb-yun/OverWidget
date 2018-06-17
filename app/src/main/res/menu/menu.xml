@@ -5,4 +5,9 @@
     <item
         android:id="@+id/settings"
         android:title="Settings" />
+
+    <item
+        android:id="@+id/dark_check"
+        android:title="Blackwatch"
+        android:checkable="true" />
 </menu>

@@ -14,7 +14,7 @@ public class SQLHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "com.cogentworks.overwidget.db";
     private static final String TABLE_NAME = "LIST";
     private static final String COL_NAME = "GsonData";
-    private static final int DB_VERSION = 4;
+    private static final int DB_VERSION = 5;
 
     public SQLHelper(Context context) {
         //1 is to-do list database version

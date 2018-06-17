@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
@@ -31,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     ProfileAdapter adapter;
     ListView listView;
 
+    boolean isBusy = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,21 +52,27 @@ public class MainActivity extends AppCompatActivity {
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                final int mPosition = position;
-                AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
-                        .setTitle("Delete Profile")
-                        .setMessage("Are you sure you want to delete?")
-                        .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Gson gson = new Gson();
-                                dbHelper.deleteItem(gson.toJson(listView.getItemAtPosition(mPosition)));
-                                showItemList();
-                            }
-                        })
-                        .setNegativeButton("Cancel", null)
-                        .create();
-                dialog.show();
+                if (!isBusy) {
+                    final int mPosition = position;
+                    AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+                            .setTitle("Delete Profile")
+                            .setMessage("Are you sure you want to delete?")
+                            .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    isBusy = true;
+                                    Gson gson = new Gson();
+                                    dbHelper.deleteItem(gson.toJson(listView.getItemAtPosition(mPosition)));
+                                    showItemList();
+                                    isBusy = false;
+                                }
+                            })
+                            .setNegativeButton("Cancel", null)
+                            .create();
+                    dialog.show();
+                } else {
+                    Toast.makeText(MainActivity.this,"List is busy", Toast.LENGTH_LONG).show();
+                }
 
                 return false;
             }
@@ -73,6 +82,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showItemList() {
+        isBusy = true;
+
         ArrayList<Profile> itemList = dbHelper.getList();
         if (adapter == null) {
             adapter = new ProfileAdapter(this, itemList);
@@ -80,51 +91,59 @@ public class MainActivity extends AppCompatActivity {
 
             UpdateListTask updateListTask = new UpdateListTask(this, dbHelper.getList());
             updateListTask.execute();
+
         } else {
             adapter.clear();
             adapter.addAll(itemList);
             adapter.notifyDataSetChanged();
         }
+
+        isBusy = false;
     }
 
     public void onFabClick(View view) {
         final Context context = this;
         final View dialogView = this.getLayoutInflater().inflate(R.layout.configure_dialog, null);
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle("Add a new player")
-                .setView(dialogView)
-                .setPositiveButton("Add", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        EditText editText = dialogView.findViewById(R.id.config_battletag);
-                        String battleTag = String.valueOf(editText.getText());
-                        Spinner platformSpinner = dialogView.findViewById(R.id.platform_spinner);
-                        String platform = platformSpinner.getSelectedItem().toString();
-                        Spinner regionSpinner = dialogView.findViewById(R.id.region_spinner);
-                        String region = regionSpinner.getSelectedItem().toString();
 
-                        if (!dbHelper.getList("BattleTag").contains(battleTag)) {
-                            Toast.makeText(getBaseContext(),"Loading player...",Toast.LENGTH_SHORT).show();
-                            AddProfileTask addTask = new AddProfileTask(context, battleTag, platform, region);
-                            addTask.execute();
-                        } else {
-                            Snackbar.make(findViewById(R.id.layout_main), "Player already added to list", Snackbar.LENGTH_SHORT).show();
+        if (!isBusy) {
+            AlertDialog dialog = new AlertDialog.Builder(this)
+                    .setTitle("Add a new player")
+                    .setView(dialogView)
+                    .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            EditText editText = dialogView.findViewById(R.id.config_battletag);
+                            String battleTag = String.valueOf(editText.getText());
+                            Spinner platformSpinner = dialogView.findViewById(R.id.platform_spinner);
+                            String platform = platformSpinner.getSelectedItem().toString();
+                            Spinner regionSpinner = dialogView.findViewById(R.id.region_spinner);
+                            String region = regionSpinner.getSelectedItem().toString();
+
+                            if (!dbHelper.getList("BattleTag").contains(battleTag)) {
+                                Toast.makeText(getBaseContext(), "Adding player...", Toast.LENGTH_SHORT).show();
+                                AddProfileTask addTask = new AddProfileTask(context, battleTag, platform, region);
+                                addTask.execute();
+                            } else {
+                                Snackbar.make(findViewById(R.id.layout_main), "Player already added to list", Snackbar.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                })
-                .setNegativeButton("Cancel", null)
-                .create();
-        dialog.show();
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .create();
+            dialog.show();
 
-        Spinner regionSpinner = dialogView.findViewById(R.id.region_spinner);
-        ArrayAdapter<CharSequence> regionAdapter = ArrayAdapter.createFromResource(this, R.array.region_array, android.R.layout.simple_spinner_item);
-        regionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        regionSpinner.setAdapter(regionAdapter);
+            Spinner regionSpinner = dialogView.findViewById(R.id.region_spinner);
+            ArrayAdapter<CharSequence> regionAdapter = ArrayAdapter.createFromResource(this, R.array.region_array, android.R.layout.simple_spinner_item);
+            regionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            regionSpinner.setAdapter(regionAdapter);
 
-        Spinner platformSpinner = dialogView.findViewById(R.id.platform_spinner);
-        ArrayAdapter<CharSequence> platformAdapter = ArrayAdapter.createFromResource(this, R.array.platform_array, android.R.layout.simple_spinner_item);
-        platformAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        platformSpinner.setAdapter(platformAdapter);
+            Spinner platformSpinner = dialogView.findViewById(R.id.platform_spinner);
+            ArrayAdapter<CharSequence> platformAdapter = ArrayAdapter.createFromResource(this, R.array.platform_array, android.R.layout.simple_spinner_item);
+            platformAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            platformSpinner.setAdapter(platformAdapter);
+        } else {
+            Toast.makeText(this,"List is busy", Toast.LENGTH_LONG).show();
+        }
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -137,13 +156,38 @@ public class MainActivity extends AppCompatActivity {
     public static final int REQUEST_EXIT = 2;
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem checkable = menu.findItem(R.id.dark_check);
+        boolean isChecked = PreferenceManager.getDefaultSharedPreferences(getBaseContext())
+                .getBoolean(SettingsActivity.PREF_DARK_THEME, false);
+        checkable.setChecked(isChecked);
+        return true;
+    }
 
-        if (id == R.id.settings) {
-            startActivityForResult(new Intent(this, SettingsActivity.class), REQUEST_EXIT);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.dark_check:
+                boolean isChecked = !item.isChecked();
+                item.setChecked(isChecked);
+
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putBoolean(SettingsActivity.PREF_DARK_THEME, isChecked);
+                editor.commit();
+
+                Intent intent = getIntent();
+                finish();
+                startActivity(intent);
+
+                return true;
+            case R.id.settings:
+                startActivityForResult(new Intent(this, SettingsActivity.class), REQUEST_EXIT);
+                return true;
+            default:
+                return false;
         }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

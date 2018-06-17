@@ -24,6 +24,7 @@ public class AddProfileTask extends AsyncTask<String, Void, Profile> {
 
     @Override
     protected Profile doInBackground(String... params) {
+        ((MainActivity)context).isBusy = true;
         try {
             return WidgetUtils.getProfile(battleTag, platform, region, null, null);
         } catch (IOException ex) {
@@ -47,5 +48,7 @@ public class AddProfileTask extends AsyncTask<String, Void, Profile> {
                 error = "An error occurred";
             Snackbar.make(((Activity) context).findViewById(R.id.layout_main), error, Snackbar.LENGTH_LONG).show();
         }
+
+        ((MainActivity)context).isBusy = false;
     }
 }

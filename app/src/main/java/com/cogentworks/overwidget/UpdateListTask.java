@@ -23,6 +23,7 @@ public class UpdateListTask extends AsyncTask<String, Void, ArrayList<Profile>> 
 
     @Override
     protected ArrayList<Profile> doInBackground(String... params) {
+        ((MainActivity)context).isBusy = true;
 
         if (profiles.size() == 0) {
             error = false;
@@ -61,5 +62,7 @@ public class UpdateListTask extends AsyncTask<String, Void, ArrayList<Profile>> 
             if (error)
                 Snackbar.make(((Activity) context).findViewById(R.id.layout_main), "An update error occurred", Snackbar.LENGTH_LONG).show();
         }
+
+        ((MainActivity)context).isBusy = false;
     }
 }

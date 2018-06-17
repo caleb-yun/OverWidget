@@ -42,7 +42,7 @@ public class WidgetUtils {
     public static final String PREF_PREFIX_KEY = "overwidget_";
 
     //private static String server = "http://192.168.1.180:4444";
-    private static String server = "https://owapi.net";
+    private static String server = "https://ow-api.com";
 
     public static void setWidgetViews(Context context, Profile profile, int appWidgetId, AppWidgetManager appWidgetManager) {
         // See the dimensions and
@@ -191,30 +191,35 @@ public class WidgetUtils {
                 result.setTheme(theme);
             }
 
-            URL endpoint = new URL(server + "/api/v3/u/" + battleTag.replace('#', '-') + "/stats?platform=" + platform.toLowerCase());
+            URL endpoint = new URL(server + "/v1/stats/" + platform.toLowerCase() + "/" + region.toLowerCase() + "/" + battleTag.replace('#', '-') + "/profile");
             Log.d(TAG, endpoint.toString());
             HttpsURLConnection urlConnection = (HttpsURLConnection) endpoint.openConnection();
             //HttpURLConnection urlConnection = (HttpURLConnection) endpoint.openConnection();
             urlConnection.setRequestMethod("GET");
             urlConnection.connect();
             if (urlConnection.getResponseCode() == 200) {
+
                 // Success
                 InputStream responseBody = new BufferedInputStream(urlConnection.getInputStream());
                 // Parser
                 JsonParser jsonParser = new JsonParser();
-                JsonObject stats = jsonParser.parse(new InputStreamReader(responseBody, "UTF-8"))
-                        .getAsJsonObject().get(region.toLowerCase()) // Select Region
-                        .getAsJsonObject().get("stats")
-                        .getAsJsonObject().get("quickplay")
-                        .getAsJsonObject().getAsJsonObject("overall_stats");
-                result.SetUser(battleTag, stats.get("avatar").getAsString());
-                result.SetLevel(stats.get("level").getAsString(), stats.get("prestige").getAsString(), stats.get("rank_image").getAsString());
-                result.QpWins = stats.get("wins").getAsString();
+                JsonObject stats = jsonParser.parse(new InputStreamReader(responseBody, "UTF-8")).getAsJsonObject();
+
+                if (stats.get("error") != null) {
+                    Profile profile = new Profile();
+                    profile.setErrorMsg(stats.get("error").getAsString());
+                    return profile;
+                }
+
+                result.SetUser(battleTag, stats.get("icon").getAsString());
+                result.SetLevel(stats.get("level").getAsString(), stats.get("prestige").getAsString(), stats.get("levelIcon").getAsString());
+                result.gamesWon = stats.get("gamesWon").getAsString();
                 try {
-                    result.SetRank(stats.get("comprank").getAsString(), stats.get("tier").getAsString());
+                    result.SetRank(stats.get("rating").getAsString(), stats.get("ratingName").getAsString().toLowerCase());
                 } catch (UnsupportedOperationException e) {
                     result.SetRank("", "nullrank");
                 }
+
                 responseBody.close();
                 Log.d(TAG, "responseBody.close");
             } else {

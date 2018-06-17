@@ -19,7 +19,7 @@ public class Profile {
     public String CompRank;
     public String Tier;
 
-    public String QpWins;
+    public String gamesWon;
     private String Hero;
     private String HeroTime;
 
