@@ -45,7 +45,7 @@ public class OverWidgetProvider extends AppWidgetProvider {
                 updateInterval = profile.getUpdateInterval();
             Log.d(TAG, "(" + appWidgetId + ") Update Interval: " + updateInterval);
 
-            PendingIntent pi = PendingIntent.getBroadcast(context, appWidgetId, intent, 0);
+            PendingIntent pi = PendingIntent.getBroadcast(context, appWidgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             assert alarmManager != null;
             alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME, System.currentTimeMillis(), updateInterval, pi);
 
@@ -124,7 +124,7 @@ public class OverWidgetProvider extends AppWidgetProvider {
 
             // Normal
 
-            if (intent.getAction().equals(SYNC_CLICKED))
+            //if (intent.getAction().equals(SYNC_CLICKED))
                 WidgetUtils.setLoadingLayout(context, appWidgetId, AppWidgetManager.getInstance(context));
 
             Intent serviceIntent = new Intent(intent);

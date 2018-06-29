@@ -53,7 +53,8 @@ public class ProfileAdapter extends ArrayAdapter<Profile> {
             tag.setText("#" + parts[1]);
         }
 
-        gamesWon.setText(profile.gamesWon + " games won");
+        if(Integer.parseInt(profile.gamesWon) > 0)
+            gamesWon.setText(profile.gamesWon + " games won");
 
         level.setText("Lvl " + (Integer.parseInt(profile.Prestige)*100 + Integer.parseInt(profile.Level)));
         if (!profile.Tier.equals("") && !profile.Tier.equals("nullrank")) {
