@@ -8,7 +8,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -44,9 +46,27 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
+        
+
+        // Set swipe to refresh behavior
+        final MainActivity activityContext = this;
+        SwipeRefreshLayout mSwipeRefreshLayout = findViewById(R.id.swiperefresh);
+        mSwipeRefreshLayout.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        Log.i(TAG, "onRefresh called from SwipeRefreshLayout");
+
+                        // This method performs the actual data-refresh operation.
+                        // The method calls setRefreshing(false) when it's finished.
+                        UpdateListTask updateListTask = new UpdateListTask(activityContext, dbHelper.getList());
+                        updateListTask.execute();
+                    }
+                }
+        );
 
         dbHelper = new SQLHelper(this);
-        listView = findViewById(R.id.list_view);
+        listView = findViewById(R.id.list);
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -83,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
         isBusy = true;
 
         if (adapter == null) {
+            ((SwipeRefreshLayout)findViewById(R.id.swiperefresh)).setRefreshing(true);
             adapter = new ProfileAdapter(this, dbHelper.getList());
             listView.setAdapter(adapter);
 

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 
 import java.io.IOException;
@@ -65,5 +66,6 @@ public class UpdateListTask extends AsyncTask<String, Void, ArrayList<Profile>> 
         }
 
         ((MainActivity)context).isBusy = false;
+        ((SwipeRefreshLayout)((MainActivity)context).findViewById(R.id.swiperefresh)).setRefreshing(false);
     }
 }
