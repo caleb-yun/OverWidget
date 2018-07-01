@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
                             String region = regionSpinner.getSelectedItem().toString();
 
                             if (!dbHelper.getList("BattleTag").contains(battleTag)) {
-                                Toast.makeText(getBaseContext(), "Adding player...", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(findViewById(R.id.swiperefresh).getContext(), "Adding player...", Toast.LENGTH_SHORT).show();
                                 AddProfileTask addTask = new AddProfileTask(context, battleTag, platform, region);
                                 addTask.execute();
                             } else {

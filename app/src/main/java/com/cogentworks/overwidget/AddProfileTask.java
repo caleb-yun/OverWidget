@@ -29,7 +29,7 @@ public class AddProfileTask extends AsyncTask<String, Void, Profile> {
             return WidgetUtils.getProfile(battleTag, platform, region, null, null);
         } catch (IOException ex) {
             ex.printStackTrace();
-            Snackbar.make(((Activity) context).findViewById(R.id.layout_main), "An error occurred", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(((Activity) context).findViewById(R.id.swiperefresh), "An error occurred", Snackbar.LENGTH_LONG).show();
         }
         return null;
     }
@@ -46,7 +46,7 @@ public class AddProfileTask extends AsyncTask<String, Void, Profile> {
                 error = result.getErrorMsg();
             else
                 error = "An error occurred";
-            Snackbar.make(((Activity) context).findViewById(R.id.layout_main), error, Snackbar.LENGTH_LONG).show();
+            Snackbar.make(((Activity) context).findViewById(R.id.swiperefresh), error, Snackbar.LENGTH_LONG).show();
         }
 
         ((MainActivity)context).isBusy = false;
