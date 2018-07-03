@@ -23,7 +23,7 @@ public class Profile {
     private String Hero;
     private String HeroTime;
 
-    private int updateInterval = 1000*60*60;
+    private int updateInterval = 0;
     private String errorMsg;
     private String theme;
 

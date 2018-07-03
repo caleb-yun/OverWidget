@@ -16,8 +16,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import com.cogentworks.overwidget.CreateWidget;
 import com.cogentworks.overwidget.R;
-import com.cogentworks.overwidget.RestOperation;
 import com.cogentworks.overwidget.SettingsActivity;
 import com.cogentworks.overwidget.WidgetUtils;
 
@@ -96,13 +96,13 @@ public class OverWidgetConfigure extends AppCompatActivity implements OnPreferen
         String battleTag = sp.getString("username", "None");
         String platform = sp.getString("platform", "PC");
         String region = sp.getString("region", "US");
-        String interval = sp.getString("interval", "1 hour");
+        String interval = sp.getString("interval", "1");
         String theme = sp.getString("theme", "Dark");
         WidgetUtils.savePrefs(context, mAppWidgetId, battleTag, platform, region, theme, interval);
 
         // Check if user exists
-        RestOperation restOperation = new RestOperation(context, mAppWidgetId);
-        restOperation.execute(battleTag, platform, region);
+        CreateWidget createWidget = new CreateWidget(context, mAppWidgetId);
+        createWidget.execute(battleTag, platform, region);
     }
 
     /*@Override

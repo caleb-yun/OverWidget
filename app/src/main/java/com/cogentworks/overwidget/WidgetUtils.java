@@ -259,9 +259,9 @@ public class WidgetUtils {
         String platform = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "_platform", null);
         String region = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "_region", null);
 
-        RestOperation restOperation = new RestOperation(context, appWidgetManager, appWidgetId);
-        restOperation.ShowToast = showToast;
-        restOperation.execute(battleTag, platform, region);
+        CreateWidget createWidget = new CreateWidget(context, appWidgetManager, appWidgetId);
+        createWidget.ShowToast = showToast;
+        createWidget.execute(battleTag, platform, region);
     }
 
     // Overload - for when not to show toast

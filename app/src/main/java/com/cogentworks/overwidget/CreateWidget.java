@@ -1,6 +1,8 @@
 package com.cogentworks.overwidget;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
@@ -20,6 +22,7 @@ import java.io.IOException;
 import javax.net.ssl.HttpsURLConnection;
 
 import layout.OverWidgetConfigure;
+import layout.OverWidgetProvider;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -27,8 +30,8 @@ import static android.app.Activity.RESULT_OK;
  * Created by cyun on 8/6/17.
  */
 
-public class RestOperation extends AsyncTask<String, Void, Profile> {
-    private static final String TAG = "RestOperation";
+public class CreateWidget extends AsyncTask<String, Void, Profile> {
+    private static final String TAG = "CreateWidget";
 
     private Context context;
     private AppWidgetManager appWidgetManager;
@@ -45,14 +48,14 @@ public class RestOperation extends AsyncTask<String, Void, Profile> {
 
     private String errorMsg = "Error";
 
-    public RestOperation(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
+    public CreateWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
         this.context = context;
         this.appWidgetManager = appWidgetManager;
         this.appWidgetId = appWidgetId;
         this.checkProfileExists = false;
     }
 
-    public RestOperation(Context context, int appWidgetId) {
+    public CreateWidget(Context context, int appWidgetId) {
         this.context = context;
         this.appWidgetId = appWidgetId;
         this.mActivity = (Activity) context;
@@ -155,7 +158,7 @@ public class RestOperation extends AsyncTask<String, Void, Profile> {
                 toGson(result);
 
                 WidgetUtils.setWidgetViews(context, result, this.appWidgetId, this.appWidgetManager);
-                Log.d(TAG, "RestOperation completed");
+                Log.d(TAG, "CreateWidget completed");
             } else { // Error
                 if (ShowToast) {
                     Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
@@ -175,6 +178,24 @@ public class RestOperation extends AsyncTask<String, Void, Profile> {
 
                 // Convert Profile to Gson and save to SharedPrefs
                 toGson(result);
+
+                // Set AlarmManager
+                AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+                Intent intent = new Intent(context, OverWidgetProvider.class);
+                intent.setAction(OverWidgetProvider.REFRESH_INTENT);
+                intent.putExtra("appWidgetId", appWidgetId);
+
+                int updateInterval = result.getUpdateInterval();
+                Log.d(TAG, "(" + appWidgetId + ") Update Interval: " + updateInterval);
+
+                PendingIntent pi = PendingIntent.getBroadcast(context, appWidgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                assert alarmManager != null;
+                alarmManager.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis(), updateInterval, pi);
+                //alarmManager.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis(), 10*1000, pi);
+
+
+
 
                 // Make sure we pass back the original appWidgetId
                 Intent resultValue = new Intent();

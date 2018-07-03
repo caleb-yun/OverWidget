@@ -2,7 +2,6 @@ package layout;
 
 import android.annotation.TargetApi;
 import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
@@ -39,7 +38,7 @@ public class OverWidgetProvider extends AppWidgetProvider {
             intent.setAction(OverWidgetProvider.REFRESH_INTENT);
             intent.putExtra("appWidgetId", appWidgetId);
 
-            int updateInterval = 60*60*1000;
+            /*int updateInterval = 60*60*1000;
             Profile profile = WidgetUtils.loadUserPrefOffline(context, appWidgetId);
             if (profile != null)
                 updateInterval = profile.getUpdateInterval();
@@ -47,7 +46,8 @@ public class OverWidgetProvider extends AppWidgetProvider {
 
             PendingIntent pi = PendingIntent.getBroadcast(context, appWidgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             assert alarmManager != null;
-            alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME, System.currentTimeMillis(), updateInterval, pi);
+            alarmManager.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis(), updateInterval, pi);*/
+            //alarmManager.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis(), 10*1000, pi);
 
             context.sendBroadcast(intent);
 
