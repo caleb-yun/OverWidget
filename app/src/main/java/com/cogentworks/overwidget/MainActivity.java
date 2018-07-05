@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
@@ -67,6 +68,35 @@ public class MainActivity extends AppCompatActivity {
 
         dbHelper = new SQLHelper(this);
         listView = findViewById(R.id.list);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                final int mPosition = position;
+                AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Open in Browser")
+                        .setItems(R.array.link_array, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                Profile profile = dbHelper.getList().get(mPosition);
+                                Intent i = new Intent(Intent.ACTION_VIEW);
+                                switch (which) {
+                                    case 0:
+                                        i.setData(Uri.parse("http://playoverwatch.com/career/" + profile.Platform.toLowerCase() + "/" + profile.BattleTag.replace('#','-')));
+                                        startActivity(i);
+                                        break;
+                                    case 1:
+                                        i.setData(Uri.parse("https://www.overbuff.com/players/" + profile.Platform.toLowerCase() + "/" + profile.BattleTag.replace('#','-')));
+                                        startActivity(i);
+                                        break;
+                                }
+                            }
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .create();
+                dialog.show();
+            }
+        });
+
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -89,10 +119,10 @@ public class MainActivity extends AppCompatActivity {
                             .create();
                     dialog.show();
                 } else {
-                    Toast.makeText(MainActivity.this,"List is busy", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "List is busy", Toast.LENGTH_LONG).show();
                 }
 
-                return false;
+                return true;
             }
         });
 
@@ -103,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
         isBusy = true;
 
         if (adapter == null) {
-            ((SwipeRefreshLayout)findViewById(R.id.swiperefresh)).setRefreshing(true);
+            ((SwipeRefreshLayout) findViewById(R.id.swiperefresh)).setRefreshing(true);
             adapter = new ProfileAdapter(this, dbHelper.getList());
             listView.setAdapter(adapter);
 
@@ -160,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
             platformAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             platformSpinner.setAdapter(platformAdapter);
         } else {
-            Toast.makeText(this,"List is busy", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "List is busy", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -218,7 +248,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
 
 
 }
