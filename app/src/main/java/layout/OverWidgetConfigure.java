@@ -2,8 +2,12 @@ package layout;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.AlertDialog;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,20 +16,28 @@ import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.cogentworks.overwidget.CreateWidget;
+import com.cogentworks.overwidget.Profile;
 import com.cogentworks.overwidget.R;
+import com.cogentworks.overwidget.SQLHelper;
 import com.cogentworks.overwidget.SettingsActivity;
+import com.cogentworks.overwidget.WidgetPrefFragment;
 import com.cogentworks.overwidget.WidgetUtils;
+
+import java.util.ArrayList;
 
 /**
  * The configuration screen for the {@link OverWidgetProvider OverWidgetProvider} AppWidget.
  */
 
-public class OverWidgetConfigure extends AppCompatActivity implements OnPreferenceChangeListener{
+public class OverWidgetConfigure extends AppCompatActivity implements OnPreferenceChangeListener {
 
     private static final String TAG = "OverWidgetConfigure";
     public static final String PREFS_NAME = "layout.OverWidgetProvider";
@@ -35,6 +47,7 @@ public class OverWidgetConfigure extends AppCompatActivity implements OnPreferen
     ProgressBar progressBar;
     LinearLayout mainContent;
     FloatingActionButton fab;
+    WidgetPrefFragment prefFragment;
 
     public OverWidgetConfigure() {
         super();
@@ -49,12 +62,18 @@ public class OverWidgetConfigure extends AppCompatActivity implements OnPreferen
         sp.edit().remove("theme").apply();
         sp.edit().remove("interval").apply();
 
-        boolean useDarkTheme = PreferenceManager.getDefaultSharedPreferences(getBaseContext())
-                .getBoolean(SettingsActivity.PREF_DARK_THEME, false);
+        boolean useDarkTheme = sp.getBoolean(SettingsActivity.PREF_DARK_THEME, false);
         if (useDarkTheme)
             setTheme(R.style.Blackwatch);
 
         super.onCreate(savedInstanceState);
+
+        // Display the fragment as the main content.
+        FragmentManager mFragmentManager = getFragmentManager();
+        FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
+        prefFragment = new WidgetPrefFragment();
+        mFragmentTransaction.replace(R.id.layout_main, prefFragment);
+        mFragmentTransaction.commit();
 
         setContentView(R.layout.activity_configure);
         mainContent = findViewById(R.id.layout_main);
@@ -72,6 +91,49 @@ public class OverWidgetConfigure extends AppCompatActivity implements OnPreferen
         if (mAppWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
             finish();
             return;
+        }
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_configure, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.add_list:
+                final OverWidgetConfigure activity = this;
+                SQLHelper dbHelper = new SQLHelper(this);
+                final ArrayList<Profile> profiles = dbHelper.getList();
+                CharSequence[] names = new CharSequence[profiles.size()];
+                for (int i = 0; i < profiles.size(); i++)
+                    names[i] = profiles.get(i).BattleTag;
+                final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+                AlertDialog dialog = new AlertDialog.Builder(this)
+                        .setTitle("Add from List")
+                        .setItems(names, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                SharedPreferences.Editor editor = settings.edit();
+                                editor.putString("username", profiles.get(which).BattleTag);
+                                editor.putString("platform", profiles.get(which).Platform);
+                                editor.putString("region", profiles.get(which).Region);
+                                prefFragment.findPreference("username").setSummary(profiles.get(which).BattleTag);
+                                prefFragment.findPreference("platform").setSummary(profiles.get(which).Platform);
+                                prefFragment.findPreference("region").setSummary(profiles.get(which).Region);
+                                editor.apply();
+                            }
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .create();
+                dialog.show();
+
+                return true;
+            default:
+                return false;
         }
     }
 
