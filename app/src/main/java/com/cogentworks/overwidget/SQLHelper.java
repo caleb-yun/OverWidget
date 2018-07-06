@@ -33,6 +33,22 @@ public class SQLHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    public void setList(ArrayList<Profile> list) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        onCreate(db);
+
+        for (Profile profile : list) {
+            ContentValues values = new ContentValues();
+            values.put("BattleTag", profile.BattleTag);
+            values.put(COL_NAME, profile.toGson());
+
+            db.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+        }
+
+        db.close();
+    }
+
     public void insertNewProfile(String battleTag, Profile profile) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -57,7 +73,7 @@ public class SQLHelper extends SQLiteOpenHelper {
 
     public void deleteItem(String item) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_NAME, COL_NAME + " = ?", new String[]{item});
+        db.delete(TABLE_NAME, "BattleTag = ?", new String[]{item});
         db.close();
     }
 

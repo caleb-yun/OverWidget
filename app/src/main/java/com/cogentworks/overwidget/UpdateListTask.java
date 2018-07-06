@@ -34,8 +34,12 @@ public class UpdateListTask extends AsyncTask<String, Void, ArrayList<Profile>> 
         try {
             for (int i = 0; i < profiles.size(); i++) {
                 Profile profile = profiles.get(i);
-                profiles.set(i, WidgetUtils.getProfile(profile.BattleTag, profile.Platform, profile.Region, null, null));
+                int id = profile.Id;
                 Log.d("UpdateListTask", profile.BattleTag);
+
+                profile = WidgetUtils.getProfile(profile.BattleTag, profile.Platform, profile.Region, null, null);
+                profile.Id = id;
+                profiles.set(i, profile);
             }
             return profiles;
         } catch (IOException ex) {
@@ -52,14 +56,10 @@ public class UpdateListTask extends AsyncTask<String, Void, ArrayList<Profile>> 
     protected void onPostExecute(ArrayList<Profile> result) {
         if (result != null) {
             MainActivity activity = (MainActivity) context;
-            for (Profile profile : result)
-                try {
-                    activity.dbHelper.updateItem(profile.BattleTag, profile);
-                } catch (IndexOutOfBoundsException ex) {
-                    ex.printStackTrace();
-                }
 
-            activity.showItemList();
+            activity.dbHelper.setList(result);
+            activity.mDragListView.getAdapter().setItemList(result);
+
         } else {
             if (error)
                 Snackbar.make(((Activity) context).findViewById(R.id.layout_main), "An update error occurred", Snackbar.LENGTH_LONG).show();

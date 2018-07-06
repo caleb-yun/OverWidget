@@ -5,25 +5,28 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
+import com.woxthebox.draglistview.DragListView;
+import com.woxthebox.draglistview.swipe.ListSwipeHelper;
+import com.woxthebox.draglistview.swipe.ListSwipeItem;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,6 +35,9 @@ public class MainActivity extends AppCompatActivity {
     public SQLHelper dbHelper;
     ProfileAdapter adapter;
     ListView listView;
+
+    public DragListView mDragListView;
+    ArrayList<Profile> mItemArray;
 
     boolean isBusy = false;
 
@@ -51,13 +57,11 @@ public class MainActivity extends AppCompatActivity {
 
         // Set swipe to refresh behavior
         final MainActivity activityContext = this;
-        SwipeRefreshLayout mSwipeRefreshLayout = findViewById(R.id.swiperefresh);
+        OWSwipeRefreshLayout mSwipeRefreshLayout = findViewById(R.id.swiperefresh);
         mSwipeRefreshLayout.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
-                        Log.i(TAG, "onRefresh called from SwipeRefreshLayout");
-
                         // This method performs the actual data-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
                         UpdateListTask updateListTask = new UpdateListTask(activityContext, dbHelper.getList());
@@ -67,69 +71,81 @@ public class MainActivity extends AppCompatActivity {
         );
 
         dbHelper = new SQLHelper(this);
-        listView = findViewById(R.id.list);
+        mItemArray = dbHelper.getList();
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        final OWSwipeRefreshLayout mRefreshLayout = mSwipeRefreshLayout;
+
+        mDragListView = (DragListView) findViewById(R.id.list);
+        mDragListView.getRecyclerView().setVerticalScrollBarEnabled(true);
+        mDragListView.setDragListListener(new DragListView.DragListListenerAdapter() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                final int mPosition = position;
-                AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
-                        .setTitle("Open in Browser")
-                        .setItems(R.array.link_array, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                Profile profile = dbHelper.getList().get(mPosition);
-                                Intent i = new Intent(Intent.ACTION_VIEW);
-                                switch (which) {
-                                    case 0:
-                                        i.setData(Uri.parse("http://playoverwatch.com/career/" + profile.Platform.toLowerCase() + "/" + profile.BattleTag.replace('#','-')));
-                                        startActivity(i);
-                                        break;
-                                    case 1:
-                                        i.setData(Uri.parse("https://www.overbuff.com/players/" + profile.Platform.toLowerCase() + "/" + profile.BattleTag.replace('#','-')));
-                                        startActivity(i);
-                                        break;
-                                }
-                            }
-                        })
-                        .setNegativeButton("Cancel", null)
-                        .create();
-                dialog.show();
+            public void onItemDragStarted(int position) {
+                mRefreshLayout.setEnabled(false);
+                //Toast.makeText(mDragListView.getContext(), "Start - position: " + position, Toast.LENGTH_SHORT).show();
             }
-        });
 
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemDragEnded(int fromPosition, int toPosition) {
                 if (!isBusy) {
-                    final int mPosition = position;
-                    AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
-                            .setTitle("Delete Profile")
-                            .setMessage("Are you sure you want to delete?")
-                            .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    isBusy = true;
-                                    Gson gson = new Gson();
-                                    dbHelper.deleteItem(gson.toJson(listView.getItemAtPosition(mPosition)));
-                                    showItemList();
-                                    isBusy = false;
-                                }
-                            })
-                            .setNegativeButton("Cancel", null)
-                            .create();
-                    dialog.show();
-                } else {
-                    Toast.makeText(MainActivity.this, "List is busy", Toast.LENGTH_LONG).show();
+                    mRefreshLayout.setEnabled(true);
+                    if (fromPosition != toPosition) {
+                        dbHelper.setList(mItemArray);
+                        //Toast.makeText(mDragListView.getContext(), "End - position: " + toPosition, Toast.LENGTH_SHORT).show();
+                    }
                 }
-
-                return true;
             }
         });
 
-        showItemList();
+        mRefreshLayout.setScrollingView(mDragListView.getRecyclerView());
+        if (useDarkTheme)
+            mRefreshLayout.setColorSchemeColors(ContextCompat.getColor(this, R.color.colorAccentDark));
+        else
+            mRefreshLayout.setColorSchemeColors(ContextCompat.getColor(this, R.color.colorAccent));
+
+        mDragListView.setSwipeListener(new ListSwipeHelper.OnSwipeListenerAdapter() {
+            @Override
+            public void onItemSwipeStarted(ListSwipeItem item) {
+                mRefreshLayout.setEnabled(false);
+            }
+
+            @Override
+            public void onItemSwipeEnded(ListSwipeItem item, ListSwipeItem.SwipeDirection swipedDirection) {
+                mRefreshLayout.setEnabled(true);
+                // Swipe to delete on left
+                if (swipedDirection == ListSwipeItem.SwipeDirection.LEFT || swipedDirection == ListSwipeItem.SwipeDirection.RIGHT) {
+                    if (!isBusy) {
+                        final Profile adapterItem = (Profile) item.getTag();
+                        final int pos = mDragListView.getAdapter().getPositionForItem(adapterItem);
+
+                        isBusy = true;
+                        dbHelper.deleteItem(adapterItem.BattleTag);
+                        mDragListView.getAdapter().removeItem(pos);
+                        isBusy = false;
+                    } else {
+                        Toast.makeText(MainActivity.this, "List is busy", Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        });
+
+        setupListRecyclerView();
+
+        isBusy = true;
+        mSwipeRefreshLayout.setRefreshing(true);
+        UpdateListTask updateListTask = new UpdateListTask(this, mItemArray);
+        updateListTask.execute();
+
     }
 
-    public void showItemList() {
+    private void setupListRecyclerView() {
+        mDragListView.setLayoutManager(new LinearLayoutManager(this));
+        ItemAdapter listAdapter = new ItemAdapter(mItemArray, R.layout.list_item, R.id.layout_main, true);
+        mDragListView.setAdapter(listAdapter, true);
+        mDragListView.setCanDragHorizontally(false);
+        //mDragListView.setCustomDragItem(new MyDragItem(getContext(), R.layout.list_item));
+    }
+
+    /*public void showItemList() {
         isBusy = true;
 
         if (adapter == null) {
@@ -147,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         isBusy = false;
-    }
+    }*/
 
     public void onFabClick(View view) {
         final Context context = this;
@@ -248,6 +264,5 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
 
 }

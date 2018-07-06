@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.cogentworks.overwidget.OWSwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,10 +8,10 @@
     tools:context=".MainActivity"
     tools:showIn="@layout/activity_main"
     android:id="@+id/swiperefresh">
-    <ListView
+    <com.woxthebox.draglistview.DragListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/list"
         android:dividerHeight="0dp"
         android:divider="@null" />
-</android.support.v4.widget.SwipeRefreshLayout>
+</com.cogentworks.overwidget.OWSwipeRefreshLayout>

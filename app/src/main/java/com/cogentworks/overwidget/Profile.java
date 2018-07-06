@@ -27,6 +27,8 @@ public class Profile {
     private String errorMsg;
     private String theme;
 
+    public int Id;
+
     public Profile() {}
 
     public Profile(String battleTag, String platform, String region) {
