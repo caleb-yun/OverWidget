@@ -7,8 +7,6 @@ import android.support.design.widget.Snackbar;
 
 import com.woxthebox.draglistview.DragItemAdapter;
 
-import java.io.IOException;
-
 public class AddProfileTask extends AsyncTask<String, Void, Profile> {
 
     private Context context;
@@ -31,9 +29,9 @@ public class AddProfileTask extends AsyncTask<String, Void, Profile> {
             Profile profile = WidgetUtils.getProfile(battleTag, platform, region, null, null);
             profile.Id = profile.BattleTag.hashCode();
             return profile;
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
-            Snackbar.make(((Activity) context).findViewById(R.id.swiperefresh), "An error occurred", Snackbar.LENGTH_LONG).show();
+            //Toast.makeText(context, "An error occurred", Toast.LENGTH_SHORT).show();
         }
         return null;
     }
