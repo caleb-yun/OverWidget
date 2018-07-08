@@ -98,4 +98,13 @@ public class SQLHelper extends SQLiteOpenHelper {
             profiles.add(gson.fromJson(json, Profile.class));
         return profiles;
     }
+
+    public Profile getItem(String battleTag) {
+        ArrayList<Profile> list = getList();
+        for (Profile profile : list) {
+            if (profile.BattleTag.equals(battleTag))
+                return profile;
+        }
+        return null;
+    }
 }

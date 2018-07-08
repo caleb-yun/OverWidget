@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.woxthebox.draglistview.DragItemAdapter;
@@ -56,12 +55,14 @@ public class ItemAdapter extends DragItemAdapter<Profile, ItemAdapter.OWViewHold
             holder.gamesWon.setText(profile.gamesWon + " games won");
 
         holder.level.setText("Lvl " + (Integer.parseInt(profile.Prestige)*100 + Integer.parseInt(profile.Level)));
+
         if (!profile.Tier.equals("") && !profile.Tier.equals("nullrank")) {
             holder.tier.setImageResource(context.getResources().getIdentifier(profile.Tier, "drawable", context.getPackageName()));
             if (isDark)
                 holder.comprank.setImageBitmap(WidgetUtils.BuildTextBmp(profile.CompRank, "Dark", context));
             else
                 holder.comprank.setImageBitmap(WidgetUtils.BuildTextBmp(profile.CompRank, "Light", context));
+            holder.itemView.findViewById(R.id.skill_layout).setVisibility(View.VISIBLE);
         } else {
             holder.itemView.findViewById(R.id.skill_layout).setVisibility(View.GONE);
         }
@@ -136,12 +137,6 @@ public class ItemAdapter extends DragItemAdapter<Profile, ItemAdapter.OWViewHold
                     .setNegativeButton("Cancel", null)
                     .create();
             dialog.show();
-        }
-
-        @Override
-        public boolean onItemLongClicked(View view) {
-            Toast.makeText(view.getContext(), "Item long clicked", Toast.LENGTH_SHORT).show();
-            return true;
         }
     }
 }

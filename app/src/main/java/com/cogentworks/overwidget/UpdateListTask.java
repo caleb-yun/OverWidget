@@ -39,6 +39,7 @@ public class UpdateListTask extends AsyncTask<String, Void, ArrayList<Profile>> 
 
                 profile = WidgetUtils.getProfile(profile.BattleTag, profile.Platform, profile.Region, null, null);
                 profile.Id = id;
+
                 profiles.set(i, profile);
             }
             return profiles;

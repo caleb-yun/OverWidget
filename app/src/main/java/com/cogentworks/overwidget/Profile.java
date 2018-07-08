@@ -42,6 +42,10 @@ public class Profile {
         this.AvatarURL = avatarURL;
     }
 
+    public void setId() {
+        Id = BattleTag.hashCode();
+    }
+
     public void SetLevel(String level, String prestige, String rankImageURL) {
         this.Level = level;
         this.Prestige = prestige;
