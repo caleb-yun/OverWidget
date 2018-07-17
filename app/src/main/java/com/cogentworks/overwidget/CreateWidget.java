@@ -8,12 +8,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -152,7 +153,7 @@ public class CreateWidget extends AsyncTask<String, Void, Profile> {
     protected void onPostExecute(Profile result) {
         super.onPostExecute(result);
 
-        if (!checkProfileExists) { // Normal (from home screen)
+        /*if (!checkProfileExists) { // Normal (from home screen)
             if (result != null) {
                 // Convert Profile to Gson and save to SharedPrefs
                 toGson(result);
@@ -165,7 +166,7 @@ public class CreateWidget extends AsyncTask<String, Void, Profile> {
                 }
                 WidgetUtils.setSyncClicked(context, this.appWidgetId, this.appWidgetManager);
             }
-        } else { // From ConfigureActivity
+        } else {*/ // From ConfigureActivity
             ProgressBar progressBar = mActivity.findViewById(R.id.progress_bar);
             LinearLayout content = mActivity.findViewById(R.id.layout_main);
             FloatingActionButton fab = mActivity.findViewById(R.id.fab);
@@ -204,13 +205,26 @@ public class CreateWidget extends AsyncTask<String, Void, Profile> {
                 mActivity.finish();
                 Log.d(TAG, "Check profile completed");
             } else {
-                //progressBar.setVisibility(View.GONE);
-                //content.setVisibility(View.VISIBLE);
                 OverWidgetConfigure.crossfade(context, content, progressBar);
                 fab.show();
                 Snackbar.make(content, result.getErrorMsg(), Snackbar.LENGTH_SHORT).show(); // Add "Retry" action
+
+                final LinearLayout fContent = content;
+                final ProgressBar fProgressBar = progressBar;
+                
+                // Make sure animation is finished
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        fProgressBar.setVisibility(View.GONE);
+                        fContent.setVisibility(View.VISIBLE);
+                        fContent.setAlpha(1f);
+                    }
+                }, context.getResources().getInteger(android.R.integer.config_shortAnimTime));
+
             }
-        }
+        //}
     }
 
     private void toGson(Profile result) {
