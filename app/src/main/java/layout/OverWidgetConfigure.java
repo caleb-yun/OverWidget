@@ -94,6 +94,17 @@ public class OverWidgetConfigure extends AppCompatActivity implements OnPreferen
         }
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        boolean isDark = PreferenceManager.getDefaultSharedPreferences(getBaseContext())
+                .getBoolean(SettingsActivity.PREF_DARK_THEME, false);
+        if (isDark) {
+            MenuItem settings = menu.findItem(R.id.add_list);
+            settings.setIcon(R.drawable.ic_person);
+        }
+        return true;
+    }
+
     public boolean onCreateOptionsMenu(Menu menu) {
 
         MenuInflater inflater = getMenuInflater();

@@ -51,9 +51,15 @@ public class MainActivity extends AppCompatActivity {
             setTheme(R.style.Blackwatch);
 
         setContentView(R.layout.activity_main);
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
 
+        /*Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (useDarkTheme) {
+            toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryBlackwatch));
+            toolbar.setTitleTextColor(getResources().getColor(R.color.colorTextBlackwatch));
+            toolbar.setPopupTheme(R.style.Blackwatch);
+
+        }*/
 
         // Set swipe to refresh behavior
         final MainActivity activityContext = this;
@@ -64,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onRefresh() {
                         // This method performs the actual data-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
+                        isBusy = true;
                         UpdateListTask updateListTask = new UpdateListTask(activityContext, dbHelper.getList());
                         updateListTask.execute();
                     }
@@ -222,9 +229,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem checkable = menu.findItem(R.id.dark_check);
-        boolean isChecked = PreferenceManager.getDefaultSharedPreferences(getBaseContext())
+        boolean isDark = PreferenceManager.getDefaultSharedPreferences(getBaseContext())
                 .getBoolean(SettingsActivity.PREF_DARK_THEME, false);
-        checkable.setChecked(isChecked);
+        checkable.setChecked(isDark);
+
         return true;
     }
 
@@ -253,6 +261,36 @@ public class MainActivity extends AppCompatActivity {
                 return false;
         }
     }
+
+    /*private void sortItemsDialog() {
+        if (!isBusy) {
+            AlertDialog dialog = new AlertDialog.Builder(this)
+                    .setTitle("Sort by")
+                    .setSingleChoiceItems(R.)
+                    .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            EditText editText = dialogView.findViewById(R.id.config_battletag);
+                            String battleTag = String.valueOf(editText.getText());
+                            Spinner platformSpinner = dialogView.findViewById(R.id.platform_spinner);
+                            String platform = platformSpinner.getSelectedItem().toString();
+                            Spinner regionSpinner = dialogView.findViewById(R.id.region_spinner);
+                            String region = regionSpinner.getSelectedItem().toString();
+
+                            if (!dbHelper.getList("BattleTag").contains(battleTag)) {
+                                Toast.makeText(findViewById(R.id.swiperefresh).getContext(), "Adding player...", Toast.LENGTH_SHORT).show();
+                                AddProfileTask addTask = new AddProfileTask(context, battleTag, platform, region);
+                                addTask.execute();
+                            } else {
+                                Snackbar.make(findViewById(R.id.layout_main), "Player already added to list", Snackbar.LENGTH_SHORT).show();
+                            }
+                        }
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .create();
+            dialog.show();
+        }
+    }*/
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

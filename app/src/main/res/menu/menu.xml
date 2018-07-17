@@ -10,4 +10,8 @@
         android:id="@+id/dark_check"
         android:title="Blackwatch"
         android:checkable="true" />
+
+    <!--<item
+        android:id="@+id/sort"
+        android:title="Sort" />-->
 </menu>
