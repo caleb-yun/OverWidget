@@ -211,7 +211,7 @@ public class CreateWidget extends AsyncTask<String, Void, Profile> {
 
                 final LinearLayout fContent = content;
                 final ProgressBar fProgressBar = progressBar;
-                
+
                 // Make sure animation is finished
                 final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {

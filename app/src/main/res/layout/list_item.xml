@@ -8,31 +8,27 @@
     app:rightViewId="@+id/item_right"
     app:swipeViewId="@+id/item_layout">
 
-    <TextView
+    <ImageView
         android:id="@+id/item_left"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignBottom="@+id/item_layout"
         android:layout_alignTop="@+id/item_layout"
         android:background="#f44336"
-        android:gravity="start|center_vertical"
+        android:scaleType="fitStart"
         android:padding="16dp"
-        android:text="Delete"
-        android:textColor="@android:color/white"
-        android:textSize="20sp" />
+        android:src="@drawable/ic_delete"/>
 
-    <TextView
+    <ImageView
         android:id="@+id/item_right"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignBottom="@+id/item_layout"
         android:layout_alignTop="@+id/item_layout"
         android:background="#f44336"
-        android:gravity="end|center_vertical"
+        android:scaleType="fitEnd"
         android:padding="16dp"
-        android:text="Delete"
-        android:textColor="@android:color/white"
-        android:textSize="20sp" />
+        android:src="@drawable/ic_delete" />
 
     <RelativeLayout
         android:id="@+id/item_layout"
