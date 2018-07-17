@@ -7,11 +7,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -38,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
 
     public DragListView mDragListView;
     ArrayList<Profile> mItemArray;
+
+    FloatingActionButton fab;
 
     boolean isBusy = false;
 
@@ -134,6 +138,20 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+
+        fab = findViewById(R.id.fab);
+        mDragListView.getRecyclerView().addOnScrollListener((new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy > 0 && fab.getVisibility() == View.VISIBLE) {
+                    fab.hide();
+                } else if (dy < 0 && fab.getVisibility() != View.VISIBLE) {
+                    fab.show();
+                }
+            }
+        }));
 
         setupListRecyclerView();
 
