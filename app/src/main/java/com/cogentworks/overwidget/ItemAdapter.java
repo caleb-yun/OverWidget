@@ -125,13 +125,16 @@ public class ItemAdapter extends DragItemAdapter<Profile, ItemAdapter.OWViewHold
                             switch (which) {
                                 case 0:
                                     i.setData(Uri.parse("http://playoverwatch.com/career/" + platform + "/" + battleTag));
-                                    mView.getContext().startActivity(i);
                                     break;
                                 case 1:
                                     i.setData(Uri.parse("https://www.overbuff.com/players/" + platform + "/" + battleTag));
-                                    mView.getContext().startActivity(i);
+                                    break;
+                                case 2:
+                                    i.setData(Uri.parse("https://masteroverwatch.com/profile/" + platform + "/global/" + battleTag));
                                     break;
                             }
+                            mView.getContext().startActivity(i);
+
                         }
                     })
                     .setNegativeButton("Cancel", null)

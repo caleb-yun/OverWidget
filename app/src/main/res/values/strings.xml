@@ -25,8 +25,9 @@
         <item>24 hours</item>
     </string-array>
     <string-array name="link_array">
-        <item>playoverwatch.com</item>
-        <item>overbuff.com</item>
+        <item>PlayOverwatch</item>
+        <item>Overbuff</item>
+        <item>Master Overwatch</item>
     </string-array>
     <string name="title_activity_main">OverWidget</string>
     <string name="title_activity_settings">Settings</string>

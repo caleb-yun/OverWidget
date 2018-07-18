@@ -275,6 +275,10 @@ public class MainActivity extends AppCompatActivity {
             case R.id.settings:
                 startActivityForResult(new Intent(this, SettingsActivity.class), REQUEST_EXIT);
                 return true;
+            /*case R.id.sort:
+                ItemAdapter listAdapter = new ItemAdapter(mItemArray, R.layout.list_item, R.id.layout_main, true);
+                mDragListView.setAdapter(listAdapter, true);
+                return true;*/
             default:
                 return false;
         }
