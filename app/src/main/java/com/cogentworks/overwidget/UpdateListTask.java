@@ -70,6 +70,5 @@ public class UpdateListTask extends AsyncTask<String, Void, ArrayList<Profile>> 
         activity.isBusy = false;
         ((SwipeRefreshLayout)activity.findViewById(R.id.swiperefresh)).setRefreshing(false);
         activity.disableDrag(false);
-        activity.setDragListener();
     }
 }

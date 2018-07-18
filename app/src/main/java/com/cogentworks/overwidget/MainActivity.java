@@ -91,7 +91,22 @@ public class MainActivity extends AppCompatActivity {
 
         mDragListView = (DragListView) findViewById(R.id.list);
         mDragListView.getRecyclerView().setVerticalScrollBarEnabled(true);
-        setDragListener();
+        mDragListView.setDragListListener(new DragListView.DragListListenerAdapter() {
+            @Override
+            public void onItemDragStarted(int position) {
+                mRefreshLayout.setEnabled(false);
+            }
+
+            @Override
+            public void onItemDragEnded(int fromPosition, int toPosition) {
+                if (!isBusy) {
+                    mRefreshLayout.setEnabled(true);
+                    if (fromPosition != toPosition) {
+                        dbHelper.setList((ArrayList<Profile>) mDragListView.getAdapter().getItemList());
+                    }
+                }
+            }
+        });
 
         mRefreshLayout.setScrollingView(mDragListView.getRecyclerView());
         if (useDarkTheme)
@@ -184,25 +199,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean canDropItemAtPosition(int dropPosition) {
                 return !disable;
-            }
-        });
-    }
-
-    public void setDragListener() {
-        mDragListView.setDragListListener(new DragListView.DragListListenerAdapter() {
-            @Override
-            public void onItemDragStarted(int position) {
-                mRefreshLayout.setEnabled(false);
-            }
-
-            @Override
-            public void onItemDragEnded(int fromPosition, int toPosition) {
-                if (!isBusy) {
-                    mRefreshLayout.setEnabled(true);
-                    if (fromPosition != toPosition) {
-                        dbHelper.setList((ArrayList<Profile>) mDragListView.getAdapter().getItemList());
-                    }
-                }
             }
         });
     }

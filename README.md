@@ -1,8 +1,8 @@
+![launcher](/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png)
 # OverWidget
 View basic Overwatch stats from your home screen.
 [GitHub Page](https://kala30.github.io/OverWidget)
 
-![launcher](/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png)
 
 ![](/assets/img/screenshots.png)
 
@@ -11,5 +11,5 @@ View basic Overwatch stats from your home screen.
 - ~Input sanitizer~
 - ~Dynamicly update based on size~
 - ~Level stats (level, image, prestige)~
-- Avatar image (open career profile web page when clicked)
+- ~Avatar image (open career profile web page when clicked)~
 - Most played hero
