@@ -24,6 +24,7 @@ public class UpdateListTask extends AsyncTask<String, Void, ArrayList<Profile>> 
     @Override
     protected ArrayList<Profile> doInBackground(String... params) {
         ((MainActivity)context).isBusy = true;
+        ((MainActivity)context).disableDrag(true);
 
         if (profiles.size() == 0) {
             error = false;
@@ -54,18 +55,21 @@ public class UpdateListTask extends AsyncTask<String, Void, ArrayList<Profile>> 
 
     @Override
     protected void onPostExecute(ArrayList<Profile> result) {
-        if (result != null) {
-            MainActivity activity = (MainActivity) context;
 
+        MainActivity activity = (MainActivity) context;
+        if (result != null) {
             activity.dbHelper.setList(result);
             activity.mDragListView.getAdapter().setItemList(result);
 
+
         } else {
             if (error)
-                Snackbar.make(((Activity) context).findViewById(R.id.layout_main), "An update error occurred", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(activity.findViewById(R.id.layout_main), "An update error occurred", Snackbar.LENGTH_LONG).show();
         }
 
-        ((MainActivity)context).isBusy = false;
-        ((SwipeRefreshLayout)((MainActivity)context).findViewById(R.id.swiperefresh)).setRefreshing(false);
+        activity.isBusy = false;
+        ((SwipeRefreshLayout)activity.findViewById(R.id.swiperefresh)).setRefreshing(false);
+        activity.disableDrag(false);
+        activity.setDragListener();
     }
 }

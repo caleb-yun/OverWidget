@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
     public DragListView mDragListView;
     ArrayList<Profile> mItemArray;
+    OWSwipeRefreshLayout mRefreshLayout;
 
     FloatingActionButton fab;
 
@@ -86,28 +87,11 @@ public class MainActivity extends AppCompatActivity {
         dbHelper = new SQLHelper(this);
         mItemArray = dbHelper.getList();
 
-        final OWSwipeRefreshLayout mRefreshLayout = mSwipeRefreshLayout;
+        mRefreshLayout = mSwipeRefreshLayout;
 
         mDragListView = (DragListView) findViewById(R.id.list);
         mDragListView.getRecyclerView().setVerticalScrollBarEnabled(true);
-        mDragListView.setDragListListener(new DragListView.DragListListenerAdapter() {
-            @Override
-            public void onItemDragStarted(int position) {
-                mRefreshLayout.setEnabled(false);
-                //Toast.makeText(mDragListView.getContext(), "Start - position: " + position, Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onItemDragEnded(int fromPosition, int toPosition) {
-                if (!isBusy) {
-                    mRefreshLayout.setEnabled(true);
-                    if (fromPosition != toPosition) {
-                        dbHelper.setList(mItemArray);
-                        //Toast.makeText(mDragListView.getContext(), "End - position: " + toPosition, Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-        });
+        setDragListener();
 
         mRefreshLayout.setScrollingView(mDragListView.getRecyclerView());
         if (useDarkTheme)
@@ -157,11 +141,9 @@ public class MainActivity extends AppCompatActivity {
 
         setupListRecyclerView();
 
-        isBusy = true;
         mSwipeRefreshLayout.setRefreshing(true);
         UpdateListTask updateListTask = new UpdateListTask(this, mItemArray);
         updateListTask.execute();
-
     }
 
     private void setupListRecyclerView() {
@@ -191,6 +173,39 @@ public class MainActivity extends AppCompatActivity {
 
         isBusy = false;
     }*/
+
+    public void disableDrag(final boolean disable) {
+        mDragListView.setDragListCallback(new DragListView.DragListCallbackAdapter() {
+            @Override
+            public boolean canDragItemAtPosition(int dragPosition) {
+                return !disable;
+            }
+
+            @Override
+            public boolean canDropItemAtPosition(int dropPosition) {
+                return !disable;
+            }
+        });
+    }
+
+    public void setDragListener() {
+        mDragListView.setDragListListener(new DragListView.DragListListenerAdapter() {
+            @Override
+            public void onItemDragStarted(int position) {
+                mRefreshLayout.setEnabled(false);
+            }
+
+            @Override
+            public void onItemDragEnded(int fromPosition, int toPosition) {
+                if (!isBusy) {
+                    mRefreshLayout.setEnabled(true);
+                    if (fromPosition != toPosition) {
+                        dbHelper.setList((ArrayList<Profile>) mDragListView.getAdapter().getItemList());
+                    }
+                }
+            }
+        });
+    }
 
     public void onFabClick(View view) {
         final Context context = this;
