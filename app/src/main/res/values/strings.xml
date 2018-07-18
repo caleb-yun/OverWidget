@@ -29,6 +29,11 @@
         <item>Overbuff</item>
         <item>Master Overwatch</item>
     </string-array>
+    <string-array name="sort_array">
+        <item>Name</item>
+        <item>SR</item>
+        <item>Level</item>
+    </string-array>
     <string name="title_activity_main">OverWidget</string>
     <string name="title_activity_settings">Settings</string>
 

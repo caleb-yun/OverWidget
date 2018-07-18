@@ -11,7 +11,9 @@
         android:title="Blackwatch"
         android:checkable="true" />
 
-    <!--<item
+    <item
         android:id="@+id/sort"
-        android:title="Sort" />-->
+        android:title="Sort"
+        android:icon="@drawable/ic_sort_black"
+        app:showAsAction="always"/>
 </menu>

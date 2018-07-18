@@ -29,6 +29,8 @@ import com.woxthebox.draglistview.swipe.ListSwipeHelper;
 import com.woxthebox.draglistview.swipe.ListSwipeItem;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -251,6 +253,10 @@ public class MainActivity extends AppCompatActivity {
                 .getBoolean(SettingsActivity.PREF_DARK_THEME, false);
         checkable.setChecked(isDark);
 
+        MenuItem sort = menu.findItem(R.id.sort);
+        if (isDark)
+            sort.setIcon(R.drawable.ic_sort);
+
         return true;
     }
 
@@ -275,44 +281,76 @@ public class MainActivity extends AppCompatActivity {
             case R.id.settings:
                 startActivityForResult(new Intent(this, SettingsActivity.class), REQUEST_EXIT);
                 return true;
-            /*case R.id.sort:
-                ItemAdapter listAdapter = new ItemAdapter(mItemArray, R.layout.list_item, R.id.layout_main, true);
-                mDragListView.setAdapter(listAdapter, true);
-                return true;*/
+            case R.id.sort:
+                sortItemsDialog();
+                return true;
             default:
                 return false;
         }
     }
 
-    /*private void sortItemsDialog() {
+    private static int lastSortItem;
+
+    private void sortItemsDialog() {
         if (!isBusy) {
             AlertDialog dialog = new AlertDialog.Builder(this)
                     .setTitle("Sort by")
-                    .setSingleChoiceItems(R.)
-                    .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                    .setSingleChoiceItems(R.array.sort_array, lastSortItem, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            EditText editText = dialogView.findViewById(R.id.config_battletag);
-                            String battleTag = String.valueOf(editText.getText());
-                            Spinner platformSpinner = dialogView.findViewById(R.id.platform_spinner);
-                            String platform = platformSpinner.getSelectedItem().toString();
-                            Spinner regionSpinner = dialogView.findViewById(R.id.region_spinner);
-                            String region = regionSpinner.getSelectedItem().toString();
-
-                            if (!dbHelper.getList("BattleTag").contains(battleTag)) {
-                                Toast.makeText(findViewById(R.id.swiperefresh).getContext(), "Adding player...", Toast.LENGTH_SHORT).show();
-                                AddProfileTask addTask = new AddProfileTask(context, battleTag, platform, region);
-                                addTask.execute();
-                            } else {
-                                Snackbar.make(findViewById(R.id.layout_main), "Player already added to list", Snackbar.LENGTH_SHORT).show();
+                            ArrayList<Profile> itemList = dbHelper.getList();
+                            Comparator<Profile> comparator;
+                            switch (which) {
+                                case 0: // Name
+                                    comparator = new Comparator<Profile>() {
+                                        @Override
+                                        public int compare(Profile o1, Profile o2) {
+                                            return o1.BattleTag.compareTo(o2.BattleTag);
+                                        }
+                                    };
+                                    break;
+                                case 1: // SR
+                                    comparator = new Comparator<Profile>() {
+                                        @Override
+                                        public int compare(Profile o1, Profile o2) {
+                                            int compRank1 = 0;
+                                            if (!o1.CompRank.equals(""))
+                                                compRank1 = Integer.parseInt(o1.CompRank);
+                                            int compRank2 = 0;
+                                            if (!o2.CompRank.equals(""))
+                                                compRank2 = Integer.parseInt(o2.CompRank);
+                                            return compRank2 - compRank1;
+                                        }
+                                    };
+                                    break;
+                                case 2: // Level
+                                    comparator = new Comparator<Profile>() {
+                                        @Override
+                                        public int compare(Profile o1, Profile o2) {
+                                            int level1 = Integer.parseInt(o1.Level) + Integer.parseInt(o1.Prestige) * 100;
+                                            int level2 = Integer.parseInt(o2.Level) + Integer.parseInt(o2.Prestige) * 100;
+                                            return level2 - level1;
+                                        }
+                                    };
+                                    break;
+                                default:
+                                    return;
                             }
+                            Collections.sort(itemList, comparator);
+
+                            ItemAdapter listAdapter = new ItemAdapter(itemList, R.layout.list_item, R.id.layout_main, true);
+                            mDragListView.setAdapter(listAdapter, true);
+
+                            dbHelper.setList(itemList);
+                            lastSortItem = which;
+                            dialog.dismiss();
                         }
                     })
                     .setNegativeButton("Cancel", null)
                     .create();
             dialog.show();
         }
-    }*/
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
