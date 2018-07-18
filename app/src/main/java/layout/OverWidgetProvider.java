@@ -2,6 +2,7 @@ package layout;
 
 import android.annotation.TargetApi;
 import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
@@ -31,26 +32,25 @@ public class OverWidgetProvider extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         for (int appWidgetId : appWidgetIds) {
-            //int interval = prefs.getInterval();
-            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
             Intent intent = new Intent(context, OverWidgetProvider.class);
             intent.setAction(OverWidgetProvider.REFRESH_INTENT);
             intent.putExtra("appWidgetId", appWidgetId);
+            PendingIntent pi = PendingIntent.getBroadcast(context, appWidgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-            /*int updateInterval = 60*60*1000;
+            int updateInterval = 0;
             Profile profile = WidgetUtils.loadUserPrefOffline(context, appWidgetId);
             if (profile != null)
                 updateInterval = profile.getUpdateInterval();
             Log.d(TAG, "(" + appWidgetId + ") Update Interval: " + updateInterval);
 
-            PendingIntent pi = PendingIntent.getBroadcast(context, appWidgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             assert alarmManager != null;
-            alarmManager.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis(), updateInterval, pi);*/
+            alarmManager.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis(), updateInterval, pi);
             //alarmManager.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis(), 10*1000, pi);
 
-            context.sendBroadcast(intent);
 
+            context.sendBroadcast(intent);
             WidgetUtils.setLoadingLayout(context, appWidgetId, AppWidgetManager.getInstance(context));
         }
     }
@@ -68,19 +68,26 @@ public class OverWidgetProvider extends AppWidgetProvider {
         // When the user deletes the widget, delete the preference associated with it.
         for (int appWidgetId : appWidgetIds) {
             WidgetUtils.deletePrefs(context, appWidgetId);
+
+            // Cancel alarm
+            Intent intent = new Intent(context, OverWidgetProvider.class);
+            intent.setAction(OverWidgetProvider.REFRESH_INTENT);
+            intent.putExtra("appWidgetId", appWidgetId);
+            PendingIntent pi = PendingIntent.getBroadcast(context, appWidgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            assert alarmManager != null;
+            alarmManager.cancel(pi);
         }
     }
 
     @Override
     public void onEnabled(Context context) {
         // Enter relevant functionality for when the first widget is created
-        //AlarmUtil.scheduleUpdate(context);
     }
 
     @Override
     public void onDisabled(Context context) {
         // Enter relevant functionality for when the last widget is disabled
-        //AlarmUtil.clearUpdate(context);
     }
 
     @Override
