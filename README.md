@@ -4,7 +4,7 @@ View basic Overwatch stats from your home screen.
 [GitHub Page](https://kala30.github.io/OverWidget)
 
 
-![](/assets/img/screenshots.png)
+![](/assets/img/screenshots2.png)
 
 ## TODO
 - ~Tier Image~
