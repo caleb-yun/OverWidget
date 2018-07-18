@@ -16,7 +16,7 @@
         android:layout_alignTop="@+id/item_layout"
         android:background="#f44336"
         android:scaleType="fitStart"
-        android:padding="16dp"
+        android:padding="32dp"
         android:src="@drawable/ic_delete"/>
 
     <ImageView
@@ -27,7 +27,7 @@
         android:layout_alignTop="@+id/item_layout"
         android:background="#f44336"
         android:scaleType="fitEnd"
-        android:padding="16dp"
+        android:padding="32dp"
         android:src="@drawable/ic_delete" />
 
     <RelativeLayout

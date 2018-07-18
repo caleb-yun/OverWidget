@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,7 +34,7 @@ public class UpdateListTask extends AsyncTask<String, Void, ArrayList<Profile>> 
             for (int i = 0; i < profiles.size(); i++) {
                 Profile profile = profiles.get(i);
                 int id = profile.Id;
-                Log.d("UpdateListTask", profile.BattleTag);
+                //Log.d("UpdateListTask", profile.BattleTag);
 
                 profile = WidgetUtils.getProfile(profile.BattleTag, profile.Platform, profile.Region, null, null);
                 profile.Id = id;
