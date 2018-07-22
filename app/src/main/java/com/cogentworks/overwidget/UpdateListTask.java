@@ -45,7 +45,7 @@ public class UpdateListTask extends AsyncTask<String, Void, ArrayList<Profile>> 
             return profiles;
         } catch (IOException ex) {
             ex.printStackTrace();
-            Snackbar.make(((Activity) context).findViewById(R.id.layout_main), "Could not update player", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(((Activity) context).findViewById(R.id.list), "Could not update player", Snackbar.LENGTH_LONG).show();
         } catch (IndexOutOfBoundsException ex) {
             ex.printStackTrace();
         }

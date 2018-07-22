@@ -10,7 +10,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.cogentworks.overwidget.Profile;
@@ -42,7 +41,7 @@ public class OverWidgetProvider extends AppWidgetProvider {
             Profile profile = WidgetUtils.loadUserPrefOffline(context, appWidgetId);
             if (profile != null)
                 updateInterval = profile.getUpdateInterval();
-            Log.d(TAG, "(" + appWidgetId + ") Update Interval: " + updateInterval);
+            //Log.d(TAG, "(" + appWidgetId + ") Update Interval: " + updateInterval);
 
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             assert alarmManager != null;
@@ -92,7 +91,7 @@ public class OverWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(TAG, "OnReceive: " + intent.getAction());
+        //Log.d(TAG, "OnReceive: " + intent.getAction());
 
         /*if (SYNC_CLICKED.equals(intent.getAction())) {
             Log.d(TAG, "Refreshing");
@@ -155,7 +154,7 @@ public class OverWidgetProvider extends AppWidgetProvider {
     @Override
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
 
-        Log.d(TAG, "Changed dimensions");
+        //Log.d(TAG, "Changed dimensions");
 
         // Update widget
         Profile profile = WidgetUtils.loadUserPrefOffline(context, appWidgetId);

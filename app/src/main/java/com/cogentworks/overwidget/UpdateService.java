@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v4.app.JobIntentService;
-import android.util.Log;
 
 import com.google.gson.Gson;
 
@@ -30,7 +29,7 @@ public class UpdateService extends JobIntentService {
     public void onHandleWork(Intent intent) {
         if (intent != null) {
             int appWidgetId = intent.getIntExtra("appWidgetId", 0);
-            Log.d(TAG, "Intent appWidgetId: " + appWidgetId);
+            //Log.d(TAG, "Intent appWidgetId: " + appWidgetId);
 
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this.getApplicationContext());
 

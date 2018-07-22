@@ -45,3 +45,7 @@ local.properties
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+
+# Custom
+keystore/

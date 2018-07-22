@@ -11,7 +11,6 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -188,7 +187,7 @@ public class CreateWidget extends AsyncTask<String, Void, Profile> {
                 intent.putExtra("appWidgetId", appWidgetId);
 
                 int updateInterval = result.getUpdateInterval();
-                Log.d(TAG, "(" + appWidgetId + ") Update Interval: " + updateInterval);
+                //Log.d(TAG, "(" + appWidgetId + ") Update Interval: " + updateInterval);
 
                 PendingIntent pi = PendingIntent.getBroadcast(context, appWidgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                 assert alarmManager != null;
@@ -203,7 +202,7 @@ public class CreateWidget extends AsyncTask<String, Void, Profile> {
                 resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
                 mActivity.setResult(RESULT_OK, resultValue);
                 mActivity.finish();
-                Log.d(TAG, "Check profile completed");
+                //Log.d(TAG, "Check profile completed");
             } else {
                 OverWidgetConfigure.crossfade(context, content, progressBar);
                 fab.show();

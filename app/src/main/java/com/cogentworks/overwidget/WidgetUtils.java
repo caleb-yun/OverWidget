@@ -12,7 +12,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.google.gson.Gson;
@@ -50,7 +49,7 @@ public class WidgetUtils {
 
         // Get min width and height.
         int columns = getCellsForSize(options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH));
-        Log.d(TAG, "Columns: " + columns);
+        //Log.d(TAG, "Columns: " + columns);
         //int rows = getCellsForSize(options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT));
 
         // Set up layout
@@ -91,7 +90,7 @@ public class WidgetUtils {
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
-        Log.d(TAG, "setWidgetViews");
+        //Log.d(TAG, "setWidgetViews");
     }
 
     public static void setBackground(RemoteViews views, String theme) {
@@ -192,7 +191,7 @@ public class WidgetUtils {
             }
 
             URL endpoint = new URL(server + "/v1/stats/" + platform.toLowerCase() + "/" + region.toLowerCase() + "/" + battleTag.replace('#', '-') + "/profile");
-            Log.d(TAG, endpoint.toString());
+            //Log.d(TAG, endpoint.toString());
             HttpsURLConnection urlConnection = (HttpsURLConnection) endpoint.openConnection();
             //HttpURLConnection urlConnection = (HttpURLConnection) endpoint.openConnection();
             urlConnection.setRequestMethod("GET");
@@ -225,10 +224,10 @@ public class WidgetUtils {
                 }
 
                 responseBody.close();
-                Log.d(TAG, "responseBody.close");
+                //Log.d(TAG, "responseBody.close");
             } else {
                 // Other response code
-                Log.e(TAG, urlConnection.getResponseMessage());
+                //Log.e(TAG, urlConnection.getResponseMessage());
                 Profile profile = new Profile();
                 profile.setErrorMsg(urlConnection.getResponseMessage());
                 return profile;
