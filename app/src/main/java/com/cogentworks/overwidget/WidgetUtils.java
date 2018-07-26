@@ -250,24 +250,6 @@ public class WidgetUtils {
         prefs.apply();
     }
 
-    // Read the prefix from the SharedPreferences object for this widget.
-    // If there is no preference saved, get the default from a resource
-    public static void loadUserPref(Context context, AppWidgetManager appWidgetManager, int appWidgetId, boolean showToast) {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
-        String battleTag = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "_battletag", null);
-        String platform = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "_platform", null);
-        String region = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "_region", null);
-
-        CreateWidget createWidget = new CreateWidget(context, appWidgetManager, appWidgetId);
-        createWidget.ShowToast = showToast;
-        createWidget.execute(battleTag, platform, region);
-    }
-
-    // Overload - for when not to show toast
-    public static void loadUserPref(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
-        loadUserPref(context, appWidgetManager, appWidgetId, false);
-    }
-
     public static Profile loadUserPrefOffline(Context context, int appWidgetId) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
         String profileJson = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "_profile", null);

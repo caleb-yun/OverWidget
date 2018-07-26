@@ -156,10 +156,7 @@ public class OverWidgetConfigure extends AppCompatActivity implements OnPreferen
 
     public void onFabClick(View view) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        //Snackbar.make(view, sp.getString("username", "None Selected"), Snackbar.LENGTH_SHORT).show();
 
-        //mainContent.setVisibility(View.INVISIBLE);
-        //progressBar.setVisibility(View.VISIBLE);
         fab.hide();
         crossfade(this, progressBar, mainContent);
 
@@ -177,15 +174,6 @@ public class OverWidgetConfigure extends AppCompatActivity implements OnPreferen
         CreateWidget createWidget = new CreateWidget(context, mAppWidgetId);
         createWidget.execute(battleTag, platform, region);
     }
-
-    /*@Override
-    protected void onStop() {
-        super.onStop();
-
-        // Reset options on stop
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        sp.edit().clear().apply();
-    }*/
 
     public static void crossfade(Context context, View viewIn, View viewOut) {
         int mShortAnimationDuration = context.getResources().getInteger(
@@ -218,56 +206,4 @@ public class OverWidgetConfigure extends AppCompatActivity implements OnPreferen
                 });
     }
 
-    /*public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        Preference pref = findPreference(key);
-        if (pref instanceof EditTextPreference) {
-            EditTextPreference battletag = (EditTextPreference) pref;
-            pref.setSummary(battletag.getText());
-        }*/
-
-    /*@Override
-    public void onCreate(Bundle icicle) {
-        super.onCreate(icicle);
-
-        // Set the result to CANCELED.  This will cause the widget host to cancel
-        // out of the widget placement if the user presses the back button.
-        setResult(RESULT_CANCELED);
-
-        setContentView(R.layout.activity_configure);
-
-        progressBar = (ProgressBar)findViewById(R.id.progress_bar);
-        progressBar.setVisibility(View.GONE);
-
-        mAppWidgetText = (EditText) findViewById(R.id.appwidget_text);
-        findViewById(R.id.add_button).setOnClickListener(mOnClickListener);
-
-        platformSpinner = (Spinner) findViewById(R.id.spinner_platform);
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> platformAdapter = ArrayAdapter.createFromResource(this, R.array.platform_array, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
-        platformAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        platformSpinner.setAdapter(platformAdapter);
-
-        regionSpinner = (Spinner) findViewById(R.id.spinner_region);
-        ArrayAdapter<CharSequence> regionAdapter = ArrayAdapter.createFromResource(this, R.array.region_array, android.R.layout.simple_spinner_item);
-        regionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        regionSpinner.setAdapter(regionAdapter);
-
-        // Find the widget id from the intent.
-        Intent intent = getIntent();
-        Bundle extras = intent.getExtras();
-        if (extras != null) {
-            mAppWidgetId = extras.getInt(
-                    AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
-        }
-
-        // If this activity was started with an intent without an app widget ID, finish with an error.
-        if (mAppWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
-            finish();
-            return;
-        }
-
-        //mAppWidgetText.setText(loadUserPref(OverWidgetConfigure.this, mAppWidgetId));
-    }*/
 }

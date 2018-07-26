@@ -4,9 +4,12 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.customtabs.CustomTabsIntent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -114,26 +117,36 @@ public class ItemAdapter extends DragItemAdapter<Profile, ItemAdapter.OWViewHold
 
         @Override
         public void onItemClicked(View view) {
-            final View mView = view;
+            final Context context = view.getContext();
             AlertDialog dialog = new AlertDialog.Builder(view.getContext())
                     .setTitle("Open in Browser")
                     .setItems(R.array.link_array, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
+                            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+                            boolean useCustomTabs = prefs.getBoolean(SettingsActivity.PREF_CUSTOM_TABS, true);
+
                             String battleTag = (name.getText().toString() + tag.getText()).replace('#','-');
                             String platform = info.getText().toString().split(" ")[0].toLowerCase();
-                            Intent i = new Intent(Intent.ACTION_VIEW);
-                            switch (which) {
-                                case 0:
-                                    i.setData(Uri.parse("http://playoverwatch.com/career/" + platform + "/" + battleTag));
-                                    break;
-                                case 1:
-                                    i.setData(Uri.parse("https://www.overbuff.com/players/" + platform + "/" + battleTag));
-                                    break;
-                                case 2:
-                                    i.setData(Uri.parse("https://masteroverwatch.com/profile/" + platform + "/global/" + battleTag));
-                                    break;
+
+                            Resources resources = context.getResources();
+                            String[] urls = resources.getStringArray(R.array.url_array);
+                            String url;
+                            url = urls[which].replace("#battleTag#", battleTag);
+                            url = url.replace("#platform#", platform);
+
+                            if (!useCustomTabs) {
+                                Intent i = new Intent(Intent.ACTION_VIEW);
+                                i.setData(Uri.parse(url));
+                                context.startActivity(i);
+                            } else {
+                                CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+                                if (prefs.getBoolean(SettingsActivity.PREF_DARK_THEME, false))
+                                    builder.setToolbarColor(resources.getColor(R.color.colorPrimaryBlackwatch));
+                                else
+                                    builder.setToolbarColor(resources.getColor(R.color.colorPrimary));
+                                CustomTabsIntent customTabsIntent = builder.build();
+                                customTabsIntent.launchUrl(context, Uri.parse(url));
                             }
-                            mView.getContext().startActivity(i);
 
                         }
                     })

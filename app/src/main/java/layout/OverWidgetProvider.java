@@ -5,7 +5,6 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -25,8 +24,6 @@ public class OverWidgetProvider extends AppWidgetProvider {
     private static final String TAG = "OverWidgetProvider";
     public static final String REFRESH_INTENT = "com.cogentworks.overwidget.action.UPDATE";
     public static final String SYNC_CLICKED = "com.cogentworks.overwidget.action.SYNC_CLICKED";
-    //public static final String SYNC_CLICKED = REFRESH_INTENT;
-    //private static final String URI_SCHEME = "OVRWG";
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -46,20 +43,12 @@ public class OverWidgetProvider extends AppWidgetProvider {
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             assert alarmManager != null;
             alarmManager.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis(), updateInterval, pi);
-            //alarmManager.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis(), 10*1000, pi);
+            //alarmManager.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis(), 10*1000, pi); // TESTING
 
 
             context.sendBroadcast(intent);
             WidgetUtils.setLoadingLayout(context, appWidgetId, AppWidgetManager.getInstance(context));
         }
-    }
-
-    private void onUpdate(Context context) {
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-
-        ComponentName thisAppWidgetComponentName = new ComponentName(context.getPackageName(),getClass().getName());
-        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidgetComponentName);
-        onUpdate(context, appWidgetManager, appWidgetIds);
     }
 
     @Override
@@ -93,45 +82,10 @@ public class OverWidgetProvider extends AppWidgetProvider {
     public void onReceive(Context context, Intent intent) {
         //Log.d(TAG, "OnReceive: " + intent.getAction());
 
-        /*if (SYNC_CLICKED.equals(intent.getAction())) {
-            Log.d(TAG, "Refreshing");
-
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-            Bundle extras = intent.getExtras();
-
-            if (extras != null) {
-                int appWidgetId = (int) extras.get("appWidgetId");
-                Log.d(TAG, "appWidgetId: " + Integer.toString(appWidgetId));
-                //WidgetUtils.loadUserPref(context, appWidgetManager, appWidgetId, true);
-                Intent updateIntent = new Intent(context.getApplicationContext(), UpdateService.class);
-                updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-                context.startService(intent);
-
-                Toast.makeText(context, "Refreshing...", Toast.LENGTH_SHORT).show();
-            }
-        } else*/ if (REFRESH_INTENT.equals(intent.getAction()) || SYNC_CLICKED.equals(intent.getAction())) {
+        if (REFRESH_INTENT.equals(intent.getAction()) || SYNC_CLICKED.equals(intent.getAction())) {
             int appWidgetId = intent.getIntExtra("appWidgetId", 0);
 
-            // If in power saving mode and not charging
-            /*if (Build.VERSION.SDK_INT >= 23) {
-                PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-                BatteryManager bm = (BatteryManager) context.getSystemService(Context.BATTERY_SERVICE);
-                if (pm.isPowerSaveMode() && !bm.isCharging()) {
-                    if (SYNC_CLICKED.equals(intent.getAction())) {
-                        Profile profile = WidgetUtils.loadUserPrefOffline(context, appWidgetId);
-                        if (profile != null)
-                            WidgetUtils.setWidgetViews(context, profile, appWidgetId, AppWidgetManager.getInstance(context));
-
-                        Toast.makeText(context, "Power save mode is on", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                }
-            }*/
-
-            // Normal
-
-            //if (intent.getAction().equals(SYNC_CLICKED))
-                WidgetUtils.setLoadingLayout(context, appWidgetId, AppWidgetManager.getInstance(context));
+            WidgetUtils.setLoadingLayout(context, appWidgetId, AppWidgetManager.getInstance(context));
 
             Intent serviceIntent = new Intent(intent);
             serviceIntent.setAction("com.cogentworks.overwidget.UPDATE_SERVICE");

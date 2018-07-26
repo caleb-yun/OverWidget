@@ -59,14 +59,6 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        /*Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        if (useDarkTheme) {
-            toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryBlackwatch));
-            toolbar.setTitleTextColor(getResources().getColor(R.color.colorTextBlackwatch));
-            toolbar.setPopupTheme(R.style.Blackwatch);
-
-        }*/
 
         // Set swipe to refresh behavior
         final MainActivity activityContext = this;
@@ -166,28 +158,7 @@ public class MainActivity extends AppCompatActivity {
         ItemAdapter listAdapter = new ItemAdapter(mItemArray, R.layout.list_item, R.id.layout_main, true);
         mDragListView.setAdapter(listAdapter, true);
         mDragListView.setCanDragHorizontally(false);
-        //mDragListView.setCustomDragItem(new MyDragItem(getContext(), R.layout.list_item));
     }
-
-    /*public void showItemList() {
-        isBusy = true;
-
-        if (adapter == null) {
-            ((SwipeRefreshLayout) findViewById(R.id.swiperefresh)).setRefreshing(true);
-            adapter = new ProfileAdapter(this, dbHelper.getList());
-            listView.setAdapter(adapter);
-
-            UpdateListTask updateListTask = new UpdateListTask(this, dbHelper.getList());
-            updateListTask.execute();
-
-        } else {
-            adapter.clear();
-            adapter.addAll(dbHelper.getList());
-            adapter.notifyDataSetChanged();
-        }
-
-        isBusy = false;
-    }*/
 
     public void disableDrag(final boolean disable) {
         mDragListView.setDragListCallback(new DragListView.DragListCallbackAdapter() {
