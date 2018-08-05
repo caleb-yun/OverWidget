@@ -46,14 +46,17 @@ public class MainActivity extends AppCompatActivity {
 
     FloatingActionButton fab;
 
+    SharedPreferences sharedPrefs;
+    boolean useDarkTheme;
+    boolean confirmDelete;
+
     boolean isBusy = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        boolean useDarkTheme = PreferenceManager.getDefaultSharedPreferences(getBaseContext())
-                .getBoolean(SettingsActivity.PREF_DARK_THEME, false);
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        useDarkTheme = sharedPrefs.getBoolean(SettingsActivity.PREF_DARK_THEME, false);
         if (useDarkTheme)
             setTheme(R.style.Blackwatch);
 
@@ -118,15 +121,47 @@ public class MainActivity extends AppCompatActivity {
                 // Swipe to delete on left
                 if (swipedDirection == ListSwipeItem.SwipeDirection.LEFT || swipedDirection == ListSwipeItem.SwipeDirection.RIGHT) {
                     if (!isBusy) {
+
                         final Profile adapterItem = (Profile) item.getTag();
                         final int pos = mDragListView.getAdapter().getPositionForItem(adapterItem);
+                        confirmDelete = sharedPrefs.getBoolean(SettingsActivity.PREF_DELETE, true);
+                        if (confirmDelete) {
+                            AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+                                    .setTitle("Delete Profile")
+                                    .setMessage("Are you sure you want to delete?")
+                                    .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            isBusy = true;
+                                            dbHelper.deleteItem(adapterItem.BattleTag);
+                                            mDragListView.getAdapter().removeItem(pos);
+                                            isBusy = false;
+                                        }
+                                    })
+                                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            mDragListView.resetSwipedViews(null);
+                                        }
+                                    })
+                                    .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                                        @Override
+                                        public void onCancel(DialogInterface dialogInterface) {
+                                            mDragListView.resetSwipedViews(null);
+                                        }
+                                    })
+                                    .create();
+                            dialog.show();
+                        } else {
+                            isBusy = true;
+                            dbHelper.deleteItem(adapterItem.BattleTag);
+                            mDragListView.getAdapter().removeItem(pos);
+                            isBusy = false;
+                        }
 
-                        isBusy = true;
-                        dbHelper.deleteItem(adapterItem.BattleTag);
-                        mDragListView.getAdapter().removeItem(pos);
-                        isBusy = false;
                     } else {
                         Toast.makeText(MainActivity.this, "List is busy", Toast.LENGTH_LONG).show();
+                        mDragListView.resetSwipedViews(null);
                     }
                 }
             }

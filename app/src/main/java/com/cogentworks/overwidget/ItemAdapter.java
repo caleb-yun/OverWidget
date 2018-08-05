@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -47,7 +48,19 @@ public class ItemAdapter extends DragItemAdapter<Profile, ItemAdapter.OWViewHold
         Context context = holder.itemView.getContext();
         boolean isDark = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(SettingsActivity.PREF_DARK_THEME, false);
 
-        String[] parts = profile.BattleTag.split("#");
+        RelativeLayout itemLayout = holder.itemView.findViewById(R.id.item_layout);
+        int colorId = R.color.colorBackground;
+        if (isDark)
+            colorId = R.color.colorBackgroundBlackwatch;
+        itemLayout.setBackgroundColor(context.getResources().getColor(colorId));
+
+        String[] parts;
+        try {
+            parts = profile.BattleTag.split("#");
+        } catch (Exception e) {
+            return;
+        }
+
         String username = parts[0];
         holder.name.setText(username);
         if (parts.length > 1) {

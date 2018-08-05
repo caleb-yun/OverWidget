@@ -14,4 +14,10 @@
             android:summaryOn="Enabled"
             android:summaryOff="Using default browser"
             android:title="Use Chrome Custom Tabs" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="confirm_delete"
+            android:summary="Ask before deleting a player"
+            android:title="Confirm Before Deleting" />
 </PreferenceScreen>

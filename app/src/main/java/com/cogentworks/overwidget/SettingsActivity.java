@@ -23,6 +23,11 @@ import android.preference.SwitchPreference;
  */
 public class SettingsActivity extends AppCompatPreferenceActivity {
 
+
+    public static final String PREF_DARK_THEME = "dark_theme";
+    public static final String PREF_CUSTOM_TABS = "custom_tabs";
+    public static final String PREF_DELETE = "confirm_delete";
+
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
@@ -85,9 +90,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         getFragmentManager().beginTransaction().replace(android.R.id.content, new PrefsFragment()).commit();
 
     }
-
-    public static final String PREF_DARK_THEME = "dark_theme";
-    public static final String PREF_CUSTOM_TABS = "custom_tabs";
 
     /**
      * This method stops fragment injection in malicious applications.

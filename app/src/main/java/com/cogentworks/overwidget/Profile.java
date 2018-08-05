@@ -37,8 +37,7 @@ public class Profile {
         this.Region = region;
     }
 
-    public void SetUser(String battleTag, String avatarURL) {
-        this.BattleTag = battleTag;
+    public void setUser(String avatarURL) {
         this.AvatarURL = avatarURL;
     }
 
@@ -46,18 +45,18 @@ public class Profile {
         Id = BattleTag.hashCode();
     }
 
-    public void SetLevel(String level, String prestige, String rankImageURL) {
+    public void setLevel(String level, String prestige, String rankImageURL) {
         this.Level = level;
         this.Prestige = prestige;
         this.RankImageURL = rankImageURL;
     }
 
-    public void SetRank(String compRank, String tier) {
+    public void setRank(String compRank, String tier) {
         this.CompRank = compRank;
         this.Tier = tier;
     }
 
-    public void SetHero(String hero, String heroTime) {
+    public void setHero(String hero, String heroTime) {
         this.Hero = hero;
         this.HeroTime = heroTime;
     }

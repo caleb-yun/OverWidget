@@ -210,17 +210,17 @@ public class WidgetUtils {
                     return profile;
                 }
 
-                result.SetUser(battleTag, stats.get("icon").getAsString());
-                result.SetLevel(stats.get("level").getAsString(), stats.get("prestige").getAsString(), stats.get("levelIcon").getAsString());
+                result.setUser(stats.get("icon").getAsString());
+                result.setLevel(stats.get("level").getAsString(), stats.get("prestige").getAsString(), stats.get("levelIcon").getAsString());
                 result.gamesWon = stats.get("gamesWon").getAsString();
                 try {
                     String tier = stats.get("ratingName").getAsString().toLowerCase();
                     if (!tier.equals(""))
-                        result.SetRank(stats.get("rating").getAsString(), stats.get("ratingName").getAsString().toLowerCase());
+                        result.setRank(stats.get("rating").getAsString(), stats.get("ratingName").getAsString().toLowerCase());
                     else
-                        result.SetRank("", "nullrank");
+                        result.setRank("", "nullrank");
                 } catch (UnsupportedOperationException e) {
-                    result.SetRank("", "nullrank");
+                    result.setRank("", "nullrank");
                 }
 
                 responseBody.close();

@@ -30,7 +30,7 @@ public class AddProfileTask extends AsyncTask<String, Void, Profile> {
         try {
             Profile profile = WidgetUtils.getProfile(battleTag, platform, region, null, null);
             if (profile.BattleTag != null)
-                profile.Id = profile.BattleTag.hashCode();
+                profile.setId();
             return profile;
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -42,7 +42,7 @@ public class AddProfileTask extends AsyncTask<String, Void, Profile> {
     protected void onPostExecute(Profile result) {
         if (result != null && result.BattleTag != null) {
             MainActivity activity = (MainActivity) context;
-            activity.dbHelper.insertNewProfile(battleTag, result);
+            activity.dbHelper.addNewProfile(battleTag, result);
             DragItemAdapter adapter = activity.mDragListView.getAdapter();
             adapter.addItem(adapter.getItemCount(), result);
         } else {

@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class UpdateListTask extends AsyncTask<String, Void, ArrayList<Profile>> {
@@ -23,34 +22,34 @@ public class UpdateListTask extends AsyncTask<String, Void, ArrayList<Profile>> 
 
     @Override
     protected ArrayList<Profile> doInBackground(String... params) {
-        ((MainActivity)context).isBusy = true;
-        ((MainActivity)context).disableDrag(true);
+        ((MainActivity) context).isBusy = true;
+        ((MainActivity) context).disableDrag(true);
 
         if (profiles.size() == 0) {
             error = false;
             return null;
         }
 
-        try {
-            for (int i = 0; i < profiles.size(); i++) {
-                Profile profile = profiles.get(i);
+        for (int i = 0; i < profiles.size(); i++) {
+            Profile profile = profiles.get(i);
+            try {
                 int id = profile.Id;
-                //Log.d("UpdateListTask", profile.BattleTag);
 
-                profile = WidgetUtils.getProfile(profile.BattleTag, profile.Platform, profile.Region, null, null);
-                profile.Id = id;
-
-                profiles.set(i, profile);
+                Profile newProfile = WidgetUtils.getProfile(profile.BattleTag, profile.Platform, profile.Region, null, null);
+                if (newProfile == null)
+                    Snackbar.make(((Activity) context).findViewById(R.id.list), "Could not update a player", Snackbar.LENGTH_LONG).show();
+                else if(newProfile.BattleTag != null) {
+                    newProfile.Id = id;
+                    profiles.set(i, newProfile);
+                } else {
+                    Snackbar.make(((Activity) context).findViewById(R.id.list), newProfile.getErrorMsg(), Snackbar.LENGTH_LONG).show();
+                }
+            } catch (Exception e) {
+                error = true;
+                return null;
             }
-            return profiles;
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            Snackbar.make(((Activity) context).findViewById(R.id.list), "Could not update player", Snackbar.LENGTH_LONG).show();
-        } catch (IndexOutOfBoundsException ex) {
-            ex.printStackTrace();
         }
-        error = true;
-        return null;
+        return profiles;
     }
 
     @Override
@@ -68,7 +67,7 @@ public class UpdateListTask extends AsyncTask<String, Void, ArrayList<Profile>> 
         }
 
         activity.isBusy = false;
-        ((SwipeRefreshLayout)activity.findViewById(R.id.swiperefresh)).setRefreshing(false);
+        ((SwipeRefreshLayout) activity.findViewById(R.id.swiperefresh)).setRefreshing(false);
         activity.disableDrag(false);
     }
 }

@@ -49,7 +49,7 @@ public class SQLHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void insertNewProfile(String battleTag, Profile profile) {
+    public void addNewProfile(String battleTag, Profile profile) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
