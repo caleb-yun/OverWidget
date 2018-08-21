@@ -1,5 +1,6 @@
 package com.cogentworks.overwidget;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -132,10 +133,7 @@ public class MainActivity extends AppCompatActivity {
                                     .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            isBusy = true;
-                                            dbHelper.deleteItem(adapterItem.BattleTag);
-                                            mDragListView.getAdapter().removeItem(pos);
-                                            isBusy = false;
+                                            removeItem(adapterItem.BattleTag, pos);
                                         }
                                     })
                                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -153,10 +151,7 @@ public class MainActivity extends AppCompatActivity {
                                     .create();
                             dialog.show();
                         } else {
-                            isBusy = true;
-                            dbHelper.deleteItem(adapterItem.BattleTag);
-                            mDragListView.getAdapter().removeItem(pos);
-                            isBusy = false;
+                            removeItem(adapterItem.BattleTag, pos);
                         }
 
                     } else {
@@ -190,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupListRecyclerView() {
         mDragListView.setLayoutManager(new LinearLayoutManager(this));
-        ItemAdapter listAdapter = new ItemAdapter(mItemArray, R.layout.list_item, R.id.layout_main, true);
+        ItemAdapter listAdapter = new ItemAdapter(this, mItemArray, R.layout.list_item, R.id.layout_main, true);
         mDragListView.setAdapter(listAdapter, true);
         mDragListView.setCanDragHorizontally(false);
     }
@@ -207,6 +202,21 @@ public class MainActivity extends AppCompatActivity {
                 return !disable;
             }
         });
+    }
+
+    private void removeItem(String battleTag, int pos) {
+        isBusy = true;
+        dbHelper.deleteItem(battleTag);
+        mDragListView.getAdapter().removeItem(pos);
+        checkHelpMsg(mDragListView.getAdapter().getItemCount());
+        isBusy = false;
+    }
+
+    public void checkHelpMsg(int itemCount) {
+        if (itemCount > 0)
+            findViewById(R.id.text_help).setVisibility(View.GONE);
+        else
+            findViewById(R.id.text_help).setVisibility(View.VISIBLE);
     }
 
     public void onFabClick(View view) {
@@ -310,6 +320,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void sortItemsDialog() {
         if (!isBusy) {
+            final Activity activity = this;
             AlertDialog dialog = new AlertDialog.Builder(this)
                     .setTitle("Sort by")
                     .setSingleChoiceItems(R.array.sort_array, lastSortItem, new DialogInterface.OnClickListener() {
@@ -355,7 +366,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                             Collections.sort(itemList, comparator);
 
-                            ItemAdapter listAdapter = new ItemAdapter(itemList, R.layout.list_item, R.id.layout_main, true);
+                            ItemAdapter listAdapter = new ItemAdapter(activity, itemList, R.layout.list_item, R.id.layout_main, true);
                             mDragListView.setAdapter(listAdapter, true);
 
                             dbHelper.setList(itemList);

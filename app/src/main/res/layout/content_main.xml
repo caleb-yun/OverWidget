@@ -2,16 +2,34 @@
 <com.cogentworks.overwidget.OWSwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swiperefresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".MainActivity"
-    tools:showIn="@layout/activity_main"
-    android:id="@+id/swiperefresh">
-    <com.woxthebox.draglistview.DragListView
+    tools:showIn="@layout/activity_main">
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/list"
-        android:dividerHeight="0dp"
-        android:divider="@null" />
+        android:orientation="vertical">
+
+        <com.woxthebox.draglistview.DragListView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@null"
+            android:dividerHeight="0dp" />
+
+        <TextView
+            android:id="@+id/text_help"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:padding="84dp"
+            android:text="@string/help_add" />
+
+    </RelativeLayout>
+
 </com.cogentworks.overwidget.OWSwipeRefreshLayout>

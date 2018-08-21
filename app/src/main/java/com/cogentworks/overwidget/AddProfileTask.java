@@ -45,6 +45,7 @@ public class AddProfileTask extends AsyncTask<String, Void, Profile> {
             activity.dbHelper.addNewProfile(battleTag, result);
             DragItemAdapter adapter = activity.mDragListView.getAdapter();
             adapter.addItem(adapter.getItemCount(), result);
+            activity.checkHelpMsg(adapter.getItemCount());
         } else {
             String error;
             if (result != null)

@@ -1,5 +1,6 @@
 package com.cogentworks.overwidget;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -28,11 +29,16 @@ public class ItemAdapter extends DragItemAdapter<Profile, ItemAdapter.OWViewHold
     private int mGrabHandleId;
     private boolean mDragOnLongPress;
 
-    public ItemAdapter(List<Profile> list, int layoutId, int grabHandleId, boolean dragOnLongPress) {
+    public ItemAdapter(Activity activity, List<Profile> list, int layoutId, int grabHandleId, boolean dragOnLongPress) {
         mLayoutId = layoutId;
         mGrabHandleId = grabHandleId;
         mDragOnLongPress = dragOnLongPress;
         setItemList(list);
+
+        if (list.size() > 0)
+            activity.findViewById(R.id.text_help).setVisibility(View.GONE);
+        else
+            activity.findViewById(R.id.text_help).setVisibility(View.VISIBLE);
     }
 
     @Override
