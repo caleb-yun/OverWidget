@@ -47,9 +47,8 @@
 
     <string name="help_add">Tap the \'+\' button to add a profile to the list.</string>
 
-    <string name="help_app">
-        Adding
-        Reordering: Long press to drag
-    </string>
+    <string name="help_app"><b>Adding:</b> Tap the \'+\' button.\n<b>Reordering:</b> Long press, then drag.\n<b>Deleting:</b> Swipe left or right.</string>
+
+    <string name="help_widget"><b>Resizing:</b> Long press, then resize horizontally to show more stats.\n<b>Refreshing:</b> Tap anywhere to manually refresh.</string>
 
 </resources>

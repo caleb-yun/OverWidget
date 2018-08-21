@@ -12,6 +12,10 @@
         android:checkable="true" />
 
     <item
+        android:id="@+id/help"
+        android:title="Help" />
+
+    <item
         android:id="@+id/sort"
         android:title="Sort"
         android:icon="@drawable/ic_sort_black"

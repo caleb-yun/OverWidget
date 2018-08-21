@@ -181,6 +181,12 @@ public class MainActivity extends AppCompatActivity {
         mSwipeRefreshLayout.setRefreshing(true);
         UpdateListTask updateListTask = new UpdateListTask(this, mItemArray);
         updateListTask.execute();
+
+
+        if (sharedPrefs.getBoolean("first_run", true)) {
+            helpDialog();
+            sharedPrefs.edit().putBoolean("first_run", false).apply();
+        }
     }
 
     private void setupListRecyclerView() {
@@ -311,6 +317,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.sort:
                 sortItemsDialog();
                 return true;
+            case R.id.help:
+                helpDialog();
+                return true;
             default:
                 return false;
         }
@@ -378,6 +387,16 @@ public class MainActivity extends AppCompatActivity {
                     .create();
             dialog.show();
         }
+    }
+
+    private void helpDialog() {
+        final View dialogView = this.getLayoutInflater().inflate(R.layout.dialog_help, null);
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("Help")
+                .setView(dialogView)
+                .setNegativeButton("OK", null)
+                .create();
+        dialog.show();
     }
 
     @Override
