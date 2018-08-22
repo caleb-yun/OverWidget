@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -63,7 +64,7 @@ public class UpdateListTask extends AsyncTask<String, Void, ArrayList<Profile>> 
 
         } else {
             if (error)
-                Snackbar.make(activity.findViewById(R.id.layout_main), "An update error occurred", Snackbar.LENGTH_LONG).show();
+                Toast.makeText(context, "An update error occurred", Snackbar.LENGTH_LONG).show();
         }
 
         activity.isBusy = false;
