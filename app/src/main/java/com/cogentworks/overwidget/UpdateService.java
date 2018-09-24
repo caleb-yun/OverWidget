@@ -32,7 +32,7 @@ public class UpdateService extends JobIntentService {
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this.getApplicationContext());
 
             //if (intent.getBooleanExtra("set_loading", false))
-            WidgetUtils.setLoadingLayout(context, appWidgetId, appWidgetManager);
+            //WidgetUtils.setLoadingLayout(context, appWidgetId, appWidgetManager);
 
             try {
                 Profile profile = WidgetUtils.getProfile(context, appWidgetId);

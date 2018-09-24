@@ -109,7 +109,7 @@ public class CreateWidget extends AsyncTask<String, Void, Profile> {
         } else {
             OverWidgetConfigure.crossfade(context, content, progressBar);
             fab.show();
-            
+
             try {
                 Snackbar.make(content, result.getErrorMsg(), Snackbar.LENGTH_SHORT).show(); // Add "Retry" action
             } catch (Exception e) {

@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.cogentworks.overwidget.Profile;
 import com.cogentworks.overwidget.UpdateService;
@@ -47,7 +46,7 @@ public class OverWidgetProvider extends AppWidgetProvider {
 
 
             context.sendBroadcast(intent);
-            WidgetUtils.setLoadingLayout(context, appWidgetId, AppWidgetManager.getInstance(context));
+            //WidgetUtils.setLoadingLayout(context, appWidgetId, AppWidgetManager.getInstance(context));
         }
     }
 
@@ -85,8 +84,6 @@ public class OverWidgetProvider extends AppWidgetProvider {
         if (REFRESH_INTENT.equals(intent.getAction()) || SYNC_CLICKED.equals(intent.getAction())) {
             int appWidgetId = intent.getIntExtra("appWidgetId", 0);
 
-            WidgetUtils.setLoadingLayout(context, appWidgetId, AppWidgetManager.getInstance(context));
-
             Intent serviceIntent = new Intent(intent);
             serviceIntent.setAction("com.cogentworks.overwidget.UPDATE_SERVICE");
             serviceIntent.putExtra("appWidgetId", appWidgetId);
@@ -94,8 +91,11 @@ public class OverWidgetProvider extends AppWidgetProvider {
             UpdateService.enqueueWork(context, serviceIntent);
             context.startService(serviceIntent);
 
-            if (SYNC_CLICKED.equals(intent.getAction()))
-                Toast.makeText(context, "Refreshing (" + appWidgetId + ")", Toast.LENGTH_SHORT).show();
+            if (SYNC_CLICKED.equals(intent.getAction())) {
+                //Toast.makeText(context, "Refreshing (" + appWidgetId + ")", Toast.LENGTH_SHORT).show();
+                WidgetUtils.setLoadingLayout(context, appWidgetId, AppWidgetManager.getInstance(context));
+            }
+
         }
         super.onReceive(context, intent);
     }
