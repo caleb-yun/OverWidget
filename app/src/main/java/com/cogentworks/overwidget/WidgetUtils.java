@@ -12,7 +12,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.google.gson.Gson;
@@ -94,7 +93,6 @@ public class WidgetUtils {
             // Avatar
             SetAvatarBmp setAvatarBmp = new SetAvatarBmp(context, appWidgetManager, appWidgetId, views);
             setAvatarBmp.execute(profile.AvatarURL);
-            //Glide.with()
         }
 
         // Instruct the widget manager to update the widget
@@ -224,8 +222,8 @@ public class WidgetUtils {
                 result.Prestige = stats.get("prestige").getAsString();
                 result.LevelImgURL = stats.get("levelIcon").getAsString();
                 result.PrestigeImgURL = stats.get("prestigeIcon").getAsString();
-                Log.d("getProfile", result.PrestigeImgURL);
                 result.gamesWon = stats.get("gamesWon").getAsString();
+                result.RankImgURL = stats.get("ratingIcon").getAsString();
                 try {
                     result.setRank(stats.get("rating").getAsString(), stats.get("ratingName").getAsString().toLowerCase());
                     if (!result.Tier.equals(""))
@@ -233,7 +231,7 @@ public class WidgetUtils {
                 } catch (UnsupportedOperationException e) {
                     result.setRank("", "nullrank");
                 }
-                result.RankImgURL = stats.get("ratingIcon").getAsString();
+
 
                 responseBody.close();
                 //Log.d(TAG, "responseBody.close");

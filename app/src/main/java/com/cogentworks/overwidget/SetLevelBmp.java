@@ -44,7 +44,7 @@ public class SetLevelBmp extends AsyncTask<String, Void, Bitmap> {
             try {
                 result = BuildLevelBmp(profile, this.context);
             } catch (IOException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         }
 
@@ -62,7 +62,11 @@ public class SetLevelBmp extends AsyncTask<String, Void, Bitmap> {
 
     public static Bitmap BuildLevelBmp(Profile profile, Context context) throws IOException {
         URL borderUrl = new URL(profile.LevelImgURL);
-        URL prestigeUrl = new URL(profile.PrestigeImgURL);
+        URL prestigeUrl = null;
+        try {
+            prestigeUrl = new URL(profile.PrestigeImgURL);
+        } catch (IOException e) {}
+
         InputStream borderInputStream = borderUrl.openConnection().getInputStream();
         Bitmap borderBmp = BitmapFactory.decodeStream(borderInputStream);
         Bitmap levelBmp = BuildTextBmp(profile.Level, profile.getTheme(), context);
@@ -72,7 +76,7 @@ public class SetLevelBmp extends AsyncTask<String, Void, Bitmap> {
         canvas.drawBitmap(borderBmp, new Matrix(), null);
         canvas.drawBitmap(levelBmp, 0, 90, null);
 
-        if (profile.PrestigeImgURL != null && !profile.PrestigeImgURL.equals("")) {
+        if (prestigeUrl != null) {
             InputStream rankInputStream = prestigeUrl.openConnection().getInputStream();
             Bitmap rankBmp = BitmapFactory.decodeStream(rankInputStream);
             canvas.drawBitmap(rankBmp, 0, bmOverlay.getHeight() - 128, null);

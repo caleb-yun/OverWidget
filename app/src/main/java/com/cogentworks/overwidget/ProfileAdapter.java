@@ -57,8 +57,11 @@ public class ProfileAdapter extends ArrayAdapter<Profile> {
             gamesWon.setText(profile.gamesWon + " games won");
 
         level.setText("Lvl " + (Integer.parseInt(profile.Prestige)*100 + Integer.parseInt(profile.Level)));
-        if (!profile.Tier.equals("") && !profile.Tier.equals("nullrank")) {
-            tier.setImageResource(context.getResources().getIdentifier(profile.Tier, "drawable", context.getPackageName()));
+        if (!profile.RankImgURL.equals("")) {
+            //tier.setImageResource(context.getResources().getIdentifier(profile.Tier, "drawable", context.getPackageName()));
+            Glide.with(parent)
+                    .load(profile.RankImgURL)
+                    .into(tier);
             if (isDark)
                 comprank.setImageBitmap(WidgetUtils.BuildTextBmp(profile.CompRank, "Dark", context));
             else
