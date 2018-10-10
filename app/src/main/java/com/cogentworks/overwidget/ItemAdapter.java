@@ -78,8 +78,11 @@ public class ItemAdapter extends DragItemAdapter<Profile, ItemAdapter.OWViewHold
 
         holder.level.setText("Lvl " + (Integer.parseInt(profile.Prestige)*100 + Integer.parseInt(profile.Level)));
 
-        if (!profile.Tier.equals("") && !profile.Tier.equals("nullrank")) {
-            holder.tier.setImageResource(context.getResources().getIdentifier(profile.Tier, "drawable", context.getPackageName()));
+        if (profile.RankImgURL != null && !profile.RankImgURL.equals("")) {
+            //holder.tier.setImageResource(context.getResources().getIdentifier(profile.Tier, "drawable", context.getPackageName()));
+            Glide.with(context)
+                    .load(profile.RankImgURL)
+                    .into(holder.tier);
             if (isDark)
                 holder.comprank.setImageBitmap(WidgetUtils.BuildTextBmp(profile.CompRank, "Dark", context));
             else

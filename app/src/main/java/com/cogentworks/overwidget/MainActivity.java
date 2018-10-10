@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
     static final String TAG = "MainActivity";
 
     public SQLHelper dbHelper;
-    ProfileAdapter adapter;
     ListView listView;
 
     public DragListView mDragListView;
