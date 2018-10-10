@@ -14,7 +14,8 @@ public class Profile {
 
     public String Prestige;
     public String Level;
-    public String RankImageURL;
+    public String LevelImgURL;
+    public String PrestigeImgURL;
 
     public String CompRank;
     public String Tier;
@@ -48,7 +49,7 @@ public class Profile {
     public void setLevel(String level, String prestige, String rankImageURL) {
         this.Level = level;
         this.Prestige = prestige;
-        this.RankImageURL = rankImageURL;
+        this.LevelImgURL = rankImageURL;
     }
 
     public void setRank(String compRank, String tier) {

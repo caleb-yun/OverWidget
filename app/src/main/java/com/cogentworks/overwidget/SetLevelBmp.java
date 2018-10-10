@@ -26,25 +26,23 @@ public class SetLevelBmp extends AsyncTask<String, Void, Bitmap> {
     RemoteViews views;
     AppWidgetManager appWidgetManager;
     int appWidgetId;
-    String theme;
+    Profile profile;
 
-    public SetLevelBmp(Context context, AppWidgetManager appWidgetManager, int appWidgetId, RemoteViews views, String theme) {
+    public SetLevelBmp(Context context, AppWidgetManager appWidgetManager, int appWidgetId, RemoteViews views, Profile profile) {
         this.context = context;
         this.appWidgetManager = appWidgetManager;
         this.appWidgetId = appWidgetId;
         this.views = views;
-        this.theme = theme;
+        this.profile = profile;
     }
+
     @Override
     protected Bitmap doInBackground(String... params) {
         Bitmap result = null;
-        String url = params[0];
-        Integer prestige = Integer.valueOf(params[1]);
-        String level = params[2];
 
-        if (url != null) {
+        if (profile.PrestigeImgURL != null) {
             try {
-                result = BuildLevelBmp(url, level, prestige, theme, this.context);
+                result = BuildLevelBmp(profile, this.context);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -62,20 +60,20 @@ public class SetLevelBmp extends AsyncTask<String, Void, Bitmap> {
         appWidgetManager.partiallyUpdateAppWidget(appWidgetId, views);
     }
 
-    public static Bitmap BuildLevelBmp(String url, String level, int prestige, String theme, Context context) throws IOException {
-        URL borderUrl = new URL(url);
-        URL rankUrl = new URL(url.replace("Border", "Rank"));
+    public static Bitmap BuildLevelBmp(Profile profile, Context context) throws IOException {
+        URL borderUrl = new URL(profile.LevelImgURL);
+        URL prestigeUrl = new URL(profile.PrestigeImgURL);
         InputStream borderInputStream = borderUrl.openConnection().getInputStream();
         Bitmap borderBmp = BitmapFactory.decodeStream(borderInputStream);
-        Bitmap levelBmp = BuildTextBmp(level, theme, context);
+        Bitmap levelBmp = BuildTextBmp(profile.Level, profile.getTheme(), context);
 
         Bitmap bmOverlay = Bitmap.createBitmap(256, 256+8, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bmOverlay);
         canvas.drawBitmap(borderBmp, new Matrix(), null);
         canvas.drawBitmap(levelBmp, 0, 90, null);
 
-        if(prestige % 6 != 0) {
-            InputStream rankInputStream = rankUrl.openConnection().getInputStream();
+        if (profile.PrestigeImgURL != null || profile.PrestigeImgURL.equals("")) {
+            InputStream rankInputStream = prestigeUrl.openConnection().getInputStream();
             Bitmap rankBmp = BitmapFactory.decodeStream(rankInputStream);
             canvas.drawBitmap(rankBmp, 0, bmOverlay.getHeight() - 128, null);
 

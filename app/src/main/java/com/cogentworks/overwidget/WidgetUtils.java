@@ -79,13 +79,14 @@ public class WidgetUtils {
         // Specific views
         if (columns >= 2){
             // Level
-            SetLevelBmp setLevelBmp = new SetLevelBmp(context, appWidgetManager, appWidgetId, views, profile.getTheme());
-            setLevelBmp.execute(profile.RankImageURL, profile.Prestige, profile.Level);
+            SetLevelBmp setLevelBmp = new SetLevelBmp(context, appWidgetManager, appWidgetId, views, profile);
+            setLevelBmp.execute();
         }
         if (columns >= 3){
             // Avatar
             SetAvatarBmp setAvatarBmp = new SetAvatarBmp(context, appWidgetManager, appWidgetId, views);
             setAvatarBmp.execute(profile.AvatarURL);
+            //Glide.with()
         }
 
         // Instruct the widget manager to update the widget
@@ -212,6 +213,7 @@ public class WidgetUtils {
 
                 result.setUser(stats.get("icon").getAsString());
                 result.setLevel(stats.get("level").getAsString(), stats.get("prestige").getAsString(), stats.get("levelIcon").getAsString());
+                result.PrestigeImgURL = stats.get("prestigeIcon").getAsString();
                 result.gamesWon = stats.get("gamesWon").getAsString();
                 try {
                     String tier = stats.get("ratingName").getAsString().toLowerCase();

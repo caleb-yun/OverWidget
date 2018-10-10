@@ -85,7 +85,7 @@ public class OverWidgetProvider extends AppWidgetProvider {
             int appWidgetId = intent.getIntExtra("appWidgetId", 0);
 
             Intent serviceIntent = new Intent(intent);
-            serviceIntent.setAction("com.cogentworks.overwidget.UPDATE_SERVICE");
+            serviceIntent.setAction("com.cogentworks.overwidget.UpdateService");
             serviceIntent.putExtra("appWidgetId", appWidgetId);
 
             UpdateService.enqueueWork(context, serviceIntent);
