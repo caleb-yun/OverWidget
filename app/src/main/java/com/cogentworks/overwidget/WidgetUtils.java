@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.google.gson.Gson;
@@ -72,7 +73,14 @@ public class WidgetUtils {
         views.setTextViewText(R.id.appwidget_battletag, profile.BattleTag);
         // Comp Rank
         views.setImageViewBitmap(R.id.appwidget_comprank, WidgetUtils.BuildTextBmp(profile.CompRank, profile.getTheme(), context));
-        views.setImageViewResource(R.id.appwidget_tier, context.getResources().getIdentifier(profile.Tier, "drawable", context.getPackageName()));
+        if (!profile.RankImgURL.equals("")) {
+            SetCompBmp setCompBmp = new SetCompBmp(context, appWidgetManager, appWidgetId, views);
+            setCompBmp.execute(profile.RankImgURL);
+        }
+        //views.setImageViewResource(R.id.appwidget_tier, context.getResources().getIdentifier(profile.Tier, "drawable", context.getPackageName()));
+
+
+
         // Tap to refresh
         views.setOnClickPendingIntent(R.id.appwidget_layout, getPendingSelfIntent(context, SYNC_CLICKED, appWidgetId));
 
@@ -212,18 +220,20 @@ public class WidgetUtils {
                 }
 
                 result.setUser(stats.get("icon").getAsString());
-                result.setLevel(stats.get("level").getAsString(), stats.get("prestige").getAsString(), stats.get("levelIcon").getAsString());
+                result.Level = stats.get("level").getAsString();
+                result.Prestige = stats.get("prestige").getAsString();
+                result.LevelImgURL = stats.get("levelIcon").getAsString();
                 result.PrestigeImgURL = stats.get("prestigeIcon").getAsString();
+                Log.d("getProfile", result.PrestigeImgURL);
                 result.gamesWon = stats.get("gamesWon").getAsString();
                 try {
-                    String tier = stats.get("ratingName").getAsString().toLowerCase();
-                    if (!tier.equals(""))
-                        result.setRank(stats.get("rating").getAsString(), stats.get("ratingName").getAsString().toLowerCase());
-                    else
-                        result.setRank("", "nullrank");
+                    result.setRank(stats.get("rating").getAsString(), stats.get("ratingName").getAsString().toLowerCase());
+                    if (!result.Tier.equals(""))
+                        result.Tier = "nullrank";
                 } catch (UnsupportedOperationException e) {
                     result.setRank("", "nullrank");
                 }
+                result.RankImgURL = stats.get("ratingIcon").getAsString();
 
                 responseBody.close();
                 //Log.d(TAG, "responseBody.close");

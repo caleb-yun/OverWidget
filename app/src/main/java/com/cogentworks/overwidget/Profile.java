@@ -19,6 +19,7 @@ public class Profile {
 
     public String CompRank;
     public String Tier;
+    public String RankImgURL;
 
     public String gamesWon;
     private String Hero;

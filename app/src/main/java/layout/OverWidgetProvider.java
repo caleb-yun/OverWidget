@@ -84,12 +84,12 @@ public class OverWidgetProvider extends AppWidgetProvider {
         if (REFRESH_INTENT.equals(intent.getAction()) || SYNC_CLICKED.equals(intent.getAction())) {
             int appWidgetId = intent.getIntExtra("appWidgetId", 0);
 
-            Intent serviceIntent = new Intent(intent);
+            Intent serviceIntent = new Intent(context, UpdateService.class);
             serviceIntent.setAction("com.cogentworks.overwidget.UpdateService");
             serviceIntent.putExtra("appWidgetId", appWidgetId);
 
             UpdateService.enqueueWork(context, serviceIntent);
-            context.startService(serviceIntent);
+            //context.startService(serviceIntent);
 
             if (SYNC_CLICKED.equals(intent.getAction())) {
                 //Toast.makeText(context, "Refreshing (" + appWidgetId + ")", Toast.LENGTH_SHORT).show();

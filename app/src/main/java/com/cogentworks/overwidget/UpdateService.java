@@ -8,6 +8,8 @@ import android.support.v4.app.JobIntentService;
 
 import com.google.gson.Gson;
 
+import java.io.IOException;
+
 import layout.OverWidgetConfigure;
 
 /**
@@ -45,7 +47,7 @@ public class UpdateService extends JobIntentService {
                 } else {
                     WidgetUtils.setErrorLayout(context, appWidgetId, appWidgetManager, "Error");
                 }
-            } catch (Exception e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }

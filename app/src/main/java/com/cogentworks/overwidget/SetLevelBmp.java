@@ -72,7 +72,7 @@ public class SetLevelBmp extends AsyncTask<String, Void, Bitmap> {
         canvas.drawBitmap(borderBmp, new Matrix(), null);
         canvas.drawBitmap(levelBmp, 0, 90, null);
 
-        if (profile.PrestigeImgURL != null || profile.PrestigeImgURL.equals("")) {
+        if (profile.PrestigeImgURL != null && !profile.PrestigeImgURL.equals("")) {
             InputStream rankInputStream = prestigeUrl.openConnection().getInputStream();
             Bitmap rankBmp = BitmapFactory.decodeStream(rankInputStream);
             canvas.drawBitmap(rankBmp, 0, bmOverlay.getHeight() - 128, null);
