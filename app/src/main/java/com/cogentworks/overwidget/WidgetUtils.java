@@ -71,7 +71,8 @@ public class WidgetUtils {
         // General views
         views.setTextViewText(R.id.appwidget_battletag, profile.BattleTag);
         // Comp Rank
-        views.setImageViewBitmap(R.id.appwidget_comprank, WidgetUtils.BuildTextBmp(profile.CompRank, profile.getTheme(), context));
+        if (Integer.parseInt(profile.CompRank) > 0)
+            views.setImageViewBitmap(R.id.appwidget_comprank, WidgetUtils.BuildTextBmp(profile.CompRank, profile.getTheme(), context));
         if (!profile.RankImgURL.equals("")) {
             SetCompBmp setCompBmp = new SetCompBmp(context, appWidgetManager, appWidgetId, views);
             setCompBmp.execute(profile.RankImgURL);
@@ -186,8 +187,6 @@ public class WidgetUtils {
     }
 
     public static Profile getProfile(String battleTag, String platform, String region, String interval, String theme) throws IOException {
-        if (platform != null && !platform.equals("PC"))
-            region = "any"; // Set region to any on console
 
         if (battleTag != null && platform != null && region != null) {
             Profile result = new Profile(battleTag, platform, region);
@@ -197,7 +196,12 @@ public class WidgetUtils {
                 result.setTheme(theme);
             }
 
-            URL endpoint = new URL(server + "/v1/stats/" + platform.toLowerCase() + "/" + region.toLowerCase() + "/" + battleTag.replace('#', '-') + "/profile");
+            String url = server + "/v1/stats/" + platform.toLowerCase() + "/";
+            if (platform.equals("PC"))
+                url += region.toLowerCase() + "/";
+            url += battleTag.replace('#', '-') + "/profile";
+
+            URL endpoint = new URL(url);
             //Log.d(TAG, endpoint.toString());
             HttpsURLConnection urlConnection = (HttpsURLConnection) endpoint.openConnection();
             //HttpURLConnection urlConnection = (HttpURLConnection) endpoint.openConnection();
@@ -224,13 +228,7 @@ public class WidgetUtils {
                 result.PrestigeImgURL = stats.get("prestigeIcon").getAsString();
                 result.gamesWon = stats.get("gamesWon").getAsString();
                 result.RankImgURL = stats.get("ratingIcon").getAsString();
-                try {
-                    result.setRank(stats.get("rating").getAsString(), stats.get("ratingName").getAsString().toLowerCase());
-                    if (!result.Tier.equals(""))
-                        result.Tier = "nullrank";
-                } catch (UnsupportedOperationException e) {
-                    result.setRank("", "nullrank");
-                }
+                result.CompRank = stats.get("rating").getAsString();
 
 
                 responseBody.close();

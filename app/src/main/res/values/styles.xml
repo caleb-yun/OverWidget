@@ -6,6 +6,7 @@
         <!--<item name="colorPrimary">@color/colorPrimary</item>-->
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:colorEdgeEffect" tools:targetApi="21">@color/colorAccent</item>
         <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>
     </style>
 
@@ -14,6 +15,7 @@
         <!--<item name="colorPrimary">@color/colorPrimary</item>-->
         <!--<item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
         <item name="colorAccent">@color/colorAccentDark</item>
+        <item name="android:colorEdgeEffect" tools:targetApi="21">@color/colorAccentDark</item>
         <item name="android:windowLightStatusBar" tools:targetApi="23">false</item>
     </style>
 

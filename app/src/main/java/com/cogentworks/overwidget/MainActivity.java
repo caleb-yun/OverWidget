@@ -341,7 +341,7 @@ public class MainActivity extends AppCompatActivity {
                                     comparator = new Comparator<Profile>() {
                                         @Override
                                         public int compare(Profile o1, Profile o2) {
-                                            return o1.BattleTag.compareTo(o2.BattleTag);
+                                            return o1.BattleTag.toLowerCase().compareTo(o2.BattleTag.toLowerCase());
                                         }
                                     };
                                     break;
